@@ -18,8 +18,13 @@ double distance(int i, int j, instance *inst) {
 }
 
 int xpos(int i, int j, instance *inst) {
-	if (i == j) print_error(" i == j in xpos");
+	if (i == j) print_error("i == j in xpos");
 	if (i > j) return xpos(j, i, inst);
 	int pos = i * inst->nnodes + j - ((i + 1)*(i + 2) / 2);
+	return pos;
+}
+
+int xxpos(int i, int j, instance *inst) {
+	int pos = i * (inst->nnodes) + j;
 	return pos;
 }

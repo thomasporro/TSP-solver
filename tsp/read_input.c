@@ -9,7 +9,7 @@
 void parse_command_line(int argc, char **argv, instance *inst) {
 	//Default values
 	inst->timelimit = CPX_INFBOUND;
-	inst->model_type = 0;
+	inst->model_type = -1;
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-file") == 0) {

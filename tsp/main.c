@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	}
 
 	//Commands for gnuplot
-	char *commandsForGnuplot[] = { "set title \"POINTS\"", "plot \"data.dat\"" };
+	char *commandsForGnuplot[] = { "set title \"POINTS\"", "plot \"data.dat\" with linespoints linestyle 1" };
 
 	//Parse the command line and read the input file
 	printf("---------------INPUT FILE INFORMATIONS---------------\n");

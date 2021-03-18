@@ -27,3 +27,14 @@ int xpos(int i, int j, instance *inst);
 * @param	err pointer to a char's string that will be print
 */
 void print_error(const char *err);
+
+
+/*!
+* Calculates the position of the variable x(i, j) into the CPLEX problem for
+* an undirected graph
+* @param	i is the index of the first node
+* @param	j is the index of the second node
+* @param	inst is a pointer to the instance where the nodes are stored
+* @return	an integer indicating the position of the variable into the CPLEX problem
+*/
+int xxpos(int i, int j, instance *inst);

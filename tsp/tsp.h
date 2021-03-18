@@ -31,9 +31,33 @@ typedef struct {
 int TSPopt(instance *inst);
 
 /*!
-* Function that build the model for an undirected graph
+* Function that switches the problem's build from a model to another using the type save into the instance
 * @param	inst is a pointer to the instance of the problem created using tsp.h
 * @param	env is the enviroment of CPLEX
 * @param	lp is the problem written in CPLEX
 */
 void build_model(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+/*!
+* Function that build the model for an undirected graph
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	env is the enviroment of CPLEX
+* @param	lp is the problem written in CPLEX
+*/
+void build_model_st(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+/*!
+* Function that build the MTZ model for an directed graph
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	env is the enviroment of CPLEX
+* @param	lp is the problem written in CPLEX
+*/
+void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+/*!
+* Function that build the GG model for an directed graph
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	env is the enviroment of CPLEX
+* @param	lp is the problem written in CPLEX
+*/
+void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp);

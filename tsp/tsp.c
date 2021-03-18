@@ -47,6 +47,32 @@ int TSPopt(instance *inst) {
 
 
 void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
+	switch (inst->model_type)
+	{
+	case 0:
+		printf("Model type chosen: undirected complete graph\n");
+		build_model_st(inst, env, lp);
+		break;
+
+	case 1:
+		printf("Model type chosen: MTZ\n");
+		build_model_MTZ(inst, env, lp);
+		break;
+
+	case 2:
+		build_model_GG(inst, env, lp);
+		break;
+
+	default:
+		printf("Model type not defined. Will we used the model "
+				"for the undirected complete graph\n");
+		build_model_st(inst, env, lp);
+		break;
+	}
+}
+
+
+void build_model_st(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	//Variables used to name the variables and constraints into CPLEX
 	char **cname = (char **)calloc(1, sizeof(char*));
 	cname[0] = (char *)calloc(100, sizeof(char));
@@ -88,6 +114,199 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
+
+	printf("END OF BUILDING CONSTRAINTS\n");
+
+	CPXwriteprob(env, lp, "model.lp", NULL);
+	printf("END OF WRITING THE PROBLEM ON model.lp\n");
+	free(cname[0]);
+	free(cname);
+}
+
+
+void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
+	//Variables used to name the variables and constraints into CPLEX
+	char **cname = (char **)calloc(1, sizeof(char*));
+	cname[0] = (char *)calloc(100, sizeof(char));
+
+	//Add binary variables x(i, j) for i < j
+	for (int i = 0; i < inst->nnodes; i++) {
+		for (int j = 0; j < inst->nnodes; j++) {
+			//Variables used to create the variable into CPLEX
+			sprintf(cname[0], "x(%d,%d)", i + 1, j + 1);
+			char variable_type = BINARY_VARIABLE;
+			double obj = distance(i, j, inst);
+			double lb = 0.0;
+			double ub = (i == j) ? 0.0 : 1.0;
+
+			//Creates the columns of the new variable
+			if (CPXnewcols(env, lp, 1, &obj, &lb, &ub, &variable_type, cname)) print_error("Wrong CPXnewcols on x var.s");
+			if (CPXgetnumcols(env, lp) - 1 != xxpos(i, j, inst)) print_error("Wrong position for x var.s");
+		}
+	}
+
+	//Add u(i) variable for MTZ
+	for (int i = 0; i < inst->nnodes; i++) {
+		sprintf(cname[0], "u(%d)", i + 1);
+		char integer = INTEGER_VARIABLE;
+		double lb = 0.0;
+		double ub = inst->nnodes - 2.0;
+		if (CPXnewcols(env, lp, 1, NULL, &lb, &ub, &integer, cname)) print_error("wrong CPXnewcols on x var.s");
+	}
+
+	//Add degree IN
+	for (int h = 0; h < inst->nnodes; h++) {
+		int lastrow = CPXgetnumrows(env, lp);
+		double rhs = 1.0;
+		char sense = EQUAL;
+		sprintf(cname[0], ("degree_in_node_(%d)"), h + 1);
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error(" wrong CPXnewrows [degree IN]");
+		for (int j = 0; j < inst->nnodes; j++) {
+			if (CPXchgcoef(env, lp, lastrow, xxpos(j, h, inst), 1.0)) print_error("wrong CPXchgcoef [degree IN]");
+		}
+	}
+
+	//Add degree OUT
+	for (int h = 0; h < inst->nnodes; h++) {
+		int lastrow = CPXgetnumrows(env, lp);
+		double rhs = 1.0;
+		char sense = EQUAL;
+		sprintf(cname[0], ("degree_out_node_(%d)"), h + 1);
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error(" wrong CPXnewrows [degree OUT]");
+		for (int j = 0; j < inst->nnodes; j++) {
+			if (CPXchgcoef(env, lp, lastrow, xxpos(h, j, inst), 1.0)) print_error("wrong CPXchgcoef [degree OUT]");
+		}
+	}
+
+	//I skipped the first node since the model requires it
+	for (int i = 1; i < inst->nnodes; i++) {
+		for (int j = 1; j < inst->nnodes; j++) {
+			if (i == j) continue;
+			int lastrow = CPXgetnumrows(env, lp);
+			double rhs = inst->nnodes - 1.0;
+			char sense = LESS_EQUAL;
+
+			//Compute the position of the first variable ui, that is right after the binary ones
+			int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
+			sprintf(cname[0], ("MTZ_constraint_for_x(%d,%d)"), i + 1, j + 1);
+			if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
+			if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes)) print_error("wrong CPXchgcoef [n*x(ij)]");
+			if (CPXchgcoef(env, lp, lastrow, init_position_of_u + i, 1.0)) print_error("wrong CPXchgcoef [u(i)]");
+			if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
+		}
+	}
+
+
+	printf("END OF BUILDING CONSTRAINTS\n");
+
+	CPXwriteprob(env, lp, "model.lp", NULL);
+	printf("END OF WRITING THE PROBLEM ON model.lp\n");
+	free(cname[0]);
+	free(cname);
+}
+
+//TODO ypos
+void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
+	char **cname = (char **)calloc(1, sizeof(char*));
+	cname[0] = (char *)calloc(100, sizeof(char));
+
+	//Add binary var.s x(i, j)
+	for (int i = 0; i < inst->nnodes; i++) {
+		for (int j = 0; j < inst->nnodes; j++) {
+			sprintf(cname[0], "x(%d,%d)", i + 1, j + 1);
+			char binary = BINARY_VARIABLE;
+			double obj = distance(i, j, inst);
+			double lb = 0.0;
+			double ub = (i == j) ? 0.0 : 1.0;
+			if (CPXnewcols(env, lp, 1, &obj, &lb, &ub, &binary, cname)) print_error("wrong CPXnewcols on x var.s");
+			if (CPXgetnumcols(env, lp) - 1 != xxpos(i, j, inst)) print_error("wrong position for x var.s");
+		}
+	}
+	//TODO undestand ypos from the last year
+	//Add variable y(i, j) corresponding to the flow of the arc
+	for (int i = 0; i < inst->nnodes; i++) {
+		for (int j = 0; j < inst->nnodes; j++) {
+			sprintf(cname[0], "y(%d,%d)", i + 1, j + 1);
+			char integer = INTEGER_VARIABLE;
+			double lb = 0.0;
+			double ub = (i == j) ? 0.0 : INFINITY;
+			if (CPXnewcols(env, lp, 1, NULL, &lb, &ub, &integer, cname)) print_error("wrong CPXnewcols on y(i, j)");
+			if (CPXgetnumcols(env, lp) - 1 != ypos(i, j, inst)) print_error("wrong position for y(i, j)");
+		}
+	}
+
+	//Add degree IN
+	for (int h = 0; h < inst->nnodes; h++) {
+		int lastrow = CPXgetnumrows(env, lp);
+		double rhs = 1.0;
+		char sense = EQUAL;
+		sprintf(cname[0], ("degree_in_node_(%d)"), h + 1);
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [degree IN]");
+		for (int j = 0; j < inst->nnodes; j++) {
+			if (CPXchgcoef(env, lp, lastrow, xxpos(j, h, inst), 1.0)) print_error("wrong CPXchgcoef [degree IN]");
+		}
+	}
+
+	//Add degree OUT
+	for (int h = 0; h < inst->nnodes; h++) {
+		int lastrow = CPXgetnumrows(env, lp); 
+		double rhs = 1.0;
+		char sense = EQUAL;
+		sprintf(cname[0], ("degree_out_node_(%d)"), h + 1);
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [degree OUT]");
+		for (int j = 0; j < inst->nnodes; j++) {
+			if (CPXchgcoef(env, lp, lastrow, xxpos(h, j, inst), 1.0)) print_error("wrong CPXchgcoef [degree OUT]");
+		}
+	}
+
+	//Add costraint of flow of the first node
+	sprintf(cname[0], "flow_out_from_1");
+	int lastrow = CPXgetnumrows(env, lp);
+	double rhs = inst->nnodes - 1;
+	char sense = EQUAL;
+	if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [flow_out_from_1]");
+	for (int j = 1; j < inst->nnodes; j++) {
+		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong chgcoef [flow_out_from_1]");
+	}
+
+	//Add costraint of flow of the other nodes
+	for (int j = 1; j < inst->nnodes; j++) {
+		sprintf(cname[0], "flow_in_and_out_from(%d)", j + 1);
+		int lastrow = CPXgetnumrows(env, lp);
+		double rhs = 1.0;
+		char sense = EQUAL;
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [flow_in_and_out_from_a_node]");
+		for (int i = 0; i < inst->nnodes; i++) {
+			if (j == i) continue;
+			if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [flow_in_and_out_from_a_node]");
+			if (CPXchgcoef(env, lp, lastrow, ypos(j, i, inst), -1.0)) print_error("wrong chgcoef [flow_in_and_out_from_a_node]");
+		}
+	}
+
+	//Coupling constraints 
+	sprintf(cname[0], "coupling_first_node");
+	rhs = 0;
+	sense = LESS_EQUAL;
+
+	//For the first node
+	for (int j = 1; j < inst->nnodes; j++) {
+		int lastrow = CPXgetnumrows(env, lp);
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [coupling_first_node]");
+		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong chgcoef [coupling_first_node]");
+		if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes-1))) print_error("wrong chgcoef [coupling_first_node]");
+	}
+
+	//For the other nodes
+	for (int i = 1; i < inst->nnodes; i++) {
+		for (int j = 1; j < inst->nnodes; j++) {
+			if (i == j) continue;
+			sprintf(cname[0], "coupling_arc_x(%d,%d)", i+1, j+1);
+			int lastrow = CPXgetnumrows(env, lp); 
+			if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [coupling_arc_x]");
+			if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [coupling_arc_x]");
+			if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), -(inst->nnodes - 2))) print_error("wrong chgcoef [coupling_arc_x]");
+		}
+	}
 
 	printf("END OF BUILDING CONSTRAINTS\n");
 
