@@ -54,12 +54,17 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		build_model_st(inst, env, lp);
 		break;
 
-	case 1:
+	case 10:
 		printf("Model type chosen: MTZ\n");
 		build_model_MTZ(inst, env, lp);
 		break;
 
-	case 2:
+	case 11:
+		printf("Model type chosen: MTZ with lazy constraints\n");
+		build_model_MTZ(inst, env, lp);
+		break;
+
+	case 20:printf("Model type chosen: GG with lazy constraints\n");
 		build_model_GG(inst, env, lp);
 		break;
 
@@ -178,23 +183,52 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
-	//I skipped the first node since the model requires it
-	for (int i = 1; i < inst->nnodes; i++) {
-		for (int j = 1; j < inst->nnodes; j++) {
-			if (i == j) continue;
-			int lastrow = CPXgetnumrows(env, lp);
-			double rhs = inst->nnodes - 1.0;
-			char sense = LESS_EQUAL;
+	//Choose which constraint it should use
+	if (inst->model_type != 11) { //Standard constraints
+		printf("Standard constraints chosen correctly\n");
+		//I skipped the first node since the model requires it
+		for (int i = 1; i < inst->nnodes; i++) {
+			for (int j = 1; j < inst->nnodes; j++) {
+				if (i == j) continue;
+				int lastrow = CPXgetnumrows(env, lp);
+				double rhs = inst->nnodes - 1.0;
+				char sense = LESS_EQUAL;
 
-			//Compute the position of the first variable ui, that is right after the binary ones
-			int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
-			sprintf(cname[0], ("MTZ_constraint_for_x(%d,%d)"), i + 1, j + 1);
-			if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
-			if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes)) print_error("wrong CPXchgcoef [n*x(ij)]");
-			if (CPXchgcoef(env, lp, lastrow, init_position_of_u + i, 1.0)) print_error("wrong CPXchgcoef [u(i)]");
-			if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
+				//Compute the position of the first variable ui, that is right after the binary ones
+				int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
+				sprintf(cname[0], ("MTZ_constraint_for_x(%d,%d)"), i + 1, j + 1);
+				if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
+				if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes)) print_error("wrong CPXchgcoef [n*x(ij)]");
+				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + i, 1.0)) print_error("wrong CPXchgcoef [u(i)]");
+				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
+			}
 		}
 	}
+	else {//Lazy constraints
+		printf("Lazy constraints chosen correctly\n");
+		int izero = 0;
+		int index[3];
+		double value[3];
+		double big_m = inst->nnodes - 1.0;
+		double rhs = big_m - 1.0;
+		char sense = LESS_EQUAL;
+		int nnz = 3;
+		int final_position = inst->nnodes  * inst->nnodes;
+		for (int i = 1; i < inst->nnodes; i++) {
+			for (int j = 1; j < inst->nnodes; j++) {
+				if (i == j) continue;
+				sprintf(cname[0], "u_consistency for arc (%d,%d)", i + 1, j + 1);
+				index[0] = xxpos(i, j, inst);
+				index[1] = final_position + i;
+				index[2] = final_position + j;
+				value[0] = big_m;
+				value[1] = 1.0;
+				value[2] = -1.0;
+				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong lazy contraints for u-consistenxy");
+			}
+		}
+	}
+	
 
 
 	printf("END OF BUILDING CONSTRAINTS\n");
@@ -205,7 +239,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	free(cname);
 }
 
-//TODO ypos
+
 void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	char **cname = (char **)calloc(1, sizeof(char*));
 	cname[0] = (char *)calloc(100, sizeof(char));
@@ -222,6 +256,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 			if (CPXgetnumcols(env, lp) - 1 != xxpos(i, j, inst)) print_error("wrong position for x var.s");
 		}
 	}
+
 	//TODO undestand ypos from the last year
 	//Add variable y(i, j) corresponding to the flow of the arc
 	for (int i = 0; i < inst->nnodes; i++) {
@@ -283,28 +318,28 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
-	//Coupling constraints 
-	sprintf(cname[0], "coupling_first_node");
+	//Linking constraints 
+	sprintf(cname[0], "linking_first_node");
 	rhs = 0;
 	sense = LESS_EQUAL;
 
 	//For the first node
 	for (int j = 1; j < inst->nnodes; j++) {
 		int lastrow = CPXgetnumrows(env, lp);
-		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [coupling_first_node]");
-		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong chgcoef [coupling_first_node]");
-		if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes-1))) print_error("wrong chgcoef [coupling_first_node]");
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_first_node]");
+		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong CPXchgcoef [linking_first_node]");
+		if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes-1))) print_error("wrong CPXchgcoef [linking_first_node]");
 	}
 
 	//For the other nodes
 	for (int i = 1; i < inst->nnodes; i++) {
 		for (int j = 1; j < inst->nnodes; j++) {
 			if (i == j) continue;
-			sprintf(cname[0], "coupling_arc_x(%d,%d)", i+1, j+1);
+			sprintf(cname[0], "linking_arc_x(%d,%d)", i+1, j+1);
 			int lastrow = CPXgetnumrows(env, lp); 
-			if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [coupling_arc_x]");
-			if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [coupling_arc_x]");
-			if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), -(inst->nnodes - 2))) print_error("wrong chgcoef [coupling_arc_x]");
+			if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_arc_x]");
+			if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [linking_arc_x]");
+			if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), -(inst->nnodes - 2))) print_error("wrong chgcoef [linking_arc_x]");
 		}
 	}
 

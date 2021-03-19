@@ -28,3 +28,9 @@ int xxpos(int i, int j, instance *inst) {
 	int pos = i * (inst->nnodes) + j;
 	return pos;
 }
+
+int ypos(int i, int j, instance *inst) {
+	int xpos = inst->nnodes  * inst->nnodes;
+	int ypos = xpos + (i * (inst->nnodes) + j);
+	return ypos;
+}
