@@ -21,6 +21,9 @@ void plot(char **commands, int n_commands, instance *inst) {
 	case 11:
 		print_MTZ(temp, arcs, inst);
 		break;
+	case 12:
+		print_MTZ(temp, arcs, inst);
+		break;
 	case 20:
 		print_MTZ(temp, arcs, inst);
 		break;

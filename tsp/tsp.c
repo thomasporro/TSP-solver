@@ -64,6 +64,11 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		build_model_MTZ(inst, env, lp);
 		break;
 
+	case 12:
+		printf("Model type chosen: MTZ with indicator constraints\n");
+		build_model_MTZ(inst, env, lp);
+		break;
+
 	case 20:printf("Model type chosen: GG with lazy constraints\n");
 		build_model_GG(inst, env, lp);
 		break;
@@ -184,7 +189,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	}
 
 	//Choose which constraint it should use
-	if (inst->model_type != 11) { //Standard constraints
+	if (inst->model_type == 10) { //Standard constraints
 		printf("Standard constraints chosen correctly\n");
 		//I skipped the first node since the model requires it
 		for (int i = 1; i < inst->nnodes; i++) {
@@ -204,7 +209,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 			}
 		}
 	}
-	else {//Lazy constraints
+	else if(inst->model_type == 10){//Lazy constraints
 		printf("Lazy constraints chosen correctly\n");
 		int izero = 0;
 		int index[3];
@@ -225,6 +230,28 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				value[1] = 1.0;
 				value[2] = -1.0;
 				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong lazy contraints for u-consistenxy");
+			}
+		}
+	}
+	else if (inst->model_type == 12) { //Model solved with the indicators constraint
+		printf("Indicator constraints chosen correctly\n");
+		int rhs = 1;
+		int nzcnt = 2;
+		char sense = GREAT_EQUAL;
+		int complemented = 0;
+		int linind[2];
+		double linval[] = { -1.0 , 1.0};
+		//Point the last position of the x_ij variables
+		int final_position = inst->nnodes  * inst->nnodes;
+		for (int i = 1; i < inst->nnodes; i++) {
+			for (int j = 1; j < inst->nnodes; j++) {
+				if (i == j) continue;
+				sprintf(cname[0], "indicator_constraint for arc(%d, %d)", i+1, j+1);
+				linind[0] = final_position + i;
+				linind[1] = final_position + j;
+				if (CPXaddindconstr(env, lp, xxpos(i, j, inst), complemented, nzcnt, rhs, sense, linind, linval, cname[0])) {
+					print_error("wrong indicator contraint");
+				}
 			}
 		}
 	}
