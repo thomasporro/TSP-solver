@@ -61,3 +61,4 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp);
 * @param	lp is the problem written in CPLEX
 */
 void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp);
+

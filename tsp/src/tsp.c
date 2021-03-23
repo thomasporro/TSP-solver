@@ -5,6 +5,8 @@
 #define LESS_EQUAL 'L'
 #define GREAT_EQUAL 'G'
 
+#include <stdint.h>
+#include <time.h>
 #include <ilcplex/cplex.h>
 #include "tsp.h"
 #include "utils.h"
@@ -25,18 +27,21 @@ int TSPopt(instance *inst) {
 
 
 	inst->solution = (double *)calloc(inst->nvariables, sizeof(double));
-
+	
+	time_t start_time = time(NULL);
 	
 	//Computing the solution
 	printf("CALCULATING THE SOLUTION...\n");
 	CPXmipopt(env, lp);
 	printf("SOLUTION CALCULATED\n");
 
+	double time_passed = difftime(time(NULL), start_time);
+	print_stats(inst, time_passed);
+
 	//If the problem have a solution it saves it into the instance's structure
 	if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
 		print_error("Failed to optimize MIP.\n");
 	}
-
 
 	//Frees the memory
 	CPXfreeprob(env, &lp);
@@ -69,7 +74,7 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		build_model_MTZ(inst, env, lp);
 		break;
 
-	case 20:printf("Model type chosen: GG with lazy constraints\n");
+	case 20:printf("Model type chosen: GG\n");
 		build_model_GG(inst, env, lp);
 		break;
 
@@ -196,20 +201,33 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 			for (int j = 1; j < inst->nnodes; j++) {
 				if (i == j) continue;
 				int lastrow = CPXgetnumrows(env, lp);
-				double rhs = inst->nnodes - 1.0;
+				double rhs = inst->nnodes - 2.0;
 				char sense = LESS_EQUAL;
 
 				//Compute the position of the first variable ui, that is right after the binary ones
 				int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
 				sprintf(cname[0], ("MTZ_constraint_for_x(%d,%d)"), i + 1, j + 1);
 				if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
-				if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes)) print_error("wrong CPXchgcoef [n*x(ij)]");
+				if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes - 1.0)) print_error("wrong CPXchgcoef [n*x(ij)]");
 				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + i, 1.0)) print_error("wrong CPXchgcoef [u(i)]");
 				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
 			}
 		}
+		for (int i = 1; i < inst->nnodes; i++) {
+			for (int j = i + 1; j < inst->nnodes; j++) {
+				if (i == j) continue;
+				int lastrow = CPXgetnumrows(env, lp);
+				double rhs = 1.0;
+				char sense = LESS_EQUAL;
+
+				sprintf(cname[0], ("MTZ_constraint_for_xij_xji_1(%d,%d)"), i + 1, j + 1);
+				if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
+				if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
+				if (CPXchgcoef(env, lp, lastrow, xxpos(j, i, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
+			}
+		}
 	}
-	else if(inst->model_type == 10){//Lazy constraints
+	else if(inst->model_type == 11){//Lazy constraints
 		printf("Lazy constraints chosen correctly\n");
 		int izero = 0;
 		int index[3];
@@ -232,6 +250,23 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong lazy contraints for u-consistenxy");
 			}
 		}
+
+		// add lazy constraints 1.0 * x_ij + 1.0 * x_ji <= 1, for each arc (i,j) with i < j
+		rhs = 1.0;
+		sense = LESS_EQUAL;
+		nnz = 2;
+		for (int i = 0; i < inst->nnodes; i++)
+		{
+			for (int j = i + 1; j < inst->nnodes; j++)
+			{
+				sprintf(cname[0], "SEC on node pair (%d,%d)", i + 1, j + 1);
+				index[0] = xxpos(i, j, inst);
+				value[0] = 1.0;
+				index[1] = xxpos(j, i, inst);
+				value[1] = 1.0;
+				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong CPXlazyconstraints on 2-node SECs");
+			}
+		}
 	}
 	else if (inst->model_type == 12) { //Model solved with the indicators constraint
 		printf("Indicator constraints chosen correctly\n");
@@ -240,7 +275,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		char sense = GREAT_EQUAL;
 		int complemented = 0;
 		int linind[2];
-		double linval[] = { -1.0 , 1.0};
+		double linval[] = { -1.0, 1.0};
 		//Point the last position of the x_ij variables
 		int final_position = inst->nnodes  * inst->nnodes;
 		for (int i = 1; i < inst->nnodes; i++) {
@@ -377,3 +412,4 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	free(cname[0]);
 	free(cname);
 }
+

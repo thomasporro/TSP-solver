@@ -15,39 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="read_input.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="main.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="tsp.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="plot.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="tsp.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="read_input.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="plot.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="att48.tsp">
+    <None Include="dataset\att48.tsp">
       <Filter>File di risorse</Filter>
     </None>
+    <None Include="dataset\berlin52.tsp">
+      <Filter>File di risorse</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\plot.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="include\read_input.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tsp.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\plot.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\read_input.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tsp.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

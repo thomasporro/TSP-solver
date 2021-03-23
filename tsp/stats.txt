@@ -1,0 +1,40 @@
+Problem -> berlin52.tsp
+Model -> 0
+Time passed -> 0.000000
+
+Problem -> berlin52.tsp
+Model -> 10
+Time passed -> 2.000000
+
+Problem -> berlin52.tsp
+Model -> 11
+Time passed -> 1.000000
+
+Problem -> berlin52.tsp
+Model -> 12
+Time passed -> 5.000000
+
+Problem -> berlin52.tsp
+Model -> 20
+Time passed -> 9.000000
+
+Problem -> berlin52.tsp
+Model -> 0
+Time passed -> 0.000000
+
+Problem -> berlin52.tsp
+Model -> 10
+Time passed -> 3.000000
+
+Problem -> dataset/berlin52.tsp
+Model -> 10
+Time passed -> 3.000000
+
+Problem -> dataset/berlin52.tsp
+Model -> 10
+Time passed -> 2.000000
+
+Problem -> dataset/berlin52.tsp
+Model -> 10
+Time passed -> 2.000000
+

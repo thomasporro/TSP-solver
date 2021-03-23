@@ -48,3 +48,12 @@ int xxpos(int i, int j, instance *inst);
 * @return	an integer indicating the position of the variable into the CPLEX problem
 */
 int ypos(int i, int j, instance *inst);
+
+
+/*!
+* Save into a file the time passed to solve an instance with a specific
+* model type
+* @param	inst is the pointer to the instance where we can retrieve informations
+* @param	time_passed is the time passed to compute the solution in seconds
+*/
+void print_stats(instance *inst, double time_passed);

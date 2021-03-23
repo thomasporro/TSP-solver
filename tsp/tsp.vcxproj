@@ -73,7 +73,7 @@
     <IncludePath>C:\UNIPD\ro2\gnuplot_c;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\UNIPD\ro2\gnuplot_c;$(IncludePath)</IncludePath>
+    <IncludePath>C:\UNIPD\ro2\gnuplot_c;C:\Users\thoma\source\repos\tsp\tsp\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -148,20 +148,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.c" />
-    <ClCompile Include="plot.c" />
-    <ClCompile Include="read_input.c" />
-    <ClCompile Include="tsp.c" />
-    <ClCompile Include="utils.c" />
+    <None Include="dataset\att48.tsp" />
+    <None Include="dataset\berlin52.tsp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="plot.h" />
-    <ClInclude Include="read_input.h" />
-    <ClInclude Include="tsp.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="include\plot.h" />
+    <ClInclude Include="include\read_input.h" />
+    <ClInclude Include="include\tsp.h" />
+    <ClInclude Include="include\utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="att48.tsp" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\plot.c" />
+    <ClCompile Include="src\read_input.c" />
+    <ClCompile Include="src\tsp.c" />
+    <ClCompile Include="src\utils.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

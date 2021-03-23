@@ -19,9 +19,17 @@ int main(int argc, char **argv) {
 	parse_command_line(argc, argv, &inst);
 	read_input(&inst);
 
+	int model_type[] = {0, 10, 11, 12, 20};
+
 	//Calculate the solution of the problem
 	printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
 	TSPopt(&inst);
+
+	/*
+	for (int i = 0; i < 5; i++) {
+		inst.model_type = model_type[i];
+		TSPopt(&inst);
+	}*/
 
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];

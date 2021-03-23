@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <stdio.h>
 #include "utils.h"
 
@@ -33,4 +35,14 @@ int ypos(int i, int j, instance *inst) {
 	int xpos = inst->nnodes  * inst->nnodes;
 	int ypos = xpos + (i * (inst->nnodes) + j);
 	return ypos;
+}
+
+void print_stats(instance *inst, double time_passed) {
+	FILE *stats = fopen("stats.txt", "a");
+
+	fprintf(stats, "Problem -> %s\n", inst->input_file);
+	fprintf(stats, "Model -> %d\n", inst->model_type);
+	fprintf(stats, "Time passed -> %f\n\n", time_passed);
+
+	fclose(stats);
 }
