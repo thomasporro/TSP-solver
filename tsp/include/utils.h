@@ -8,7 +8,7 @@
 * @param	inst is a pointer to the instance where the nodes are stored
 * @return	double that indicates the euclidian distance
 */
-double distance(int i, int j, instance *inst);
+double euc_2d_distance(int i, int j, instance *inst);
 
 
 /*!
@@ -57,3 +57,33 @@ int ypos(int i, int j, instance *inst);
 * @param	time_passed is the time passed to compute the solution in seconds
 */
 void print_stats(instance *inst, double time_passed);
+
+
+/*!
+* Calculates the distance between two nodes using the geographical distance using
+* the Haversine formula
+* @param	i is the index of the first node
+* @param	j is the index of the second node
+* @param	inst is a pointer to the instance where the nodes are stored
+* @return	double that indicates the euclidian distance
+*/
+double geo_distance(int i, int j, instance *inst);
+
+/*!
+* Calculates the distance between two nodes using the ATT type
+* @param	i is the index of the first node
+* @param	j is the index of the second node
+* @param	inst is a pointer to the instance where the nodes are stored
+* @return	double that indicates the euclidian distance
+*/
+double att_distance(int i, int j, instance *inst);
+
+
+/*!
+* Switch statement for the distance functions
+* @param	i is the index of the first node
+* @param	j is the index of the second node
+* @param	inst is a pointer to the instance where the nodes are stored
+* @return	double that indicates the euclidian distance
+*/
+double distance(int i, int j, instance *inst);

@@ -43,6 +43,14 @@ int TSPopt(instance *inst) {
 		print_error("Failed to optimize MIP.\n");
 	}
 
+	//If the problem have a solution it saves it into the instance's structure
+	double solution = -1;
+	int lpstat = -1;
+	if (CPXgetobjval(env, lp, &solution)){
+		print_error("Failed to optimize MIP.\n");
+	}
+	printf("objval: %f\n", solution);
+
 	//Frees the memory
 	CPXfreeprob(env, &lp);
 	CPXcloseCPLEX(&env);
@@ -412,4 +420,3 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	free(cname[0]);
 	free(cname);
 }
-

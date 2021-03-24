@@ -11,7 +11,11 @@ typedef struct {
 	double *x_coord;
 	double *y_coord;
 	char input_file[1000];
+	char edge_type[10];
 	int model_type;
+
+	double *latitude;
+	double *longitude;
 
 	//Variable that will contain global data
 	double timelimit;

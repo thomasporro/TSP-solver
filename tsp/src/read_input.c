@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
+#define PI 3.141592
 
 #include <stdio.h>
 #include <string.h>
@@ -59,8 +60,20 @@ void read_input(instance *inst) {
 			inst->x_coord = (double *)calloc(inst->nnodes, sizeof(double));
 			inst->y_coord = (double *)calloc(inst->nnodes, sizeof(double));
 
+			//REMOVE
+			inst->latitude = (double *)calloc(inst->nnodes, sizeof(double));
+			inst->longitude = (double *)calloc(inst->nnodes, sizeof(double));
+
 			//Print of debug
 			printf("Number of nodes: %d\n", inst->nnodes);
+		}
+
+		//Saves the edge type into the instace
+		if (strncmp(parameter_name, "EDGE_WEIGHT_TYPE", 16) == 0) {
+			strcpy(inst->edge_type, strtok(NULL, " :"));
+			
+			//Print of debug
+			printf("Edge weight type: %s\n", inst->edge_type);
 		}
 
 		//Will redirect the parser to the active session so we can parse 
@@ -84,9 +97,24 @@ void read_input(instance *inst) {
 			token = strtok(NULL, " :,");
 			inst->x_coord[nodes_number] = atof(token);
 
+			//REMOVE
+			if (strncmp(inst->edge_type, "GEO", 3) == 0) {
+				int deg = round(inst->x_coord[nodes_number]);
+				double min = inst->x_coord[nodes_number] - deg;
+				inst->latitude[nodes_number] = PI * (deg + 5.0*min / 3.0) / 180.0;
+			}
+
 			//Y's coordinates
 			token = strtok(NULL, " :,");
 			inst->y_coord[nodes_number] = atof(token);
+
+			//REMOVE
+			if (strncmp(inst->edge_type, "GEO", 3) == 0) {
+				int deg = round(inst->y_coord[nodes_number]);
+				double min = inst->y_coord[nodes_number] - deg;
+				inst->longitude[nodes_number] = PI * (deg + 5.0*min / 3.0) / 180.0;
+			}
+			
 
 			continue;
 		}
