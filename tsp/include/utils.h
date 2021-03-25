@@ -87,3 +87,8 @@ double att_distance(int i, int j, instance *inst);
 * @return	double that indicates the euclidian distance
 */
 double distance(int i, int j, instance *inst);
+
+/*!
+* Return the seconds of the system 
+*/
+double seconds();

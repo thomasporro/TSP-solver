@@ -28,14 +28,14 @@ int TSPopt(instance *inst) {
 
 	inst->solution = (double *)calloc(inst->nvariables, sizeof(double));
 	
-	time_t start_time = time(NULL);
+	double start_time = seconds();
 	
 	//Computing the solution
 	printf("CALCULATING THE SOLUTION...\n");
 	CPXmipopt(env, lp);
 	printf("SOLUTION CALCULATED\n");
 
-	double time_passed = difftime(time(NULL), start_time);
+	double time_passed = seconds() - start_time;
 	print_stats(inst, time_passed);
 
 	//If the problem have a solution it saves it into the instance's structure
@@ -175,6 +175,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		double lb = 0.0;
 		double ub = inst->nnodes - 2.0;
 		if (CPXnewcols(env, lp, 1, NULL, &lb, &ub, &integer, cname)) print_error("wrong CPXnewcols on x var.s");
+		//TODO MANCA LA VARIABLE CHE FA IL CHECK
 	}
 
 	//Add degree IN
@@ -221,6 +222,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
 			}
 		}
+		// TODO: funziona anche se non è qui mi sa (CORRETTO!)
 		for (int i = 1; i < inst->nnodes; i++) {
 			for (int j = i + 1; j < inst->nnodes; j++) {
 				if (i == j) continue;
@@ -327,7 +329,6 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
-	//TODO undestand ypos from the last year
 	//Add variable y(i, j) corresponding to the flow of the arc
 	for (int i = 0; i < inst->nnodes; i++) {
 		for (int j = 0; j < inst->nnodes; j++) {

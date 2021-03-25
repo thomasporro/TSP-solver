@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include "utils.h"
 
 void print_error(const char *err) {
@@ -90,4 +91,8 @@ double distance(int i, int j, instance *inst) {
 	else if (strncmp(inst->edge_type, "GEO", 3) == 0) {
 		return geo_distance(i, j, inst);
 	}
+}
+
+double seconds(){
+	return ((double)clock() / (double)CLOCKS_PER_SEC);
 }

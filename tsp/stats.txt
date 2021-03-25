@@ -98,3 +98,15 @@ Problem -> dataset/ulysses16.tsp
 Model -> 20
 Time passed -> 1.000000
 
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 1.000000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.000000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.469000
+
