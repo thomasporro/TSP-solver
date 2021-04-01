@@ -8,11 +8,14 @@ void plot(char **commands, int n_commands, instance *inst) {
 	//Open the gnuplot enviroment and write the data into a data
 	FILE *gnuplotPipe = _popen("C:/UNIPD/ro2/gnuplot/bin/gnuplot.exe -persistent", "w");
 	FILE *temp = fopen("data.dat", "w");
-	FILE *arcs = fopen("arcs.dat", "w");
+	FILE *arcs = fopen("arrows.dat", "w");
 
 	switch (inst->model_type)
 	{
 	case 0:
+		print_st(temp, inst);
+		break;
+	case 1:
 		print_st(temp, inst);
 		break;
 	case 10:

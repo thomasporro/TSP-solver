@@ -21,6 +21,9 @@ typedef struct {
 	double timelimit;
 	double *solution;
 	int nvariables;
+	int *successors;
+	int *component;
+	int ncomp;
 
 } instance;
 
@@ -66,3 +69,27 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp);
 */
 void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp);
 
+/*!
+* Function that build the solution for an undirected graph
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+*/
+void build_solution(instance *inst);
+
+
+/*!
+* Function that start the CPXmipopt in many ways in order to execute 
+* different methods
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	env is the enviroment of CPLEX
+* @param	lp is the problem written in CPLEX
+*/
+void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+
+/*!
+* Implement the loop method by adding costraints for the loops found
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	env is the enviroment of CPLEX
+* @param	lp is the problem written in CPLEX
+*/
+void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp);

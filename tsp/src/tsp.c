@@ -4,6 +4,7 @@
 #define EQUAL 'E'
 #define LESS_EQUAL 'L'
 #define GREAT_EQUAL 'G'
+#define EPS 1e-5
 
 #include <stdint.h>
 #include <time.h>
@@ -25,15 +26,13 @@ int TSPopt(instance *inst) {
 	inst->nvariables = cur_numcols;
 	printf("Number of variables: %d\n", inst->nvariables);
 
-
 	inst->solution = (double *)calloc(inst->nvariables, sizeof(double));
 	
 	double start_time = seconds();
 	
 	//Computing the solution
-	printf("CALCULATING THE SOLUTION...\n");
-	CPXmipopt(env, lp);
-	printf("SOLUTION CALCULATED\n");
+	compute_solution(inst, env, lp);
+	
 
 	double time_passed = seconds() - start_time;
 	print_stats(inst, time_passed);
@@ -43,7 +42,7 @@ int TSPopt(instance *inst) {
 		print_error("Failed to optimize MIP.\n");
 	}
 
-	//If the problem have a solution it saves it into the instance's structure
+	//Print the values of the solution
 	double solution = -1;
 	int lpstat = -1;
 	if (CPXgetobjval(env, lp, &solution)){
@@ -64,6 +63,11 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	{
 	case 0:
 		printf("Model type chosen: undirected complete graph\n");
+		build_model_st(inst, env, lp);
+		break;
+
+	case 1:
+		printf("Model type chosen: undirected complete graph with loop method\n");
 		build_model_st(inst, env, lp);
 		break;
 
@@ -418,6 +422,142 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
 	CPXwriteprob(env, lp, "model.lp", NULL);
 	printf("END OF WRITING THE PROBLEM ON model.lp\n");
+	free(cname[0]);
+	free(cname);
+}
+
+
+void build_solution(instance *inst) {
+	//Verify if each node has exactly 2 edges
+	int *node_degree = (int*)calloc(inst->nnodes, sizeof(int));
+	//In this cycle I modify the degree of a node if the value of the edge is greater
+	//than a tollerance value defined as EPS
+	for (int i = 0; i < inst->nnodes; i++) {
+		for (int j = i + 1; j < inst->nnodes; j++) {
+
+			//Verify the value of the edge between the nodes i and j
+			int k = xpos(i, j, inst);
+			if (fabs(inst->solution[k]) > EPS && fabs(inst->solution[k] - 1.0) > EPS) {
+				print_error("wrong inst->solution in build_sol()");
+			}
+
+			//Modify the values of the node's degree
+			if (inst->solution[k] > 0.5) {
+				++node_degree[i];
+				++node_degree[j];
+			}
+		}
+	}
+
+	//Check if the degree of each node is equal at 2
+	for (int i = 0; i < inst->nnodes; i++) {
+		if (node_degree[i] != 2) {
+			printf("wrong degree in build_sol() in the node %d", i);
+			exit(1);
+		}
+	}
+	free(node_degree);
+
+	//Let's set the values of successors and components and the number of components
+	inst->ncomp = 0;
+	for (int i = 0; i < inst->nnodes; i++) {
+		inst->successors[i] = -1;
+		inst->component[i] = -1;
+	}
+
+	//We build the successors and components to indicate the edges of the solution
+	for (int start = 0; start < inst->nnodes; start++) {
+		//If the component of start has been already assigned skip this for
+		if (inst->component[start] >= 0) continue;
+		//I upgrade the number of components
+		inst->ncomp++;
+		int i = start;
+		while (inst->component[start] == -1) {
+			for (int j = 0; j < inst->nnodes; j++) {
+				if (i != j && inst->solution[xpos(i, j, inst)] > 0.5 
+					&& inst->component[j] == -1 && inst->successors[j] != i) {
+					inst->successors[i] = j;
+					inst->component[j] = inst->ncomp;
+					i = j;
+					break;
+				}
+			}
+		}
+	}
+
+	printf("Number of loops: %d\n\n", inst->ncomp);
+}
+
+
+void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
+	switch (inst->model_type)
+	{
+	case 1:
+		inst->successors = (int*)calloc(inst->nnodes, sizeof(int));
+		inst->component = (int*)calloc(inst->nnodes, sizeof(int));
+		inst->ncomp = 99999;
+
+		int cycles = 1;
+		while (inst->ncomp > 1) {
+			printf("CALCULATING THE SOLUTION (CYCLE N.%d) ...\n", cycles);
+			CPXmipopt(env, lp);
+			printf("SOLUTION CALCULATED (CYCLE N.%d)\n", cycles);
+			printf("Number of costraints (CYCLE N.%d): %d\n", cycles, CPXgetnumrows(env, lp));
+
+			if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
+				print_error("Failed to optimize MIP.\n");
+			}
+
+			build_solution(inst);
+			if (inst->ncomp >= 2) {
+				loop_method(inst, env, lp);
+			}
+			cycles++;
+		}
+		break;
+
+
+	default:
+		printf("CALCULATING THE SOLUTION...\n");
+		CPXmipopt(env, lp);
+		printf("SOLUTION CALCULATED\n");
+		break;
+	}
+}
+
+
+void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp) {
+	char **cname = (char **)calloc(1, sizeof(char*));
+	cname[0] = (char *)calloc(100, sizeof(char));
+
+	//Create a new costraint for each component
+	for (int i = 1; i <= inst->ncomp; i++) {
+		int *nodes = (int*)calloc(inst->nnodes, sizeof(int));
+		int number_of_nodes = 0;
+		for (int j = 0; j < inst->nnodes; j++) {
+			if (inst->component[j] == i) {
+				nodes[number_of_nodes] = j;
+				number_of_nodes++;
+			}
+		}
+
+		//Creates a new constraint and change the coef of all the nodes
+		//that belongs to the current component
+		int lastrow = CPXgetnumrows(env, lp);
+		sprintf(cname[0], "SEC constraints");
+		double rhs = number_of_nodes - 1;
+		char sense = LESS_EQUAL;
+		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error(" wrong CPXnewrows [loop method]");
+
+		for (int j = 0; j < number_of_nodes; j++) {
+			for (int h = 0; h < number_of_nodes; h++) {
+				if (j == h) continue;
+				if (CPXchgcoef(env, lp, lastrow, xpos(nodes[j], nodes[h], inst), 1.0)) print_error("wrong CPXchgcoef [loop method]");
+			}
+		}
+		free(nodes);
+	}
+	CPXwriteprob(env, lp, "model.lp", NULL);
 	free(cname[0]);
 	free(cname);
 }

@@ -34,12 +34,12 @@ int main(int argc, char **argv) {
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
-	if (inst.model_type == 0) {
+	if (inst.model_type == 0 || inst.model_type == 1) {
 		commandsForGnuplot[1] = "plot \"data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
 	}
 	else {
 		commandsForGnuplot[1] = "plot \"data.dat\" using 1:2 with points ls 5 lc rgb \"red\", \\\n"
-			"\"arcs.dat\" using 1:2:3:4 with vectors filled head lc rgb \"black\"";
+			"\"arrows.dat\" using 1:2:3:4 with vectors filled head lc rgb \"black\"";
 	}
 
 	//Plot the solution with the passed commands

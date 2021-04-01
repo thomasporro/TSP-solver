@@ -110,3 +110,75 @@ Problem -> dataset/ulysses16.tsp
 Model -> 20
 Time passed -> 0.469000
 
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.485000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.497000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.510000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.495000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.545000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.439000
+
+Problem -> dataset/att48.tsp
+Model -> 0
+Time passed -> 0.142000
+
+Problem -> dataset/att48.tsp
+Model -> 0
+Time passed -> 0.141000
+
+Problem -> dataset/att48.tsp
+Model -> 0
+Time passed -> 0.094000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.685000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.716000
+
+Problem -> dataset/att48.tsp
+Model -> 20
+Time passed -> 14.157000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.763000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.723000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.729000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.692000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.632000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.683000
+

@@ -89,6 +89,6 @@ double att_distance(int i, int j, instance *inst);
 double distance(int i, int j, instance *inst);
 
 /*!
-* Return the seconds of the system 
+* Return the seconds of the current program 
 */
 double seconds();
