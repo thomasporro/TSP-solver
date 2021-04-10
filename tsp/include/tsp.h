@@ -19,6 +19,7 @@ typedef struct {
 
 	//Variable that will contain global data
 	double timelimit;
+	double start_time;
 	double *solution;
 	int nvariables;
 	int *successors;

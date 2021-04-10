@@ -18,6 +18,11 @@ int TSPopt(instance *inst) {
 	CPXENVptr env = CPXopenCPLEX(&error);
 	CPXLPptr lp = CPXcreateprob(env, &error, "TSP");
 
+	//Setting cplex parameters
+	if (inst->timelimit != CPX_INFBOUND) {
+		CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit);
+	}
+
 	//Build the model into the cplex format
 	build_model(inst, env, lp);
 
@@ -496,13 +501,18 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		inst->successors = (int*)calloc(inst->nnodes, sizeof(int));
 		inst->component = (int*)calloc(inst->nnodes, sizeof(int));
 		inst->ncomp = 99999;
+		inst->start_time = seconds();
 
 		int cycles = 1;
-		while (inst->ncomp > 1) {
+		while (inst->ncomp > 1 &&
+			seconds() - inst->start_time < inst->timelimit) {
 			printf("CALCULATING THE SOLUTION (CYCLE N.%d) ...\n", cycles);
 			CPXmipopt(env, lp);
 			printf("SOLUTION CALCULATED (CYCLE N.%d)\n", cycles);
 			printf("Number of costraints (CYCLE N.%d): %d\n", cycles, CPXgetnumrows(env, lp));
+
+			//Change the internal time limit of cplex
+			CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
 
 			if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
 				print_error("Failed to optimize MIP.\n");

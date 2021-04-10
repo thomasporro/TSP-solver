@@ -182,3 +182,119 @@ Problem -> dataset/att48.tsp
 Model -> 1
 Time passed -> 0.683000
 
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.720000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.720000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 10
+Time passed -> 0.735000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 11
+Time passed -> 0.735000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.392000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 10
+Time passed -> 0.916000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 11
+Time passed -> 0.778000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.434000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 10
+Time passed -> 0.751000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 11
+Time passed -> 0.906000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.449000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 10
+Time passed -> 0.759000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 11
+Time passed -> 0.674000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.464000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 10
+Time passed -> 9.508000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 11
+Time passed -> 11.567000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 20
+Time passed -> 1.236000
+
+Problem -> dataset/berlin52.tsp
+Model -> 10
+Time passed -> 2.948000
+
+Problem -> dataset/berlin52.tsp
+Model -> 11
+Time passed -> 1.327000
+
+Problem -> dataset/berlin52.tsp
+Model -> 20
+Time passed -> 9.643000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 10
+Time passed -> 0.661000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 11
+Time passed -> 0.666000
+
+Problem -> dataset/ulysses16.tsp
+Model -> 20
+Time passed -> 0.354000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 10
+Time passed -> 7.574000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 11
+Time passed -> 7.150000
+
+Problem -> dataset/ulysses22.tsp
+Model -> 20
+Time passed -> 0.627000
+
+Problem -> dataset/berlin52.tsp
+Model -> 10
+Time passed -> 2.097000
+
+Problem -> dataset/berlin52.tsp
+Model -> 11
+Time passed -> 0.832000
+
+Problem -> dataset/berlin52.tsp
+Model -> 20
+Time passed -> 8.937000
+
