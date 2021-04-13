@@ -73,8 +73,12 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp);
 /*!
 * Function that build the solution for an undirected graph
 * @param	inst is a pointer to the instance of the problem created using tsp.h
+* @param	solution is the pointer to the solution
+* @param	successors is the pointer to the array of successors
+* @param	component is the pointer to the array where components are saved
+* @param	ncomp is the pointer where to save the number of components
 */
-void build_solution(instance *inst);
+void build_solution(instance *inst, double *solution, int *successors, int *component, int *ncomp);
 
 
 /*!
@@ -94,3 +98,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp);
 * @param	lp is the problem written in CPLEX
 */
 void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp);
+
+
+/*!
+* Cplex declartion of the user function to be called in the callback loop method
+*/
+static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *userhandle);

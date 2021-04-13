@@ -298,3 +298,2643 @@ Problem -> dataset/berlin52.tsp
 Model -> 20
 Time passed -> 8.937000
 
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 0.367000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 0.102000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 0.325000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 0.860000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.077000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 0.494000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 0.155000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 0.025000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 0.274000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 0.246000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 0.074000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 0.516000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 4.414000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 3.147000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 0.776000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 0.334000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 0.052000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 0.481000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 0.204000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 0.082000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 0.469000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 0.037000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 0.018000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 0.185000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 0.704000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 0.260000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 0.478000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 0.922000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 0.595000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 0.746000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 0.677000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 0.140000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 1.150000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 2.953000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 0.638000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 1.281000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 0.286000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 0.341000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 1.221000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 3.441000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 0.838000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 1.184000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 0.233000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 0.128000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 0.525000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 0.164000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 0.150000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 0.572000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 0.621000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 0.355000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 0.712000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 1.147000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 0.402000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 0.709000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 0.211000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 0.095000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 0.970000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 0.225000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 0.093000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 1.037000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 11.690000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 7.932000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 7.176000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 7.462000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 2.334000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 4.560000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 8.206000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 9.694000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 2.389000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 2.327000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 1.035000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 3.950000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 18.499000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 14.946000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 3.414000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 17.609000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 1.394000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 3.750000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 2.712000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 0.998000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 2.353000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 22.362000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 13.350000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 3.178000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 0.365000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 0.474000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 3.483000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 0.913000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 0.320000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 2.449000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 11.228000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 7.344000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 5.472000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 6.311000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 1.174000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 3.720000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 17.352000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 25.993000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 5.068000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 2.520000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 1.766000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 5.176000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 6.859000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 0.190000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 1.916000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 17.955000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 1.440000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 6.852000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 1.402000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 1.119000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 4.899000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 8.882000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 1.409000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 4.782000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 6.190000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 1.698000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 7.912000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 1.771000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 0.551000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 4.232000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 7.603000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 8.748000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 7.266000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 19.984000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 6.792000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 4.254000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 29.939000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 13.317000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 3.271000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 2.731000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 8.301000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 8.043000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 6.551000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 17.076000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 6.634000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 3.534000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 28.361000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 10.894000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 2.100000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 2.456000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 0.732000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 3.456000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 5.186000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 2.165000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 4.148000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 0.678000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.422000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 2.870000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 16.555000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 8.555000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 4.348000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 44.995000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 29.063000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 5.050000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 2.991000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 2.296000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 1.575000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 5.630000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 2.549000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 4.153000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 0.539000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 0.369000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 5.692000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 16.503000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 4.889000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 4.849000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 0.923000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 1.195000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 3.703000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 7.487000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 1.745000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 5.547000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 0.782000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 0.211000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 2.817000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 1.120000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 0.925000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 5.646000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 26.036000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 11.186000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 4.063000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 0.942000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 0.527000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 0.741000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 0.576000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 0.205000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 2.170000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 6.661000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 4.222000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 4.750000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 843.251000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 1286.139000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 4.349000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 0.937000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 0.890000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 1.488000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 1.541000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 0.422000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 1.302000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 3.705000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 0.750000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 3.458000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 4.735000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 0.826000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 4.687000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 0.428000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.218000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 2.325000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 5.663000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 1.306000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 4.293000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 4.565000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 3.108000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 3.851000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 26.609000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 5.235000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 2.509000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 7.795000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 2.310000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 4.994000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 1.545000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 1.016000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 3.160000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 0.435000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 0.568000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 1.631000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 3.394000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 0.882000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 4.549000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 3.210000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 1.538000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 3.134000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 29.755000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 26.216000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 1.132000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 5.185000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 1.842000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 4.422000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 1.054000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 0.612000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 2.734000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 2.012000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 0.805000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 1.959000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 1.312000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 0.854000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 1.550000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 0.610000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 0.274000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 2.139000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 4.238000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 2.355000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 3.408000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 2.906000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 1.780000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 4.314000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 1.242000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 0.731000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 2.321000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 46.083000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 18.261000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 5.561000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 4.808000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 1.090000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 5.113000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 0.393000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.659000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 105.203000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 30.197000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 6.546000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 53.640000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 12.717000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 9.893000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 16.464000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 30.119000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 10.902000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 20.088000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 9.844000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 10.491000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 188.157000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 118.317000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 8.341000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 2.440000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 5.492000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 7.964000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 11.719000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 8.778000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 8.111000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 49.728000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 19.388000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 7.076000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 1.972000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 1.078000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 3.057000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 431.211000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 1008.473000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 7.667000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 38.629000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 19.254000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 7.067000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 174.614000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 32.213000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 9.664000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 120.913000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 61.325000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 11.297000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 6.089000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 1.518000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 9.242000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 4.776000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 1.761000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 10.241000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 53.595000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 8.601000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 8.330000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 1.119000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 0.889000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 7.116000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 6.982000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 2.123000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 12.136000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 14.145000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 5.279000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 9.026000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 19.000000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 11.217000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 8.830000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 10
+Time passed -> 46.773000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 11
+Time passed -> 98.582000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 20
+Time passed -> 4.572000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 10
+Time passed -> 40.873000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 11
+Time passed -> 10.680000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 20
+Time passed -> 10.130000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 10
+Time passed -> 7.054000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 11
+Time passed -> 2.055000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 20
+Time passed -> 8.535000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 10
+Time passed -> 6.614000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 11
+Time passed -> 4.065000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 20
+Time passed -> 8.848000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 10
+Time passed -> 0.952000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 11
+Time passed -> 0.958000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 20
+Time passed -> 6.894000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 10
+Time passed -> 183.815000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 11
+Time passed -> 120.206000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 20
+Time passed -> 13.955000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 10
+Time passed -> 6.639000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 11
+Time passed -> 1.220000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 20
+Time passed -> 13.091000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 10
+Time passed -> 9.694000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 11
+Time passed -> 6.293000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 20
+Time passed -> 8.454000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 10
+Time passed -> 9.582000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 11
+Time passed -> 11.735000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 20
+Time passed -> 7.271000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 10
+Time passed -> 14.492000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 11
+Time passed -> 2.640000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 20
+Time passed -> 8.454000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 16.933000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 8.725000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 8.501000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 71.256000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 72.193000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 12.791000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 68.528000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 31.041000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 16.290000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 56.743000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 32.582000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 11.614000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 17.937000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 8.730000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 11.123000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 2.609000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 1.642000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 10.000000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 86.930000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 20.342000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 18.845000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 16.641000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 8.720000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 9.312000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 3.387000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 1.254000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 10.934000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 8.198000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 3.467000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 16.563000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 51.780000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 56.794000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 17.101000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 4.451000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 1.721000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 11.418000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 11.824000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 4.611000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 14.387000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 4.796000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 3.057000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 15.687000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 91.049000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 166.487000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 11.628000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 39.958000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 10.999000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 12.072000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 7.305000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 3.270000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 11.718000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 9.617000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 3.791000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 12.379000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 4.989000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 1.643000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 12.477000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 46.687000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 26.003000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 13.962000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 11.778000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 8.814000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 11.472000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 10
+Time passed -> 23.225000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 11
+Time passed -> 15.292000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 20
+Time passed -> 10.341000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 10
+Time passed -> 8.063000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 11
+Time passed -> 6.594000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 20
+Time passed -> 19.658000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 10
+Time passed -> 51.429000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 11
+Time passed -> 15.782000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 20
+Time passed -> 14.111000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 10
+Time passed -> 131.696000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 11
+Time passed -> 221.916000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 20
+Time passed -> 14.800000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 10
+Time passed -> 4.382000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 11
+Time passed -> 2.540000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 20
+Time passed -> 13.294000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 10
+Time passed -> 55.528000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 11
+Time passed -> 31.024000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 20
+Time passed -> 11.465000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 10
+Time passed -> 26.595000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 11
+Time passed -> 6.662000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 20
+Time passed -> 12.126000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 10
+Time passed -> 6.101000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 11
+Time passed -> 2.409000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 20
+Time passed -> 19.128000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 10
+Time passed -> 23.269000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 11
+Time passed -> 12.592000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 20
+Time passed -> 20.573000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 10
+Time passed -> 54.906000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 11
+Time passed -> 20.377000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 20
+Time passed -> 14.429000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 7.582000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 7.831000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 12.442000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 1171.492000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 72.158000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 132.287000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 492.177000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 112.446000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 114.519000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 10.895000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 13.514000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 7.534000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 10.734000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 8.376000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 12.223000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 13.965000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 169.249000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 48.471000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 16.474000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 536.619000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 277.290000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 3445.246000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 14.566000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 2.633000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.926000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 6.048000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 80.651000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 5.627000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 15.136000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 722.849000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 293.457000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 16.295000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 7.992000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 0.970000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 8.152000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 2.219000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 1.013000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 9.493000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 9.373000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 10.420000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 12.244000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 1.435000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 1.002000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 10.875000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 152.672000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 201.038000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 13.039000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 197.478000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 30.669000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 15.115000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 48.420000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 34.851000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 13.574000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 8.031000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 1.408000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 9.519000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 30.003000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 7.405000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 15.428000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 359.567000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 459.673000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 12.578000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 18.752000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 4.668000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 9.905000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 2.131000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 0.404000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 8.031000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 14.182000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 3.233000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 14.540000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 25.929000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 13.802000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 11.886000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 16.230000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 2.239000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 14.511000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 110.392000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 31.652000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 14.769000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 13.682000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 1.908000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 0.085000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 13.848000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 1.911000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 12.329000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 285.784000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 3422.888000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 12.404000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 10
+Time passed -> 2.734000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 11
+Time passed -> 0.958000
+
+Problem -> DatasetGenerator/randomDataset1.tsp
+Model -> 20
+Time passed -> 14.335000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 10
+Time passed -> 77.833000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 11
+Time passed -> 5.560000
+
+Problem -> DatasetGenerator/randomDataset2.tsp
+Model -> 20
+Time passed -> 24.608000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 10
+Time passed -> 724.869000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 11
+Time passed -> 287.024000
+
+Problem -> DatasetGenerator/randomDataset3.tsp
+Model -> 20
+Time passed -> 13.285000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 10
+Time passed -> 7.321000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 11
+Time passed -> 0.899000
+
+Problem -> DatasetGenerator/randomDataset4.tsp
+Model -> 20
+Time passed -> 13.459000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 10
+Time passed -> 2.050000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 11
+Time passed -> 0.901000
+
+Problem -> DatasetGenerator/randomDataset5.tsp
+Model -> 20
+Time passed -> 10.081000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 10
+Time passed -> 8.877000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 11
+Time passed -> 9.940000
+
+Problem -> DatasetGenerator/randomDataset6.tsp
+Model -> 20
+Time passed -> 13.835000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 10
+Time passed -> 1.415000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 11
+Time passed -> 1.124000
+
+Problem -> DatasetGenerator/randomDataset7.tsp
+Model -> 20
+Time passed -> 13.348000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 10
+Time passed -> 156.997000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 11
+Time passed -> 198.919000
+
+Problem -> DatasetGenerator/randomDataset8.tsp
+Model -> 20
+Time passed -> 12.030000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 10
+Time passed -> 195.569000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 11
+Time passed -> 29.682000
+
+Problem -> DatasetGenerator/randomDataset9.tsp
+Model -> 20
+Time passed -> 13.443000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 10
+Time passed -> 46.949000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 11
+Time passed -> 37.794000
+
+Problem -> DatasetGenerator/randomDataset10.tsp
+Model -> 20
+Time passed -> 13.833000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 10
+Time passed -> 8.264000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 11
+Time passed -> 1.393000
+
+Problem -> DatasetGenerator/randomDataset11.tsp
+Model -> 20
+Time passed -> 11.713000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 10
+Time passed -> 31.872000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 11
+Time passed -> 7.863000
+
+Problem -> DatasetGenerator/randomDataset12.tsp
+Model -> 20
+Time passed -> 12.679000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 10
+Time passed -> 356.408000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 11
+Time passed -> 458.821000
+
+Problem -> DatasetGenerator/randomDataset13.tsp
+Model -> 20
+Time passed -> 16.354000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 10
+Time passed -> 20.344000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 11
+Time passed -> 6.031000
+
+Problem -> DatasetGenerator/randomDataset14.tsp
+Model -> 20
+Time passed -> 9.857000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 10
+Time passed -> 2.039000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 11
+Time passed -> 0.389000
+
+Problem -> DatasetGenerator/randomDataset15.tsp
+Model -> 20
+Time passed -> 9.431000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 10
+Time passed -> 13.976000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 11
+Time passed -> 3.125000
+
+Problem -> DatasetGenerator/randomDataset16.tsp
+Model -> 20
+Time passed -> 13.084000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 10
+Time passed -> 28.682000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 11
+Time passed -> 13.821000
+
+Problem -> DatasetGenerator/randomDataset17.tsp
+Model -> 20
+Time passed -> 10.715000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 10
+Time passed -> 16.225000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 11
+Time passed -> 2.275000
+
+Problem -> DatasetGenerator/randomDataset18.tsp
+Model -> 20
+Time passed -> 13.621000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 10
+Time passed -> 109.693000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 11
+Time passed -> 32.230000
+
+Problem -> DatasetGenerator/randomDataset19.tsp
+Model -> 20
+Time passed -> 13.461000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 10
+Time passed -> 25.231000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 11
+Time passed -> 6.728000
+
+Problem -> DatasetGenerator/randomDataset20.tsp
+Model -> 20
+Time passed -> 13.958000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 10
+Time passed -> 24.478000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 11
+Time passed -> 3.929000
+
+Problem -> DatasetGenerator/randomDataset21.tsp
+Model -> 20
+Time passed -> 9.645000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 10
+Time passed -> 344.296000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 11
+Time passed -> 32.992000
+
+Problem -> DatasetGenerator/randomDataset22.tsp
+Model -> 20
+Time passed -> 10.788000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 10
+Time passed -> 54.752000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 11
+Time passed -> 9.122000
+
+Problem -> DatasetGenerator/randomDataset23.tsp
+Model -> 20
+Time passed -> 10.062000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 10
+Time passed -> 3.210000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 11
+Time passed -> 1.183000
+
+Problem -> DatasetGenerator/randomDataset24.tsp
+Model -> 20
+Time passed -> 10.340000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 10
+Time passed -> 3606.947000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 11
+Time passed -> 3612.016000
+
+Problem -> DatasetGenerator/randomDataset25.tsp
+Model -> 20
+Time passed -> 10.923000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 10
+Time passed -> 163.885000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 11
+Time passed -> 2.748000
+
+Problem -> DatasetGenerator/randomDataset26.tsp
+Model -> 20
+Time passed -> 13.594000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 10
+Time passed -> 115.105000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 11
+Time passed -> 34.715000
+
+Problem -> DatasetGenerator/randomDataset27.tsp
+Model -> 20
+Time passed -> 13.432000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 10
+Time passed -> 75.087000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 11
+Time passed -> 15.025000
+
+Problem -> DatasetGenerator/randomDataset28.tsp
+Model -> 20
+Time passed -> 15.024000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 10
+Time passed -> 8.770000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 11
+Time passed -> 1.658000
+
+Problem -> DatasetGenerator/randomDataset29.tsp
+Model -> 20
+Time passed -> 13.466000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.108000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.134000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.764000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.783000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 9.280000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 3.879000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 8.735000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 10
+Time passed -> 44.834000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 11
+Time passed -> 4.168000
+
+Problem -> DatasetGenerator/randomDataset0.tsp
+Model -> 20
+Time passed -> 14.341000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.067000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.032000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.022000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.022000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.026000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.029000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.039000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.042000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.071000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.090000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.051000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.089000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.055000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.046000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.820000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.746000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.047000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.068000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 2.022000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 2.013000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.218000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.162000
+
+Problem -> dataset/att48.tsp
+Model -> 1
+Time passed -> 0.712000
+
+Problem -> dataset/att48.tsp
+Model -> 2
+Time passed -> 0.169000
+
