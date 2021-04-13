@@ -27,11 +27,11 @@ int main(int argc, char **argv) {
 	read_input(&inst);
 
 	int model_type[] = {10, 11, 20};
-	performance_profile(&inst, &model_type, 3);
+	//performance_profile(&inst, &model_type, 3);
 
 	//Calculate the solution of the problem
-	//printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
-	//TSPopt(&inst);
+	printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
+	TSPopt(&inst);
 
 	/*
 	for (int i = 0; i < 5; i++) {
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 		TSPopt(&inst);
 	}*/
 
-	/*
+	
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	//Plot the solution with the passed commands
 	printf("\n----------------------PLOTTING------------------------\n");
 	plot(commandsForGnuplot, 2, &inst);
-	*/
+	
 	
 	return 0;
 }

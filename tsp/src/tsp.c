@@ -374,7 +374,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
-	//Add costraint of flow of the first node
+	//Add costraint of flow of the first node (Constraint (8) in the literature)
 	sprintf(cname[0], "flow_out_from_1");
 	int lastrow = CPXgetnumrows(env, lp);
 	double rhs = inst->nnodes - 1;
@@ -403,6 +403,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	rhs = 0;
 	sense = LESS_EQUAL;
 
+	
 	//For the first node
 	for (int j = 1; j < inst->nnodes; j++) {
 		int lastrow = CPXgetnumrows(env, lp);
@@ -410,10 +411,11 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong CPXchgcoef [linking_first_node]");
 		if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes-1))) print_error("wrong CPXchgcoef [linking_first_node]");
 	}
+	
 
 	//For the other nodes
 	for (int i = 1; i < inst->nnodes; i++) {
-		for (int j = 1; j < inst->nnodes; j++) {
+		for (int j = 0; j < inst->nnodes; j++) {
 			if (i == j) continue;
 			sprintf(cname[0], "linking_arc_x(%d,%d)", i+1, j+1);
 			int lastrow = CPXgetnumrows(env, lp); 
