@@ -21,6 +21,7 @@ int TSPopt(instance *inst) {
 	//Setting cplex parameters
 	if (inst->timelimit != CPX_INFBOUND) {
 		CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit);
+		printf("Time limit setted to: %f s\n", inst->timelimit);
 	}
 
 	//Build the model into the cplex format
@@ -37,19 +38,17 @@ int TSPopt(instance *inst) {
 	
 	//Computing the solution
 	compute_solution(inst, env, lp);
-	
 
 	double time_passed = seconds() - start_time;
 	print_stats(inst, time_passed);
 
 	//If the problem have a solution it saves it into the instance's structure
 	if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-		print_error("Failed to optimize MIP.\n");
+		print_error("Failed to optimize MIP (retrieving the solution).\n");
 	}
 
 	//Print the values of the solution
 	double solution = -1;
-	int lpstat = -1;
 	if (CPXgetobjval(env, lp, &solution)){
 		print_error("Failed to optimize MIP.\n");
 	}
@@ -73,6 +72,11 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
 	case 1:
 		printf("Model type chosen: undirected complete graph with loop method\n");
+		build_model_st(inst, env, lp);
+		break;
+
+	case 2:
+		printf("Model type chosen: undirected complete graph with loop method as a callback\n");
 		build_model_st(inst, env, lp);
 		break;
 
@@ -232,6 +236,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 			}
 		}
 		// TODO: funziona anche se non è qui mi sa (CORRETTO!)
+		/*
 		for (int i = 1; i < inst->nnodes; i++) {
 			for (int j = i + 1; j < inst->nnodes; j++) {
 				if (i == j) continue;
@@ -244,7 +249,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
 				if (CPXchgcoef(env, lp, lastrow, xxpos(j, i, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
 			}
-		}
+		}*/
 	}
 	else if(inst->model_type == 11){//Lazy constraints
 		printf("Lazy constraints chosen correctly\n");
@@ -269,7 +274,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong lazy contraints for u-consistenxy");
 			}
 		}
-
+		
 		// add lazy constraints 1.0 * x_ij + 1.0 * x_ji <= 1, for each arc (i,j) with i < j
 		rhs = 1.0;
 		sense = LESS_EQUAL;
@@ -374,7 +379,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 
-	//Add costraint of flow of the first node (Constraint (8) in the literature)
+	//Add costraint of flow of the first node
 	sprintf(cname[0], "flow_out_from_1");
 	int lastrow = CPXgetnumrows(env, lp);
 	double rhs = inst->nnodes - 1;
@@ -400,7 +405,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
 	//Linking constraints 
 	sprintf(cname[0], "linking_first_node");
-	rhs = 0;
+	rhs = 0; //TODO indagare qua
 	sense = LESS_EQUAL;
 
 	
@@ -411,7 +416,6 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong CPXchgcoef [linking_first_node]");
 		if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes-1))) print_error("wrong CPXchgcoef [linking_first_node]");
 	}
-	
 
 	//For the other nodes
 	for (int i = 1; i < inst->nnodes; i++) {
@@ -434,7 +438,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 }
 
 
-void build_solution(instance *inst) {
+void build_solution(instance *inst, double *solution, int *successors, int *component, int *ncomp) {
 	//Verify if each node has exactly 2 edges
 	int *node_degree = (int*)calloc(inst->nnodes, sizeof(int));
 	//In this cycle I modify the degree of a node if the value of the edge is greater
@@ -444,12 +448,12 @@ void build_solution(instance *inst) {
 
 			//Verify the value of the edge between the nodes i and j
 			int k = xpos(i, j, inst);
-			if (fabs(inst->solution[k]) > EPS && fabs(inst->solution[k] - 1.0) > EPS) {
-				print_error("wrong inst->solution in build_sol()");
+			if (fabs(solution[k]) > EPS && fabs(solution[k] - 1.0) > EPS) {
+				print_error("wrong solution in build_solution()");
 			}
 
 			//Modify the values of the node's degree
-			if (inst->solution[k] > 0.5) {
+			if (solution[k] > 0.5) {
 				++node_degree[i];
 				++node_degree[j];
 			}
@@ -466,25 +470,25 @@ void build_solution(instance *inst) {
 	free(node_degree);
 
 	//Let's set the values of successors and components and the number of components
-	inst->ncomp = 0;
+	*ncomp = 0;
 	for (int i = 0; i < inst->nnodes; i++) {
-		inst->successors[i] = -1;
-		inst->component[i] = -1;
+		successors[i] = -1;
+		component[i] = -1;
 	}
 
 	//We build the successors and components to indicate the edges of the solution
 	for (int start = 0; start < inst->nnodes; start++) {
 		//If the component of start has been already assigned skip this for
-		if (inst->component[start] >= 0) continue;
+		if (component[start] >= 0) continue;
 		//I upgrade the number of components
-		inst->ncomp++;
+		*ncomp = *ncomp+1;
 		int i = start;
-		while (inst->component[start] == -1) {
+		while (component[start] == -1) {
 			for (int j = 0; j < inst->nnodes; j++) {
-				if (i != j && inst->solution[xpos(i, j, inst)] > 0.5 
-					&& inst->component[j] == -1 && inst->successors[j] != i) {
-					inst->successors[i] = j;
-					inst->component[j] = inst->ncomp;
+				if (i != j && solution[xpos(i, j, inst)] > 0.5 
+					&& component[j] == -1 && successors[j] != i) {
+					successors[i] = j;
+					component[j] = *ncomp;
 					i = j;
 					break;
 				}
@@ -492,7 +496,7 @@ void build_solution(instance *inst) {
 		}
 	}
 
-	printf("Number of loops: %d\n\n", inst->ncomp);
+	//printf("Number of loops: %d\n\n", *ncomp);
 }
 
 
@@ -520,7 +524,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				print_error("Failed to optimize MIP.\n");
 			}
 
-			build_solution(inst);
+			build_solution(inst, inst->solution, inst->successors, inst->component, &inst->ncomp);
 			if (inst->ncomp >= 2) {
 				loop_method(inst, env, lp);
 			}
@@ -528,6 +532,15 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 		break;
 
+	case 2:
+		//Code needed to say to cplex that we have a callback function
+		if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE, incumbent_callback, inst)) {
+			print_error("CPXcallbacksetfunc() error");
+		}
+		printf("CALCULATING THE SOLUTION...\n");
+		CPXmipopt(env, lp);
+		printf("SOLUTION CALCULATED\n");
+		break;
 
 	default:
 		printf("CALCULATING THE SOLUTION...\n");
@@ -562,7 +575,7 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error(" wrong CPXnewrows [loop method]");
 
 		for (int j = 0; j < number_of_nodes; j++) {
-			for (int h = 0; h < number_of_nodes; h++) {
+			for (int h = j + 1; h < number_of_nodes; h++) {
 				if (j == h) continue;
 				if (CPXchgcoef(env, lp, lastrow, xpos(nodes[j], nodes[h], inst), 1.0)) print_error("wrong CPXchgcoef [loop method]");
 			}
@@ -572,4 +585,60 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	CPXwriteprob(env, lp, "model.lp", NULL);
 	free(cname[0]);
 	free(cname);
+}
+
+
+static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *userhandle) {
+	instance *inst = (instance *)userhandle;
+
+	//Retrieve the candidate solution
+	double* solution_found = (double *)calloc(inst->nvariables, sizeof(double));
+	double obj_value = CPX_INFBOUND;
+	if (CPXcallbackgetcandidatepoint(context, solution_found, 0, inst->nvariables - 1, &obj_value)) {
+		print_error("Error while retrieving the solution (incumbent_callback)");
+	}
+
+	int *successors = (int*)calloc(inst->nnodes, sizeof(int));
+	int *component = (int*)calloc(inst->nnodes, sizeof(int));
+	int ncomp = 99999;
+
+	build_solution(inst, solution_found, successors, component, &ncomp);
+
+	if (ncomp > 1) {
+		for (int i = 1; i <= ncomp; i++) {
+			//Iterate over the nodes of the component
+			int *nodes = (int*)calloc(inst->nnodes, sizeof(int));
+			int nzcnt = 0;
+			for (int j = 0; j < inst->nnodes; j++) {
+				if (component[j] == i) {
+					nodes[nzcnt] = j;
+					nzcnt++;
+				}
+			}
+
+			int *rmatind = (int*)calloc((nzcnt*nzcnt), sizeof(int));
+			double *rmatval = (double*)calloc((nzcnt*nzcnt), sizeof(double));
+			char sense = LESS_EQUAL;
+			double rhs = nzcnt - 1;
+			int rmatbeg = 0;
+
+			int position = 0;
+			for (int j = 0; j < nzcnt; j++) {
+				for (int k = j + 1; k < nzcnt; k++) {
+					if (j == k) continue;
+					rmatind[position] = xpos(nodes[j], nodes[k], inst);
+					rmatval[position++] = 1.0;
+				}
+			}
+
+			if (CPXcallbackrejectcandidate(context, 1, position, &rhs, &sense, &rmatbeg, rmatind, rmatval)) {
+				print_error("Error on callbackrejectcandidate");
+			}
+
+			free(rmatind);
+			free(rmatval);
+			free(nodes);
+		}
+	}
+	return 0;
 }

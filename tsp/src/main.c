@@ -26,8 +26,13 @@ int main(int argc, char **argv) {
 	parse_command_line(argc, argv, &inst);
 	read_input(&inst);
 
+	/*
 	int model_type[] = {10, 11, 20};
-	//performance_profile(&inst, &model_type, 3);
+	double start_time = seconds();
+	performance_profile(&inst, &model_type, 3);
+	double end_time = seconds();
+	printf("\n\nTIME ELAPSED: %f s\n\n", end_time - start_time);
+	*/
 
 	//Calculate the solution of the problem
 	printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
@@ -43,7 +48,7 @@ int main(int argc, char **argv) {
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
-	if (inst.model_type == 0 || inst.model_type == 1) {
+	if (inst.model_type == 0 || inst.model_type == 1 || inst.model_type == 2) {
 		commandsForGnuplot[1] = "plot \"data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
 	}
 	else {
@@ -62,6 +67,7 @@ int main(int argc, char **argv) {
 
 void performance_profile(instance *inst, int *models, int nmodels) {
 	printf("---------START PERFORMANCE PROFILE MODE---------\n");
+	inst->timelimit = 3600.0;
 
 	FILE *csv = fopen("performance_profile.csv", "w");
 	fprintf(csv, "%d, ", nmodels);
@@ -85,7 +91,7 @@ void performance_profile(instance *inst, int *models, int nmodels) {
 		file_name = strtok(line, "\n");
 
 		printf("TESTING FILE %s\n", file_name);
-		fprintf(csv, "%s,", file_name);
+		fprintf(csv, "%s, ", file_name);
 
 		//Read and parse the file to test
 		strcpy(inst->input_file, file_name);

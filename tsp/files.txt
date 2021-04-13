@@ -1,3 +1,1 @@
-dataset/ulysses16.tsp
-dataset/ulysses22.tsp
-dataset/berlin52.tsp
+DatasetGenerator/randomDataset0.tsp

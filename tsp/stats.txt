@@ -1,8 +1,1 @@
-Problem -> dataset/att48.tsp
-Model -> 20
-Time passed -> 11.379000
-
-Problem -> dataset/att48.tsp
-Model -> 20
-Time passed -> 13.897000
-
+Problem-> dataset/att48.tsp             Model-> 20        Time passed-> 11.145000 
