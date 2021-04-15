@@ -42,7 +42,7 @@ int ypos(int i, int j, instance *inst) {
 void print_stats(instance *inst, double time_passed) {
 	FILE *stats = fopen("stats.txt", "a");
 
-	fprintf(stats, "Problem-> %-30s", inst->input_file);
+	fprintf(stats, "Problem-> %-40s", inst->input_file);
 	fprintf(stats, "Model-> %-10d", inst->model_type);
 	fprintf(stats, "Time passed-> %-10f\n", time_passed);
 

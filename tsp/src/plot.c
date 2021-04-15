@@ -12,22 +12,22 @@ void plot(char **commands, int n_commands, instance *inst) {
 
 	switch (inst->model_type)
 	{
-	case 0:
+	case STANDARD:
 		print_st(temp, inst);
 		break;
-	case 1:
+	case BENDERS:
 		print_st(temp, inst);
 		break;
-	case 10:
+	case BRANCH_AND_CUT:
+		print_st(temp, arcs, inst);
+		break;
+	case MTZ:
 		print_MTZ(temp, arcs, inst);
 		break;
-	case 11:
+	case MTZ_LAZY:
 		print_MTZ(temp, arcs, inst);
 		break;
-	case 12:
-		print_MTZ(temp, arcs, inst);
-		break;
-	case 20:
+	case MTZ_IND:
 		print_MTZ(temp, arcs, inst);
 		break;
 	default:

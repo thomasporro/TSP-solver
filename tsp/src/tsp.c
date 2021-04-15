@@ -21,8 +21,9 @@ int TSPopt(instance *inst) {
 	//Setting cplex parameters
 	if (inst->timelimit != CPX_INFBOUND) {
 		CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit);
-		printf("Time limit setted to: %f s\n", inst->timelimit);
 	}
+
+	CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);	
 
 	//Build the model into the cplex format
 	build_model(inst, env, lp);
@@ -63,39 +64,40 @@ int TSPopt(instance *inst) {
 
 
 void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
-	switch (inst->model_type)
+	modeltype model = inst->model_type;
+	switch (model)
 	{
-	case 0:
+	case STANDARD:
 		printf("Model type chosen: undirected complete graph\n");
 		build_model_st(inst, env, lp);
 		break;
 
-	case 1:
+	case BENDERS:
 		printf("Model type chosen: undirected complete graph with loop method\n");
 		build_model_st(inst, env, lp);
 		break;
 
-	case 2:
+	case BRANCH_AND_CUT:
 		printf("Model type chosen: undirected complete graph with loop method as a callback\n");
 		build_model_st(inst, env, lp);
 		break;
 
-	case 10:
+	case MTZ:
 		printf("Model type chosen: MTZ\n");
 		build_model_MTZ(inst, env, lp);
 		break;
 
-	case 11:
+	case MTZ_LAZY:
 		printf("Model type chosen: MTZ with lazy constraints\n");
 		build_model_MTZ(inst, env, lp);
 		break;
 
-	case 12:
+	case MTZ_IND:
 		printf("Model type chosen: MTZ with indicator constraints\n");
 		build_model_MTZ(inst, env, lp);
 		break;
 
-	case 20:printf("Model type chosen: GG\n");
+	case GG:printf("Model type chosen: GG\n");
 		build_model_GG(inst, env, lp);
 		break;
 
@@ -216,7 +218,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 	}
 
 	//Choose which constraint it should use
-	if (inst->model_type == 10) { //Standard constraints
+	if (inst->model_type == MTZ) { //Standard constraints
 		printf("Standard constraints chosen correctly\n");
 		//I skipped the first node since the model requires it
 		for (int i = 1; i < inst->nnodes; i++) {
@@ -251,7 +253,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 			}
 		}*/
 	}
-	else if(inst->model_type == 11){//Lazy constraints
+	else if(inst->model_type == MTZ_LAZY){//Lazy constraints
 		printf("Lazy constraints chosen correctly\n");
 		int izero = 0;
 		int index[3];
@@ -276,6 +278,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 		
 		// add lazy constraints 1.0 * x_ij + 1.0 * x_ji <= 1, for each arc (i,j) with i < j
+		/*
 		rhs = 1.0;
 		sense = LESS_EQUAL;
 		nnz = 2;
@@ -290,9 +293,9 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				value[1] = 1.0;
 				if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong CPXlazyconstraints on 2-node SECs");
 			}
-		}
+		}*/
 	}
-	else if (inst->model_type == 12) { //Model solved with the indicators constraint
+	else if (inst->model_type == MTZ_IND) { //Model solved with the indicators constraint
 		printf("Indicator constraints chosen correctly\n");
 		int rhs = 1;
 		int nzcnt = 2;
@@ -315,7 +318,6 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 	}
 	
-
 
 	printf("END OF BUILDING CONSTRAINTS\n");
 
@@ -405,7 +407,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
 	//Linking constraints 
 	sprintf(cname[0], "linking_first_node");
-	rhs = 0; //TODO indagare qua
+	rhs = 0;
 	sense = LESS_EQUAL;
 
 	
@@ -501,9 +503,10 @@ void build_solution(instance *inst, double *solution, int *successors, int *comp
 
 
 void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
-	switch (inst->model_type)
+	modeltype model = inst->model_type;
+	switch (model)
 	{
-	case 1:
+	case BENDERS:
 		inst->successors = (int*)calloc(inst->nnodes, sizeof(int));
 		inst->component = (int*)calloc(inst->nnodes, sizeof(int));
 		inst->ncomp = 99999;
@@ -532,7 +535,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 		}
 		break;
 
-	case 2:
+	case BRANCH_AND_CUT:
 		//Code needed to say to cplex that we have a callback function
 		if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE, incumbent_callback, inst)) {
 			print_error("CPXcallbacksetfunc() error");
@@ -598,6 +601,7 @@ static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG c
 		print_error("Error while retrieving the solution (incumbent_callback)");
 	}
 
+	
 	int *successors = (int*)calloc(inst->nnodes, sizeof(int));
 	int *component = (int*)calloc(inst->nnodes, sizeof(int));
 	int ncomp = 99999;
@@ -605,8 +609,8 @@ static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG c
 	build_solution(inst, solution_found, successors, component, &ncomp);
 
 	if (ncomp > 1) {
+		//Iterate over the nodes of the component
 		for (int i = 1; i <= ncomp; i++) {
-			//Iterate over the nodes of the component
 			int *nodes = (int*)calloc(inst->nnodes, sizeof(int));
 			int nzcnt = 0;
 			for (int j = 0; j < inst->nnodes; j++) {
@@ -616,6 +620,9 @@ static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG c
 				}
 			}
 
+			//TODO try to improve the memory used -> placeit outside the for and give it a 
+			//predefined dimension
+			//Build the arguments to pass to the function
 			int *rmatind = (int*)calloc((nzcnt*nzcnt), sizeof(int));
 			double *rmatval = (double*)calloc((nzcnt*nzcnt), sizeof(double));
 			char sense = LESS_EQUAL;

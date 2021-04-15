@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_DEPRECATE
+﻿#define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 #include "plot.h"
 #include "utils.h"
 
-void performance_profile(instance *inst, int *models, int nmodels);
+int performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
 
 int main(int argc, char **argv) {
@@ -21,34 +21,25 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
+	int model_type[] = { MTZ, MTZ_LAZY, MTZ_IND, GG };
+	//return performance_profile(&inst, &model_type, 4, 3600.0);
+
+
 	//Parse the command line and read the input file
 	printf("---------------INPUT FILE INFORMATIONS---------------\n");
 	parse_command_line(argc, argv, &inst);
 	read_input(&inst);
-
-	/*
-	int model_type[] = {10, 11, 20};
-	double start_time = seconds();
-	performance_profile(&inst, &model_type, 3);
-	double end_time = seconds();
-	printf("\n\nTIME ELAPSED: %f s\n\n", end_time - start_time);
-	*/
+	
 
 	//Calculate the solution of the problem
 	printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
 	TSPopt(&inst);
 
-	/*
-	for (int i = 0; i < 5; i++) {
-		inst.model_type = model_type[i];
-		TSPopt(&inst);
-	}*/
-
 	
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
-	if (inst.model_type == 0 || inst.model_type == 1 || inst.model_type == 2) {
+	if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT) {
 		commandsForGnuplot[1] = "plot \"data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
 	}
 	else {
@@ -65,9 +56,11 @@ int main(int argc, char **argv) {
 }
 
 
-void performance_profile(instance *inst, int *models, int nmodels) {
-	printf("---------START PERFORMANCE PROFILE MODE---------\n");
-	inst->timelimit = 3600.0;
+int performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
+	printf("------------START PERFORMANCE PROFILE MODE-----------\n");
+	double start_time = seconds();
+	inst->timelimit = time_limit;
+	printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
 
 	FILE *csv = fopen("performance_profile.csv", "w");
 	fprintf(csv, "%d, ", nmodels);
@@ -90,7 +83,7 @@ void performance_profile(instance *inst, int *models, int nmodels) {
 		//Retrieve the file name removing the newline
 		file_name = strtok(line, "\n");
 
-		printf("TESTING FILE %s\n", file_name);
+		printf("\nTESTING FILE: %s\n", file_name);
 		fprintf(csv, "%s, ", file_name);
 
 		//Read and parse the file to test
@@ -99,7 +92,7 @@ void performance_profile(instance *inst, int *models, int nmodels) {
 
 		//Iterate over the models passed
 		for (int i = 0; i < nmodels; i++) {
-			printf("\nTESTING MODEL %d\n\n", models[i]);
+			printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
 			inst->model_type = models[i];
 			double start_time = seconds();
 			TSPopt(inst);
@@ -111,6 +104,12 @@ void performance_profile(instance *inst, int *models, int nmodels) {
 				fprintf(csv, ", ");
 			else
 				fprintf(csv, "\n");
+			printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 		}
-	}	
+	}
+
+	double end_time = seconds();
+	printf("TIME ELAPSED: %f s\n\n", end_time - start_time);
+
+	return 0;
 }

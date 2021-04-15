@@ -1,5 +1,18 @@
 #include <ilcplex/cplex.h>
 
+#ifndef MODEL_TYPE_H
+#define MODEL_TYPE_H
+typedef enum {
+	STANDARD = 0,
+	BENDERS = 1,
+	BRANCH_AND_CUT = 2,
+	MTZ = 10,
+	MTZ_LAZY = 11,
+	MTZ_IND = 12,
+	GG = 20
+}modeltype;
+#endif // !MODEL_TYPE
+
 #ifndef TSP_H_
 #define TSP_H_
 
@@ -12,7 +25,7 @@ typedef struct {
 	double *y_coord;
 	char input_file[1000];
 	char edge_type[10];
-	int model_type;
+	modeltype model_type;
 
 	double *latitude;
 	double *longitude;
@@ -29,6 +42,10 @@ typedef struct {
 } instance;
 
 #endif // !TSP_H_
+
+
+
+
 
 
 /*!
