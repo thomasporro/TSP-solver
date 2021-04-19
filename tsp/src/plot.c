@@ -1,12 +1,12 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define EPS 1e-5
 
-#include "plot.h"
-#include "utils.h"
+#include "../include/plot.h"
+#include "../include/utils.h"
 
 void plot(char **commands, int n_commands, instance *inst) {
 	//Open the gnuplot enviroment and write the data into a data
-	FILE *gnuplotPipe = _popen("C:/UNIPD/ro2/gnuplot/bin/gnuplot.exe -persistent", "w");
+	FILE *gnuplotPipe = popen("gnuplot -persistent", "w");
 	FILE *temp = fopen("data.dat", "w");
 	FILE *arcs = fopen("arrows.dat", "w");
 
@@ -19,7 +19,7 @@ void plot(char **commands, int n_commands, instance *inst) {
 		print_st(temp, inst);
 		break;
 	case BRANCH_AND_CUT:
-		print_st(temp, arcs, inst);
+		print_st(temp, inst);
 		break;
 	case MTZ:
 		print_MTZ(temp, arcs, inst);
@@ -45,7 +45,7 @@ void plot(char **commands, int n_commands, instance *inst) {
 	}
 
 	//Closing the pipeline of gnuplot
-	_pclose(gnuplotPipe);
+	pclose(gnuplotPipe);
 }
 
 void print_st(FILE *temp, instance *inst) {

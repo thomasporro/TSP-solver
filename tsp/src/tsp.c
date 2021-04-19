@@ -8,9 +8,9 @@
 
 #include <stdint.h>
 #include <time.h>
-#include <ilcplex/cplex.h>
-#include "tsp.h"
-#include "utils.h"
+#include <cplex.h>
+#include "../include/tsp.h"
+#include "../include/utils.h"
 
 int TSPopt(instance *inst) {
 	//Open the CPLEX enviroment
@@ -237,7 +237,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 				if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
 			}
 		}
-		// TODO: funziona anche se non è qui mi sa (CORRETTO!)
+		// TODO: funziona anche se non ï¿½ qui mi sa (CORRETTO!)
 		/*
 		for (int i = 1; i < inst->nnodes; i++) {
 			for (int j = i + 1; j < inst->nnodes; j++) {

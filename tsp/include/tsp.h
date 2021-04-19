@@ -1,8 +1,9 @@
-#include <ilcplex/cplex.h>
+#include <cplex.h>
 
 #ifndef MODEL_TYPE_H
 #define MODEL_TYPE_H
 typedef enum {
+    DEFAULT = -1,
 	STANDARD = 0,
 	BENDERS = 1,
 	BRANCH_AND_CUT = 2,
