@@ -1,6 +1,5 @@
 #include "tsp.h"
 
-
 /*!
 * Calculates the distance between two nodes using the euclidian distance
 * @param	i is the index of the first node

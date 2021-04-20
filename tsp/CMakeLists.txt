@@ -2,7 +2,7 @@
  cmake_minimum_required(VERSION 2.8)
 
  # Setting the project name
- project(tsp)
+ project(tsp_solver)
 
  # Create a sources variable with a link to all cpp files to compile
  set(SOURCE_FILES
@@ -29,13 +29,13 @@
 
  # To link CPLEX libraries and directories stored inside your personal Linux distro just set the right path
  set(CPLEX_HOME /opt/ibm/ILOG/CPLEX_Studio201/cplex)
- #set(CONCORDELIB /opt/concorde)
+ set(CONCORDELIB /opt/concorde)
 
  # To link and include useful CPLEX libraries and directories, play with the following lines
  target_link_libraries(${PROJECT_NAME} -lcplex -lm -lpthread -ldl)
  target_link_libraries(${PROJECT_NAME} -L${CPLEX_HOME}/lib/x86-64_linux/static_pic)
- #target_link_libraries(${PROJECT_NAME} ${CONCORDELIB}/concorde.a)
- target_include_directories(${PROJECT_NAME} PRIVATE ${CPLEX_HOME}/include/ilcplex $)
+ target_link_libraries(${PROJECT_NAME} ${CONCORDELIB}/concorde.a)
+ target_include_directories(${PROJECT_NAME} PRIVATE ${CPLEX_HOME}/include/ilcplex ${CONCORDELIB})
 
 
  else (APPLE)
