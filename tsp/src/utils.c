@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 void print_error(const char *err) {
 	printf("\n\nERROR: %s \n\n", err);

@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ilcplex/cplex.h>
-#include "read_input.h"
+#include <cplex.h>
+#include "../include/read_input.h"
 
 void parse_command_line(int argc, char **argv, instance *inst) {
 	//Default values
@@ -46,7 +46,7 @@ void read_input(instance *inst) {
 	//Opens the files that will be read
 	FILE *file = fopen(inst->input_file, "r");
 
-	//Cicles for each line into the input file
+	//Cycles for each line into the input file
 	while (fgets(line, sizeof(line), file) != NULL) {
 		if (strlen(line) <= 1) { continue; }
 
@@ -68,7 +68,7 @@ void read_input(instance *inst) {
 			printf("Number of nodes: %d\n", inst->nnodes);
 		}
 
-		//Saves the edge type into the instace
+		//Saves the edge type into the instance
 		if (strncmp(parameter_name, "EDGE_WEIGHT_TYPE", 16) == 0) {
 			strcpy(inst->edge_type, strtok(NULL, " :"));
 			

@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "tsp.h"
-#include "read_input.h"
-#include "plot.h"
-#include "utils.h"
+#include "../include/tsp.h"
+#include "../include/read_input.h"
+#include "../include/plot.h"
+#include "../include/utils.h"
 
 int performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
@@ -39,7 +39,8 @@ int main(int argc, char **argv) {
 	//Setting the commands to pass to gnuplot to print the graph
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
-	if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT) {
+	if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT ||
+	inst.model_type == DEFAULT) {
 		commandsForGnuplot[1] = "plot \"data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
 	}
 	else {
