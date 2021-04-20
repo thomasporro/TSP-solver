@@ -1,23 +1,24 @@
 #include <cplex.h>
 
-#ifndef MODEL_TYPE_H
-#define MODEL_TYPE_H
-typedef enum {
-    DEFAULT = -1,
-	STANDARD = 0,
-	BENDERS = 1,
-	BRANCH_AND_CUT = 2,
-	MTZ = 10,
-	MTZ_LAZY = 11,
-	MTZ_IND = 12,
-	GG = 20
-}modeltype;
-#endif // !MODEL_TYPE
-
 #ifndef TSP_H_
 #define TSP_H_
+/*!
+ * Enum that contains all the models used in the tsp problem
+ */
+typedef enum {
+    DEFAULT = -1,
+    STANDARD = 0,
+    BENDERS = 1,
+    BRANCH_AND_CUT = 2,
+    MTZ = 10,
+    MTZ_LAZY = 11,
+    MTZ_IND = 12,
+    GG = 20
+}modeltype;
 
-//Struct that will contain the parameters of the tsp problem
+/*!
+ * Struct that will contain the parameters of the tsp problem
+ */
 typedef struct {
 
 	//Variables of the input files
@@ -42,11 +43,14 @@ typedef struct {
 
 } instance;
 
+/*!
+ * Struct containing the parameters to pass to create_cut_relaxation()
+ */
+typedef struct{
+    instance *inst;
+    CPXCALLBACKCONTEXTptr context;
+}ccr_param;
 #endif // !TSP_H_
-
-
-
-
 
 
 /*!
@@ -119,6 +123,35 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp);
 
 
 /*!
-* Cplex declartion of the user function to be called in the callback loop method
+* Cplex declartion of the user function to be called in the callback loop method.
+* It performs a different operations if a fractional or a integer solution is found
 */
-static int CPXPUBLIC incumbent_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *userhandle);
+static int CPXPUBLIC sec_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *userhandle);
+
+
+/*!
+ * Compute and generate the eventual cuts from the integer solution found by using the benders algorithm
+ * @param   context is the contextId
+ * @param   inst is the instance of the problem
+ * @return  0 if the process is done correctly
+ */
+ int candidate_callback(CPXCALLBACKCONTEXTptr context, instance *inst);
+
+
+/*!
+* Compute and generate the eventual cuts from the fractional solution found by using concorde
+* @param   context is the contextId
+* @param   inst is the instance of the problem
+* @return  0 if the process is done correctly
+*/
+int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst);
+
+
+/*!
+ * Function used to create the cut for the fractional solution
+ * @param cutval    The value of the cut in double
+ * @param cutcount  The number of nodes in the cut
+ * @param cut       Array containing the indexes of the nodes in the cu
+ * @return 0        If successful
+ */
+int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam);
