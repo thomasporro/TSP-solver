@@ -6,12 +6,11 @@
 #define GREAT_EQUAL 'G'
 #define EPS 1e-5
 
-#include <stdint.h>
 #include <time.h>
 #include <concorde.h>
 #include <cplex.h>
-#include "../include/tsp.h"
-#include "../include/utils.h"
+#include "tsp.h"
+#include "utils.h"
 
 int TSPopt(instance *inst) {
     //Open the CPLEX enviroment
@@ -691,6 +690,7 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
     int loader = 0;
 
     //Filling the elist array
+    //TODO we can pass only the needed edges
     for (int i = 0; i < inst->nnodes; i++) {
         for (int j = i + 1; j < inst->nnodes; j++) {
             //For each edge are reserved 2 slots over this array. Concorde
@@ -714,6 +714,11 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
             print_error("Error on CCcut_violated_cuts()");
         }
     }
+
+    free(compscount);
+    free(comps);
+    free(elist);
+
     return 0;
 }
 
@@ -736,7 +741,7 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam){
         for (int k = j + 1; k < cutcount; k++) {
             if (j == k) continue;
             rmatind[position] = xpos(cut[j], cut[k], parameters->inst);
-            rmatval[position++] = 1.0;
+            rmatval[position++] = 1.0; //We can do it with memset
         }
     }
 
@@ -744,6 +749,9 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam){
                               &purgeable, &local)){
         print_error("Error on CPXcallbackaddusercuts()");
     }
+
+    free(rmatind);
+    free(rmatval);
 
     return 0;
 }

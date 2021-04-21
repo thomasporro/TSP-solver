@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <cplex.h>
-#include "../include/read_input.h"
+#include "read_input.h"
 
 void parse_command_line(int argc, char **argv, instance *inst) {
 	//Default values
