@@ -1,8 +1,8 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define EPS 1e-5
 
-#include "../include/plot.h"
-#include "../include/utils.h"
+#include "plot.h"
+#include "utils.h"
 
 void plot(char **commands, int n_commands, instance *inst) {
 	//Open the gnuplot enviroment and write the data into a data

@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../include/tsp.h"
-#include "../include/read_input.h"
-#include "../include/plot.h"
-#include "../include/utils.h"
+#include "tsp.h"
+#include "read_input.h"
+#include "plot.h"
+#include "utils.h"
 
 int performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 

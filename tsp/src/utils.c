@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include "../include/utils.h"
+#include "utils.h"
 
 void print_error(const char *err) {
 	printf("\n\nERROR: %s \n\n", err);
@@ -59,16 +59,6 @@ double geo_distance(int i, int j, instance *inst) {
 	double q3 = cos(inst->latitude[i] + inst->latitude[j]);
 	return (int)(r * acos(0.5*((1.0 + q1)*q2 - (1.0 - q1)*q3)) + 1.0);
 
-	/*
-	double delta_lat = (inst->x_coord[j] - inst->x_coord[i]) * PI / 180.0;
-	double delta_lon = (inst->y_coord[j] - inst->y_coord[i]) * PI / 180.0;
-
-	double start_lat = inst->x_coord[i] * PI / 180.0;
-	double end_lat = inst->x_coord[j] * PI / 180.0;
-
-	double formula = pow(sin(delta_lat / 2), 2) + pow(sin(delta_lon / 2), 2)*cos(start_lat)*cos(end_lat);
-	double c = 2 * asin(formula);
-	return c * R;*/
 }
 
 double att_distance(int i, int j, instance *inst){
