@@ -262,5 +262,5 @@ __pycache__/
 *.pyc
 
 #Folders
-tsp/DatasetGenerator
-tsp/cmake-build-debug
+DatasetGenerator
+cmake-build-debug

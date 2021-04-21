@@ -1,6 +1,6 @@
  cmake_minimum_required(VERSION 2.8)
 
- project(tsp_solver)
+ project(tsp)
  set(SRC
          src/main.c
          src/tsp.c
