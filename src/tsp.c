@@ -669,6 +669,11 @@ int candidate_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
             free(nodes);
         }
     }
+
+    free(solution_found);
+    free(successors);
+    free(component);
+
     return 0;
 }
 
@@ -718,6 +723,7 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
     free(compscount);
     free(comps);
     free(elist);
+    free(solution_found);
 
     return 0;
 }
