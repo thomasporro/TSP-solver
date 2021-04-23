@@ -4,7 +4,9 @@
 #define EQUAL 'E'
 #define LESS_EQUAL 'L'
 #define GREAT_EQUAL 'G'
+#define LOWER_BOUND 'L'
 #define EPS 1e-5
+#define INTERNAL_TIME_LIMIT 30.0
 
 #include <time.h>
 #include <concorde.h>
@@ -53,7 +55,7 @@ int TSPopt(instance *inst) {
     if (CPXgetobjval(env, lp, &solution)) {
         print_error("Failed to optimize MIP.\n");
     }
-    printf("objval: %f\n", solution);
+    printf("Objval: %f\n", solution);
 
     //Frees the memory
     CPXfreeprob(env, &lp);
@@ -78,6 +80,11 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
         case BRANCH_AND_CUT:
             printf("Model type chosen: undirected complete graph with loop method as a callback\n");
+            build_model_st(inst, env, lp);
+            break;
+
+        case HARD_FIX_BAC:
+            printf("Model type chosen: callback + hard fixing\n");
             build_model_st(inst, env, lp);
             break;
 
@@ -360,11 +367,16 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
         }
     }
 
+    //Variables used during the constraints
+    int lastrow;
+    double rhs;
+    char sense;
+
     //Add degree IN
     for (int h = 0; h < inst->nnodes; h++) {
-        int lastrow = CPXgetnumrows(env, lp);
-        double rhs = 1.0;
-        char sense = EQUAL;
+        lastrow = CPXgetnumrows(env, lp);
+        rhs = 1.0;
+        sense = EQUAL;
         sprintf(cname[0], ("degree_in_node_(%d)"), h + 1);
         if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [degree IN]");
         for (int j = 0; j < inst->nnodes; j++) {
@@ -374,9 +386,9 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     //Add degree OUT
     for (int h = 0; h < inst->nnodes; h++) {
-        int lastrow = CPXgetnumrows(env, lp);
-        double rhs = 1.0;
-        char sense = EQUAL;
+        lastrow = CPXgetnumrows(env, lp);
+        rhs = 1.0;
+        sense = EQUAL;
         sprintf(cname[0], ("degree_out_node_(%d)"), h + 1);
         if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [degree OUT]");
         for (int j = 0; j < inst->nnodes; j++) {
@@ -386,9 +398,9 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     //Add costraint of flow of the first node
     sprintf(cname[0], "flow_out_from_1");
-    int lastrow = CPXgetnumrows(env, lp);
-    double rhs = inst->nnodes - 1;
-    char sense = EQUAL;
+    lastrow = CPXgetnumrows(env, lp);
+    rhs = inst->nnodes - 1;
+    sense = EQUAL;
     if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [flow_out_from_1]");
     for (int j = 1; j < inst->nnodes; j++) {
         if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong chgcoef [flow_out_from_1]");
@@ -397,9 +409,9 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
     //Add costraint of flow of the other nodes
     for (int j = 1; j < inst->nnodes; j++) {
         sprintf(cname[0], "flow_in_and_out_from(%d)", j + 1);
-        int lastrow = CPXgetnumrows(env, lp);
-        double rhs = 1.0;
-        char sense = EQUAL;
+        lastrow = CPXgetnumrows(env, lp);
+        rhs = 1.0;
+        sense = EQUAL;
         if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname))
             print_error("wrong CPXnewrows [flow_in_and_out_from_a_node]");
         for (int i = 0; i < inst->nnodes; i++) {
@@ -419,7 +431,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     //For the first node
     for (int j = 1; j < inst->nnodes; j++) {
-        int lastrow = CPXgetnumrows(env, lp);
+        lastrow = CPXgetnumrows(env, lp);
         if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_first_node]");
         if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong CPXchgcoef [linking_first_node]");
         if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes - 1)))
@@ -431,7 +443,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
         for (int j = 0; j < inst->nnodes; j++) {
             if (i == j) continue;
             sprintf(cname[0], "linking_arc_x(%d,%d)", i + 1, j + 1);
-            int lastrow = CPXgetnumrows(env, lp);
+            lastrow = CPXgetnumrows(env, lp);
             if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_arc_x]");
             if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [linking_arc_x]");
             if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), -(inst->nnodes - 2)))
@@ -553,6 +565,84 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
             printf("SOLUTION CALCULATED\n");
+            break;
+
+        case HARD_FIX_BAC:
+            //Code needed to say to cplex that we have a callback function
+            if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
+                                   sec_callback, inst)) {
+                print_error("CPXcallbacksetfunc() error");
+            }
+
+            inst->start_time = seconds();
+            //Change the internal time limit of cplex
+            CPXsetdblparam(env, CPX_PARAM_TILIM, INTERNAL_TIME_LIMIT);
+
+            //Setting up the array of indices for changing the bounds
+            int *indices = (int *) calloc(inst->nnodes * 2, sizeof(int));
+            char *lu = (char *) calloc(inst->nnodes * 2, sizeof(char));
+            double *bd = (double *) calloc(inst->nnodes * 2, sizeof(double));
+
+            //Counts the number of variables fixed in each cycle
+            int cnt = 0;
+
+            //Cycles until the time is over
+            while (inst->timelimit > seconds() - inst->start_time) {
+                //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
+                //change the cplex time limit to the actual time remaining
+                if (inst->timelimit - seconds() < INTERNAL_TIME_LIMIT) {
+                    CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
+                }
+
+                printf("CALCULATING THE SOLUTION...\n");
+                CPXmipopt(env, lp);
+                printf("SOLUTION CALCULATED\n");
+
+                if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
+                    print_error("Failed to optimize MIP (CPXgetx() - hard fixing)\n");
+                }
+
+                if(cnt != 0){
+                    //Restore the lower bounds to 0 only to the
+                    //variables passed to the previously fixed to 1
+                    for (int i = 0; i < cnt; i++) {
+                        printf("indices: %d\n", indices[i]);
+                        lu[i] = LOWER_BOUND;
+                        bd[i] = 0.0;
+                    }
+
+                    if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
+                        print_error("Error on restoring variables (hard_fixing)");
+                    }
+                    CPXwriteprob(env, lp, "variables_restored.lp", NULL);
+                }
+
+
+                //Iterate over each variable in the solution array
+                cnt = 0;
+                for (int i = 0; i < inst->nnodes; i++) {
+                    for (int j = i + 1; j < inst->nnodes; j++) {
+                        if (i == j) continue;
+                        if (inst->solution[xpos(i, j, inst)] > 0.5 && rand() % 100 < 70) {
+                            indices[cnt] = xpos(i, j, inst);
+                            lu[cnt] = LOWER_BOUND;
+                            bd[cnt++] = 1.0;
+                        }
+                    }
+                }
+
+                if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
+                    print_error("Error on restoring variables (hard_fixing)");
+                }
+
+                CPXwriteprob(env, lp, "modified_variables.lp", NULL);
+
+            }
+
+            //Frees the memory used
+            free(indices);
+            free(lu);
+            free(bd);
             break;
 
         default:
@@ -715,7 +805,7 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
         inParam.context = context;
         inParam.inst = inst;
         if (CCcut_violated_cuts(inst->nnodes, ecount, elist, solution_found, 2.0 - EPS, create_cut_relaxation,
-                                (void *)&inParam)) {
+                                (void *) &inParam)) {
             print_error("Error on CCcut_violated_cuts()");
         }
     }
@@ -729,7 +819,7 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
 }
 
 
-int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam){
+int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam) {
     ccr_param *parameters = (ccr_param *) inParam;
 
     //Build the arguments to pass to the function
@@ -751,8 +841,8 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam){
         }
     }
 
-    if(CPXcallbackaddusercuts(parameters->context, 1, cutcount, &rhs, &sense, &rmatbeg, rmatind, rmatval,
-                              &purgeable, &local)){
+    if (CPXcallbackaddusercuts(parameters->context, 1, cutcount, &rhs, &sense, &rmatbeg, rmatind, rmatval,
+                               &purgeable, &local)) {
         print_error("Error on CPXcallbackaddusercuts()");
     }
 

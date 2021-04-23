@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 	char *commandsForGnuplot[3];
 	commandsForGnuplot[0] = "set title \"GRAPH\"";
 	if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT ||
-	inst.model_type == DEFAULT) {
+	inst.model_type == DEFAULT || inst.model_type == HARD_FIX_BAC) {
 		commandsForGnuplot[1] = "plot \"data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
 	}
 	else {
