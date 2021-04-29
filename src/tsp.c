@@ -522,7 +522,7 @@ void build_solution(instance *inst, double *solution, int *successors, int *comp
 }
 
 
-void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
+void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
     modeltype model = inst->model_type;
     switch (model) {
         case BENDERS:
@@ -574,6 +574,8 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 print_error("CPXcallbacksetfunc() error");
             }
 
+            //CPXsetintparam(env, CPXPARAM_emphasis_MIP, 5)
+
             inst->start_time = seconds();
             //Change the internal time limit of cplex
             CPXsetdblparam(env, CPX_PARAM_TILIM, INTERNAL_TIME_LIMIT);
@@ -585,6 +587,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
             //Counts the number of variables fixed in each cycle
             int cnt = 0;
+
+            //Percentage with which I block the edges that are set to 1
+            int percentage = 90;
 
             //Cycles until the time is over
             while (inst->timelimit > seconds() - inst->start_time) {
@@ -598,15 +603,30 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 CPXmipopt(env, lp);
                 printf("SOLUTION CALCULATED\n");
 
-                if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                    print_error("Failed to optimize MIP (CPXgetx() - hard fixing)\n");
+                double objval;
+                if (CPXgetobjval(env, lp, &objval)) {
+                    print_error("Failed to retrieve the objval (CPXgetx() -> hard fixing)\n");
+                }
+
+                //Check if the solution just found is better than the previous one or it's value it's the same
+                //as the previous cycle. If not I reduce the percentage of blocking the edges
+                if(objval < inst->best_value){
+                    if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
+                        print_error("Failed to optimize MIP (CPXgetx() -> hard fixing)\n");
+                    }
+
+                    inst->best_value = objval;
+
+                } else {
+                    if(percentage - 20 >= 0){
+                        percentage -= 20;
+                    }
                 }
 
                 if(cnt != 0){
                     //Restore the lower bounds to 0 only to the
                     //variables passed to the previously fixed to 1
                     for (int i = 0; i < cnt; i++) {
-                        printf("indices: %d\n", indices[i]);
                         lu[i] = LOWER_BOUND;
                         bd[i] = 0.0;
                     }
@@ -614,16 +634,17 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
                         print_error("Error on restoring variables (hard_fixing)");
                     }
-                    CPXwriteprob(env, lp, "variables_restored.lp", NULL);
+                    //CPXwriteprob(env, lp, "variables_restored.lp", NULL);
                 }
 
 
                 //Iterate over each variable in the solution array
+                //TODO posso fare il check per ogni singola variabile cioè da 0 a nvariables(INTERESSANTE)
                 cnt = 0;
                 for (int i = 0; i < inst->nnodes; i++) {
                     for (int j = i + 1; j < inst->nnodes; j++) {
                         if (i == j) continue;
-                        if (inst->solution[xpos(i, j, inst)] > 0.5 && rand() % 100 < 70) {
+                        if (inst->solution[xpos(i, j, inst)] > 0.5 && rand() % 100 < percentage) {
                             indices[cnt] = xpos(i, j, inst);
                             lu[cnt] = LOWER_BOUND;
                             bd[cnt++] = 1.0;
@@ -631,11 +652,12 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     }
                 }
 
+
                 if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
                     print_error("Error on restoring variables (hard_fixing)");
                 }
 
-                CPXwriteprob(env, lp, "modified_variables.lp", NULL);
+                //CPXwriteprob(env, lp, "modified_variables.lp", NULL);
 
             }
 

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <cplex.h>
+#include <float.h>
 #include "read_input.h"
 
 void parse_command_line(int argc, char **argv, instance *inst) {
@@ -42,6 +43,7 @@ void read_input(instance *inst) {
 	//Initialization of the values into inst
 	inst->nnodes = -1;
 	inst->nvariables = -1;
+	inst->best_value = DBL_MAX;
 
 	//Opens the files that will be read
 	FILE *file = fopen(inst->input_file, "r");
