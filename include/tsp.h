@@ -11,6 +11,7 @@ typedef enum {
     BENDERS = 1,
     BRANCH_AND_CUT = 2,
     HARD_FIX_BAC = 3,
+    SOFT_FIX = 4,
     MTZ = 10,
     MTZ_LAZY = 11,
     MTZ_IND = 12,

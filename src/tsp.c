@@ -88,6 +88,11 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
             build_model_st(inst, env, lp);
             break;
 
+        case SOFT_FIX:
+            printf("Model type chosen: soft fixing\n");
+            build_model_st(inst, env, lp);
+            break;
+
         case MTZ:
             printf("Model type chosen: MTZ\n");
             build_model_MTZ(inst, env, lp);
@@ -522,7 +527,7 @@ void build_solution(instance *inst, double *solution, int *successors, int *comp
 }
 
 
-void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
+void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
     modeltype model = inst->model_type;
     switch (model) {
         case BENDERS:
@@ -574,6 +579,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
                 print_error("CPXcallbacksetfunc() error");
             }
 
+            //TODO check this thing
             //CPXsetintparam(env, CPXPARAM_emphasis_MIP, 5)
 
             inst->start_time = seconds();
@@ -610,24 +616,24 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
 
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not I reduce the percentage of blocking the edges
-                if(objval < inst->best_value){
+                if (objval < inst->best_value) {
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
                         print_error("Failed to optimize MIP (CPXgetx() -> hard fixing)\n");
                     }
 
                     inst->best_value = objval;
 
+
                 } else {
-                    if(percentage - 20 >= 0){
+                    if (percentage - 20 >= 0) {
                         percentage -= 20;
                     }
                 }
 
-                if(cnt != 0){
+                if (cnt != 0) {
                     //Restore the lower bounds to 0 only to the
                     //variables passed to the previously fixed to 1
                     for (int i = 0; i < cnt; i++) {
-                        lu[i] = LOWER_BOUND;
                         bd[i] = 0.0;
                     }
 
@@ -639,20 +645,16 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
 
 
                 //Iterate over each variable in the solution array
-                //TODO posso fare il check per ogni singola variabile cioè da 0 a nvariables(INTERESSANTE)
                 cnt = 0;
-                for (int i = 0; i < inst->nnodes; i++) {
-                    for (int j = i + 1; j < inst->nnodes; j++) {
-                        if (i == j) continue;
-                        if (inst->solution[xpos(i, j, inst)] > 0.5 && rand() % 100 < percentage) {
-                            indices[cnt] = xpos(i, j, inst);
-                            lu[cnt] = LOWER_BOUND;
-                            bd[cnt++] = 1.0;
-                        }
+                for (int i = 0; i < inst->nvariables; i++) {
+                    if (inst->solution[i] > 0.5 && rand() % 100 < percentage) {
+                        indices[cnt] = i;
+                        lu[cnt] = LOWER_BOUND;
+                        bd[cnt++] = 1.0;
                     }
                 }
 
-
+                //Change the bounds of the selected edges
                 if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
                     print_error("Error on restoring variables (hard_fixing)");
                 }
@@ -665,6 +667,91 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp)  {
             free(indices);
             free(lu);
             free(bd);
+            break;
+
+        case SOFT_FIX:
+            //Code needed to say to cplex that we have a callback function
+            if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
+                                   sec_callback, inst)) {
+                print_error("CPXcallbacksetfunc() error");
+            }
+
+            inst->start_time = seconds();
+            //Change the internal time limit of cplex
+            CPXsetdblparam(env, CPX_PARAM_TILIM, INTERNAL_TIME_LIMIT);
+
+            //Variables used in the creation of the soft fixing constraints
+            double k_opt = 2.0;
+            double rhs = inst->nnodes - k_opt;
+            char sense = GREAT_EQUAL;
+            char **cname = (char **) calloc(1, sizeof(char *));
+            cname[0] = (char *) calloc(100, sizeof(char));
+            sprintf(cname[0], "SOFT_FIX_(K_OPT_%f)", k_opt);
+
+            //Variables used to manage the new constraints
+            int remove_row_flag = 0;
+            int lastrow = CPXgetnumrows(env, lp);;
+
+            //Cycles until the time is over
+            while (inst->timelimit > seconds() - inst->start_time) {
+                //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
+                //change the cplex time limit to the actual time remaining
+                if (inst->timelimit - seconds() < INTERNAL_TIME_LIMIT) {
+                    CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
+                }
+
+                printf("CALCULATING THE SOLUTION...\n");
+                CPXmipopt(env, lp);
+                printf("SOLUTION CALCULATED\n");
+
+                double objval;
+                if (CPXgetobjval(env, lp, &objval)) {
+                    print_error("Failed to retrieve the objval (CPXgetx() -> soft fixing)\n");
+                }
+
+                //Check if the solution just found is better than the previous one or it's value it's the same
+                //as the previous cycle. If not change the k-opt value
+                if (objval < inst->best_value) {
+                    if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
+                        print_error("Failed to optimize MIP (CPXgetx() -> soft fixing)\n");
+                    }
+
+                    inst->best_value = objval;
+
+                } else {
+                    k_opt += 2.0;
+                    rhs = inst->nnodes - k_opt;
+                    sprintf(cname[0], "SOFT_FIX_(K_OPT_%f)", k_opt);
+                }
+
+                //If a constraint is been already added removes it
+                if (remove_row_flag) {
+                    if (CPXdelrows(env, lp, lastrow, lastrow)) {
+                        print_error("Error while deleting the row (SOFT_FIX)");
+                    }
+                    CPXwriteprob(env, lp, "deleted_constraint(soft_fix).lp", NULL);
+                }
+
+                //Create a new constraint
+                if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) {
+                    print_error("Error while creating the constraints (SOFT_FIX)");
+                }
+
+                //Iterate over each variable in the solution array
+                for (int i = 0; i < inst->nvariables; i++) {
+                    if (inst->solution[i] > 0.9) {
+                        if (CPXchgcoef(env, lp, lastrow, i, 1.0)) {
+                            print_error("Error while changing coefs on SOFT_FIX");
+                        }
+                    }
+                }
+
+                //Flag for check if a constraint has been added
+                remove_row_flag++;
+                CPXwriteprob(env, lp, "added_constraint(soft_fix).lp", NULL);
+
+            }
+            free(cname);
             break;
 
         default:
