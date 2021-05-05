@@ -1,8 +1,10 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <time.h>
+#include <sys/resource.h>
 #include "utils.h"
 
 void print_error(const char *err) {
@@ -84,5 +86,8 @@ double distance(int i, int j, instance *inst) {
 }
 
 double seconds(){
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + 1.0e-9*((double)ts.tv_nsec);
 	return ((double)clock() / (double)CLOCKS_PER_SEC);
 }

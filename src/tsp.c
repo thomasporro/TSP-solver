@@ -6,7 +6,7 @@
 #define GREAT_EQUAL 'G'
 #define LOWER_BOUND 'L'
 #define EPS 1e-5
-#define INTERNAL_TIME_LIMIT 30.0
+#define INTERNAL_TIME_LIMIT 360.0
 
 #include <time.h>
 #include <concorde.h>
@@ -47,7 +47,7 @@ int TSPopt(instance *inst) {
 
     //If the problem have a solution it saves it into the instance's structure
     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-        print_error("Failed to optimize MIP (retrieving the solution).\n");
+        print_error("Failed to optimize MIP (retrieving the solution - TSPopt()).\n");
     }
 
     //Print the values of the solution
@@ -80,6 +80,12 @@ void build_model(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
         case BRANCH_AND_CUT:
             printf("Model type chosen: undirected complete graph with loop method as a callback\n");
+            build_model_st(inst, env, lp);
+            break;
+
+        case BRANCH_AND_CUT_RLX:
+            printf("Model type chosen: undirected complete graph with loop method as a callback "
+                   "with relaxation\n");
             build_model_st(inst, env, lp);
             break;
 
@@ -198,13 +204,14 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
     }
 
     //Add u(i) variable for MTZ
+    int start_position_u_i = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
     for (int i = 0; i < inst->nnodes; i++) {
         sprintf(cname[0], "u(%d)", i + 1);
         char integer = INTEGER_VARIABLE;
         double lb = 0.0;
         double ub = inst->nnodes - 2.0;
         if (CPXnewcols(env, lp, 1, NULL, &lb, &ub, &integer, cname)) print_error("wrong CPXnewcols on x var.s");
-        //TODO MANCA LA VARIABLE CHE FA IL CHECK
+        if (CPXgetnumcols(env, lp) - 1 != start_position_u_i + i) print_error("Wrong position for u");
     }
 
     //Add degree IN
@@ -540,7 +547,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             while (inst->ncomp > 1 &&
                    seconds() - inst->start_time < inst->timelimit) {
                 printf("CALCULATING THE SOLUTION (CYCLE N.%d) ...\n", cycles);
+                double cycle_time_start = seconds();
                 CPXmipopt(env, lp);
+                double cycle_time_end = seconds();
                 printf("SOLUTION CALCULATED (CYCLE N.%d)\n", cycles);
                 printf("Number of costraints (CYCLE N.%d): %d\n", cycles, CPXgetnumrows(env, lp));
 
@@ -548,24 +557,36 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
 
                 if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                    print_error("Failed to optimize MIP.\n");
+                    print_error("Failed to optimize MIP (retrieving the solution - compute_solution()).\n");
                 }
 
                 build_solution(inst, inst->solution, inst->successors, inst->component, &inst->ncomp);
+                printf("Number of loops: %d\n", inst->ncomp);
                 if (inst->ncomp >= 2) {
                     loop_method(inst, env, lp);
                 }
                 cycles++;
+                printf("Cycle time consumed: %f\n", cycle_time_end - cycle_time_start);
+                printf("Total time consumed: %f\n", seconds() - inst->start_time);
+                printf("---------------------------------------\n");
             }
             break;
 
         case BRANCH_AND_CUT:
             //Code needed to say to cplex that we have a callback function
-            //TODO try to add the CPXLONG as a variable
-            //CPXLONG contextId = CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION;
+            if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE, sec_callback, inst)) {
+                print_error("CPXcallbacksetfunc() error - BRANCH_AND_CUT");
+            }
+            printf("CALCULATING THE SOLUTION...\n");
+            CPXmipopt(env, lp);
+            printf("SOLUTION CALCULATED\n");
+            break;
+
+        case BRANCH_AND_CUT_RLX:
+            //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
                                    sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error");
+                print_error("CPXcallbacksetfunc() error - BRANCH_AND_CUT_RLX");
             }
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
@@ -576,7 +597,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
                                    sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error");
+                print_error("CPXcallbacksetfunc() error - HARD_FIX");
             }
 
             //TODO check this thing
@@ -611,22 +632,22 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
                 double objval;
                 if (CPXgetobjval(env, lp, &objval)) {
-                    print_error("Failed to retrieve the objval (CPXgetx() -> hard fixing)\n");
+                    print_error("Failed to retrieve the objval (CPXgetx() - HARD_FIX)\n");
                 }
 
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not I reduce the percentage of blocking the edges
                 if (objval < inst->best_value) {
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                        print_error("Failed to optimize MIP (CPXgetx() -> hard fixing)\n");
+                        print_error("Failed to optimize MIP (CPXgetx() - HARD_FIX)\n");
                     }
-
                     inst->best_value = objval;
-
 
                 } else {
                     if (percentage - 20 >= 0) {
                         percentage -= 20;
+                    } else {
+                        percentage = 0;
                     }
                 }
 
@@ -638,7 +659,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     }
 
                     if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
-                        print_error("Error on restoring variables (hard_fixing)");
+                        print_error("Error on restoring variables - HARD_FIX");
                     }
                     //CPXwriteprob(env, lp, "variables_restored.lp", NULL);
                 }
@@ -654,13 +675,13 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     }
                 }
 
-                //Change the bounds of the selected edges
-                if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
-                    print_error("Error on restoring variables (hard_fixing)");
+                if (cnt != 0) {
+                    //Change the bounds of the selected edges
+                    if (CPXchgbds(env, lp, cnt, indices, lu, bd)) {
+                        print_error("Error on restoring variables - HARD_FIX");
+                    }
                 }
-
                 //CPXwriteprob(env, lp, "modified_variables.lp", NULL);
-
             }
 
             //Frees the memory used
@@ -673,7 +694,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
                                    sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error");
+                print_error("CPXcallbacksetfunc() error - SOFT_FIX");
             }
 
             inst->start_time = seconds();
@@ -706,14 +727,14 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
                 double objval;
                 if (CPXgetobjval(env, lp, &objval)) {
-                    print_error("Failed to retrieve the objval (CPXgetx() -> soft fixing)\n");
+                    print_error("Failed to retrieve the objval (CPXgetx() - SOFT_FIX)\n");
                 }
 
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not change the k-opt value
                 if (objval < inst->best_value) {
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                        print_error("Failed to optimize MIP (CPXgetx() -> soft fixing)\n");
+                        print_error("Failed to optimize MIP (CPXgetx() - SOFT_FIX)\n");
                     }
 
                     inst->best_value = objval;
@@ -729,7 +750,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     if (CPXdelrows(env, lp, lastrow, lastrow)) {
                         print_error("Error while deleting the row (SOFT_FIX)");
                     }
-                    CPXwriteprob(env, lp, "deleted_constraint(soft_fix).lp", NULL);
+                    //CPXwriteprob(env, lp, "logfiles/deleted_constraint(soft_fix).lp", NULL);
                 }
 
                 //Create a new constraint
@@ -748,7 +769,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
                 //Flag for check if a constraint has been added
                 remove_row_flag++;
-                CPXwriteprob(env, lp, "added_constraint(soft_fix).lp", NULL);
+                //CPXwriteprob(env, lp, "logfiles/added_constraint(soft_fix).lp", NULL);
 
             }
             free(cname);
@@ -909,7 +930,7 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
         print_error("Error on CCcut_connect_components()");
     }
 
-    if (ncomp != 1) {
+    if (ncomp == 1) {
         ccr_param inParam;
         inParam.context = context;
         inParam.inst = inst;

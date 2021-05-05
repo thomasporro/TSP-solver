@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	int model_type[] = { MTZ, MTZ_LAZY, MTZ_IND, GG };
-	//return performance_profile(&inst, &model_type, 4, 3600.0);
+	int model_type[] = { BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
+	return performance_profile(&inst, (int *) &model_type, 3, 3600.0);
 
 
 	//Parse the command line and read the input file
@@ -63,7 +63,7 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
 	inst->timelimit = time_limit;
 	printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
 
-	FILE *csv = fopen("performance_profile.csv", "w");
+	FILE *csv = fopen("../performance_profile.csv", "w");
 	fprintf(csv, "%d, ", nmodels);
 
 	//Print the first line of the csv file
@@ -75,7 +75,8 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
 			fprintf(csv, "\n");
 	}
 
-	FILE *files = fopen("files.txt", "r");
+	FILE *files = fopen("../files.txt", "r");
+
 	char line[180];
 	char *file_name;
 	while (fgets(line, sizeof(line), files) != NULL) {
@@ -95,12 +96,12 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
 		for (int i = 0; i < nmodels; i++) {
 			printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
 			inst->model_type = models[i];
-			double start_time = seconds();
+			double start_time_for = seconds();
 			TSPopt(inst);
-			double end_time = seconds();
+			double end_time_for = seconds();
 
 			//Print
-			fprintf(csv, "%f", end_time - start_time);
+			fprintf(csv, "%f", end_time_for - start_time_for);
 			if (i != nmodels - 1)
 				fprintf(csv, ", ");
 			else
