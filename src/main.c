@@ -15,12 +15,10 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
 int main(int argc, char **argv) {
     //Variables
     instance inst;
-    //initialize(&inst);
 
     //If the command line arguments are minor than 2 exits from the program
     if (argc < 2) {
-        printf("Usage error");
-        exit(1);
+        print_error("Usage error");
     }
 
     int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
@@ -61,9 +59,8 @@ int main(int argc, char **argv) {
 
 int performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");
+
     double start_time = seconds();
-    inst->timelimit = time_limit;
-    printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
 
     FILE *csv = fopen("../logfiles/performance_profile.csv", "w");
     if (csv == NULL) {
@@ -99,6 +96,11 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
         //Read and parse the file to test
         strcpy(inst->input_file, file_name);
         read_input(inst);
+
+        //Setting parameters inside of inst
+        inst->performance_profile = 1;
+        inst->timelimit = time_limit;
+        printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
 
         //Iterate over the models passed
         for (int i = 0; i < nmodels; i++) {

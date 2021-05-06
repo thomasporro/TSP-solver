@@ -46,6 +46,7 @@ void read_input(instance *inst) {
     inst->nnodes = -1;
     inst->nvariables = -1;
     inst->best_value = DBL_MAX;
+    inst->performance_profile = 0;
 
     //Opens the files that will be read
     FILE *file = fopen(inst->input_file, "r");

@@ -6,7 +6,7 @@
 #define GREAT_EQUAL 'G'
 #define LOWER_BOUND 'L'
 #define EPS 1e-5
-#define INTERNAL_TIME_LIMIT 300.0
+#define INTERNAL_TIME_LIMIT 60.0
 
 #include <time.h>
 #include <concorde.h>
@@ -26,6 +26,17 @@ int TSPopt(instance *inst) {
     }
 
     CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);
+
+    if(inst->performance_profile){
+        printf("-----Setting parameters for performance profile-----\n");
+        //Setting the saving of the node's tree on the memory
+        if(CPXsetstrparam(env, CPX_PARAM_WORKDIR, "../logfiles")){
+            print_error("CPX_PARAM_WORKDIR not setted");
+        }
+        if(CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)){
+            print_error("CPX_PARAM_NODEFILEIND not setted");
+        };
+    }
 
     CPXsetlogfilename(env, logfilename(inst), "w");
 
@@ -47,17 +58,20 @@ int TSPopt(instance *inst) {
     double time_passed = seconds() - start_time;
     print_stats(inst, time_passed);
 
-    //If the problem have a solution it saves it into the instance's structure
-    if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-        print_error("Failed to optimize MIP (retrieving the solution - TSPopt()).\n");
-    }
+    if(inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX){
+        //If the problem have a solution it saves it into the instance's structure
+        int status = CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1);
+        if (status) {
+            print_error_code("Failed to optimize MIP (retrieving the solution -> TSPopt())", status);
+        }
 
-    //Print the values of the solution
-    double solution = -1;
-    if (CPXgetobjval(env, lp, &solution)) {
-        print_error("Failed to optimize MIP.\n");
+        //Print the values of the solution
+        double solution = -1;
+        if (CPXgetobjval(env, lp, &solution)) {
+            print_error("Failed to optimize MIP (getobjval() -> TSPopt).\n");
+        }
+        printf("Objval: %f\n", solution);
     }
-    printf("Objval: %f\n", solution);
 
     //Frees the memory
     CPXfreeprob(env, &lp);
@@ -548,6 +562,12 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             int cycles = 1;
             while (inst->ncomp > 1 &&
                    seconds() - inst->start_time < inst->timelimit) {
+
+                //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
+                //change the cplex time limit to the actual time remaining
+                CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - (seconds() - inst->start_time));
+
+
                 printf("CALCULATING THE SOLUTION (CYCLE N.%d) ...\n", cycles);
                 double cycle_time_start = seconds();
                 CPXmipopt(env, lp);
@@ -559,7 +579,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
 
                 if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                    print_error("Failed to optimize MIP (retrieving the solution - compute_solution()).\n");
+                    print_error("Failed to optimize MIP (getx() -> compute_solution()).\n");
                 }
 
                 build_solution(inst, inst->solution, inst->successors, inst->component, &inst->ncomp);
@@ -577,7 +597,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
         case BRANCH_AND_CUT:
             //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE, sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error - BRANCH_AND_CUT");
+                print_error("CPXcallbacksetfunc() error -> BRANCH_AND_CUT");
             }
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
@@ -588,7 +608,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
                                    sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error - BRANCH_AND_CUT_RLX");
+                print_error("CPXcallbacksetfunc() error -> BRANCH_AND_CUT_RLX");
             }
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
@@ -599,7 +619,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             //Code needed to say to cplex that we have a callback function
             if (CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE | CPX_CALLBACKCONTEXT_RELAXATION,
                                    sec_callback, inst)) {
-                print_error("CPXcallbacksetfunc() error - HARD_FIX");
+                print_error("CPXcallbacksetfunc() error -> HARD_FIX");
             }
 
             //TODO check this thing
@@ -620,6 +640,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             //Percentage with which I block the edges that are set to 1
             int percentage = 90;
 
+            printf("CALCULATING THE SOLUTION...\n");
+            printf("Percentage of edges blocked: %d%", percentage);
+
             //Cycles until the time is over
             while (inst->timelimit > seconds() - inst->start_time) {
                 //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
@@ -628,29 +651,27 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
                 }
 
-                printf("CALCULATING THE SOLUTION...\n");
                 CPXmipopt(env, lp);
-                printf("SOLUTION CALCULATED\n");
 
                 double objval;
                 if (CPXgetobjval(env, lp, &objval)) {
-                    print_error("Failed to retrieve the objval (CPXgetx() - HARD_FIX)\n");
+                    print_error("Failed to retrieve the objval (CPXgetx() -> HARD_FIX)\n");
                 }
 
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not I reduce the percentage of blocking the edges
                 if (objval < inst->best_value) {
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
-                        print_error("Failed to optimize MIP (CPXgetx() - HARD_FIX)\n");
+                        print_error("Failed to optimize MIP (CPXgetx() -> HARD_FIX)\n");
                     }
                     inst->best_value = objval;
-
                 } else {
                     if (percentage - 20 >= 0) {
                         percentage -= 20;
                     } else {
                         percentage = 0;
                     }
+                    printf("->%d%", percentage);
                 }
 
                 if (cnt != 0) {
@@ -685,6 +706,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 }
                 //CPXwriteprob(env, lp, "modified_variables.lp", NULL);
             }
+            printf("\nSOLUTION CALCULATED\n");
 
             //Frees the memory used
             free(indices);
@@ -745,9 +767,10 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     inst->best_value = objval;
 
                 } else {
-                    k_opt += 2.0;
+                    k_opt += 1.0;
                     rhs = inst->nnodes - k_opt;
                     sprintf(cname[0], "SOFT_FIX_(K_OPT_%f)", k_opt);
+                    printf("K increased, new value: %f\n", k_opt);
                 }
 
                 //If a constraint is been already added removes it

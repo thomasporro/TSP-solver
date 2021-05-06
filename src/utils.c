@@ -15,7 +15,7 @@ void print_error(const char *err) {
 }
 
 void print_error_code(const char *err, int status) {
-    printf("\n\nERROR: %s \n\n", err);
+    printf("\n\nERROR: %s -> Error code: %d\n\n", err, status);
     fflush(NULL);
     exit(status);
 }

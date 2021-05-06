@@ -45,6 +45,9 @@ typedef struct {
     int *component;
     int ncomp;
 
+    //Useful variables
+    int performance_profile;
+
 } instance;
 
 /*!
