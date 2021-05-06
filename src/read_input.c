@@ -14,6 +14,7 @@ void parse_command_line(int argc, char **argv, instance *inst) {
     //Default values
     inst->timelimit = CPX_INFBOUND;
     inst->model_type = -1;
+    inst->performance_profile = 0;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-file") == 0) {
@@ -31,6 +32,11 @@ void parse_command_line(int argc, char **argv, instance *inst) {
             printf("Time limit selected: %f\n", inst->timelimit);
             continue;
         }
+        if (strcmp(argv[i], "-perf_prof") == 0) {
+            inst->performance_profile = atoi(argv[++i]);
+            printf("Performance profile: %d\n", inst->performance_profile);
+            continue;
+        }
     }
 };
 
@@ -46,7 +52,6 @@ void read_input(instance *inst) {
     inst->nnodes = -1;
     inst->nvariables = -1;
     inst->best_value = DBL_MAX;
-    inst->performance_profile = 0;
 
     //Opens the files that will be read
     FILE *file = fopen(inst->input_file, "r");

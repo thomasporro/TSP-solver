@@ -21,13 +21,16 @@ int main(int argc, char **argv) {
         print_error("Usage error");
     }
 
-    int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
-    //return performance_profile(&inst, (int *) &model_type, 3, 3600.0);
-
 
     //Parse the command line and read the input file
     printf("---------------INPUT FILE INFORMATIONS---------------\n");
     parse_command_line(argc, argv, &inst);
+
+    if(inst.performance_profile){
+        int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
+        return performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+    }
+
     read_input(&inst);
 
 
@@ -60,6 +63,10 @@ int main(int argc, char **argv) {
 int performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");
 
+    //Setting parameters inside of inst
+    inst->performance_profile = 1;
+    inst->timelimit = time_limit;
+    printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
     double start_time = seconds();
 
     FILE *csv = fopen("../logfiles/performance_profile.csv", "w");
@@ -96,11 +103,6 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
         //Read and parse the file to test
         strcpy(inst->input_file, file_name);
         read_input(inst);
-
-        //Setting parameters inside of inst
-        inst->performance_profile = 1;
-        inst->timelimit = time_limit;
-        printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
 
         //Iterate over the models passed
         for (int i = 0; i < nmodels; i++) {
