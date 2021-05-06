@@ -27,6 +27,13 @@ int xpos(int i, int j, instance *inst);
 */
 void print_error(const char *err);
 
+/*!
+* Prints an error and exits from the program
+* @param	err pointer to a char's string that will be print
+* @param    status the code of the error
+*/
+void print_error_code(const char *err, int status);
+
 
 /*!
 * Calculates the position of the variable x(i, j) into the CPLEX problem for
@@ -87,7 +94,23 @@ double att_distance(int i, int j, instance *inst);
 */
 double distance(int i, int j, instance *inst);
 
+
 /*!
 * Return the seconds of the current program 
 */
 double seconds();
+
+
+/*!
+ * Create and save the path name of the logfile for cplex
+ * @param inst The instance, it is used in order to retrieve the model type
+ * @return The array where the string will be written
+ */
+char *logfilename(instance *inst);
+
+
+/*!
+ * Frees the memory of the instance passed as argument
+ * @param inst The instance that we want to kill
+ */
+void free_instance(instance *inst);

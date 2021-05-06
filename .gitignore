@@ -262,5 +262,15 @@ __pycache__/
 *.pyc
 
 #Folders
-DatasetGenerator
+datasetGenerator
+logfiles
+testfiles
 cmake-build-debug
+
+#Files for performance or plotting
+files.txt
+performance_profile.csv
+arrows.dat
+stats.txt
+data.dat
+model.lp

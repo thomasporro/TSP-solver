@@ -6,7 +6,7 @@
 #define GREAT_EQUAL 'G'
 #define LOWER_BOUND 'L'
 #define EPS 1e-5
-#define INTERNAL_TIME_LIMIT 360.0
+#define INTERNAL_TIME_LIMIT 300.0
 
 #include <time.h>
 #include <concorde.h>
@@ -26,6 +26,8 @@ int TSPopt(instance *inst) {
     }
 
     CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);
+
+    CPXsetlogfilename(env, logfilename(inst), "w");
 
     //Build the model into the cplex format
     build_model(inst, env, lp);
@@ -174,8 +176,8 @@ void build_model_st(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     printf("END OF BUILDING CONSTRAINTS\n");
 
-    CPXwriteprob(env, lp, "model.lp", NULL);
-    printf("END OF WRITING THE PROBLEM ON model.lp\n");
+    CPXwriteprob(env, lp, "../logfiles/model_st.lp", NULL);
+    printf("END OF WRITING THE PROBLEM ON logfiles/model_st.lp\n");
     free(cname[0]);
     free(cname);
 }
@@ -343,8 +345,8 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     printf("END OF BUILDING CONSTRAINTS\n");
 
-    CPXwriteprob(env, lp, "model.lp", NULL);
-    printf("END OF WRITING THE PROBLEM ON model.lp\n");
+    CPXwriteprob(env, lp, "../logfiles/model_mtz.lp", NULL);
+    printf("END OF WRITING THE PROBLEM ON logfiles/model_mtz.lp\n");
     free(cname[0]);
     free(cname);
 }
@@ -465,8 +467,8 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
     printf("END OF BUILDING CONSTRAINTS\n");
 
-    CPXwriteprob(env, lp, "model.lp", NULL);
-    printf("END OF WRITING THE PROBLEM ON model.lp\n");
+    CPXwriteprob(env, lp, "../logfiles/model_gg.lp", NULL);
+    printf("END OF WRITING THE PROBLEM ON logfiles/model_gg.lp\n");
     free(cname[0]);
     free(cname);
 }
@@ -709,6 +711,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             cname[0] = (char *) calloc(100, sizeof(char));
             sprintf(cname[0], "SOFT_FIX_(K_OPT_%f)", k_opt);
 
+            //CPXsetintparama(env, CPX_APRAMNODELIM, 0)) lo esegue solo al nodo base
+            //I can solve one time with the nodedelim == 0 and then add with CPXaddmipstart adding the solution
+
             //Variables used to manage the new constraints
             int remove_row_flag = 0;
             int lastrow = CPXgetnumrows(env, lp);;
@@ -769,9 +774,15 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
                 //Flag for check if a constraint has been added
                 remove_row_flag++;
+                //TODO posso farlo se sono in modalità debug, e si può non tenere in conto per il conteggio del tempo totale
                 //CPXwriteprob(env, lp, "logfiles/added_constraint(soft_fix).lp", NULL);
 
             }
+            //Delete the last constraint added in the last cycle
+            if (CPXdelrows(env, lp, lastrow, lastrow)) {
+                print_error("Error while deleting the last row (SOFT_FIX)");
+            }
+
             free(cname);
             break;
 
