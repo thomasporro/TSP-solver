@@ -21,3 +21,10 @@ void print_st(FILE *temp, instance *inst);
 * @param	inst is a pointer to the instance of the problem created using tsp.h
 */
 void print_MTZ(FILE *temp, FILE *arcs, instance *inst);
+
+/*!
+* Print into the given file the solution of the heuristics
+* @param	temp It's the pointer to the file where we write the graph
+* @param	inst is a pointer to the instance of the problem created using tsp.h
+*/
+void print_heur(FILE *temp, instance *inst);

@@ -11,10 +11,16 @@
 #include <time.h>
 #include <concorde.h>
 #include <cplex.h>
+#include <float.h>
 #include "tsp.h"
 #include "utils.h"
 
 int TSPopt(instance *inst) {
+    if (inst->model_type == GREEDY) {
+
+    }
+
+
     //Open the CPLEX enviroment
     int error;
     CPXENVptr env = CPXopenCPLEX(&error);
@@ -27,13 +33,13 @@ int TSPopt(instance *inst) {
 
     CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);
 
-    if(inst->performance_profile){
+    if (inst->performance_profile) {
         printf("-----Setting parameters for performance profile-----\n");
         //Setting the saving of the node's tree on the memory
-        if(CPXsetstrparam(env, CPX_PARAM_WORKDIR, "../logfiles")){
+        if (CPXsetstrparam(env, CPX_PARAM_WORKDIR, "../logfiles")) {
             print_error("CPX_PARAM_WORKDIR not setted");
         }
-        if(CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)){
+        if (CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)) {
             print_error("CPX_PARAM_NODEFILEIND not setted");
         };
     }
@@ -58,7 +64,7 @@ int TSPopt(instance *inst) {
     double time_passed = seconds() - start_time;
     print_stats(inst, time_passed);
 
-    if(inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX){
+    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) {
         //If the problem have a solution it saves it into the instance's structure
         int status = CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1);
         if (status) {
@@ -809,6 +815,10 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             free(cname);
             break;
 
+        case GREEDY:
+
+            break;
+
         default:
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
@@ -1014,4 +1024,61 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam) 
     free(rmatval);
 
     return 0;
+}
+
+void greedy(instance *inst) {
+    //Initialization of the array to save the best solution
+    for (int i = 0; i < inst->nnodes; i++) {
+        inst->successors[i] = -1;
+    }
+
+
+    for(int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
+        //Initialization of the temporary array to save the solution
+        int *tmp_solution = (int *) calloc(inst->nnodes, sizeof(int));
+        for (int i = 0; i < inst->nnodes; i++) {
+            tmp_solution[i] = -1;
+        }
+
+        int stop_flag = 0;
+
+        int current_node = starting_node;
+        double cost = 0;
+
+        while (!stop_flag) {
+            double min_distance = DBL_MAX;
+            int candidate_node = -1;
+
+            for (int i = 0; i < inst->nnodes; i++) {
+                //If the node analyzed is the current ore the successors of i has been already defined
+                //skips the iteration
+                if (current_node == i || tmp_solution[i] != -1) continue;
+
+                //If the node of the cycle is nearest in respect the previous one change this values
+                if (distance(current_node, i, inst) < min_distance) {
+                    min_distance = distance(current_node, i, inst);
+                    candidate_node = i;
+                }
+            }
+
+            if (candidate_node != -1) {
+                tmp_solution[current_node] = candidate_node;
+                current_node = candidate_node;
+                cost += min_distance;
+            } else {
+                tmp_solution[current_node] = starting_node;
+                cost += distance(current_node, starting_node, inst);
+                stop_flag = 1;
+            }
+        }
+
+        if (cost < inst->best_value) {
+            inst->best_value = cost;
+            for (int i = 0; i < inst->nnodes; i++) {
+                inst->successors[i] = tmp_solution[i];
+            }
+        }
+
+        free(tmp_solution);
+    }
 }

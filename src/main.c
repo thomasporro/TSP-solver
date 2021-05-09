@@ -1,7 +1,4 @@
-﻿#define _CRT_SECURE_NO_DEPRECATE
-
-#include <stdlib.h>
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include "tsp.h"
@@ -9,7 +6,7 @@
 #include "plot.h"
 #include "utils.h"
 
-int performance_profile(instance *inst, int *models, int nmodels, double time_limit);
+void performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
 
 int main(int argc, char **argv) {
@@ -26,9 +23,10 @@ int main(int argc, char **argv) {
     printf("---------------INPUT FILE INFORMATIONS---------------\n");
     parse_command_line(argc, argv, &inst);
 
-    if(inst.performance_profile){
+    if (inst.performance_profile) {
         int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
-        return performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        return 0;
     }
 
     read_input(&inst);
@@ -36,7 +34,8 @@ int main(int argc, char **argv) {
 
     //Calculate the solution of the problem
     printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
-    TSPopt(&inst);
+    //TSPopt(&inst);
+    greedy(&inst);
 
 
     //Setting the commands to pass to gnuplot to print the graph
@@ -44,7 +43,7 @@ int main(int argc, char **argv) {
     commandsForGnuplot[0] = "set title \"GRAPH\"";
     if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT ||
         inst.model_type == DEFAULT || inst.model_type == HARD_FIX_BAC || inst.model_type == SOFT_FIX
-        || inst.model_type == BRANCH_AND_CUT_RLX) {
+        || inst.model_type == BRANCH_AND_CUT_RLX || inst.model_type == GREEDY) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" using 1:2 with points ls 5 lc rgb \"red\", \\\n"
@@ -60,7 +59,7 @@ int main(int argc, char **argv) {
 }
 
 
-int performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
+void performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");
 
     //Setting parameters inside of inst
@@ -125,5 +124,4 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
     double end_time = seconds();
     printf("TIME ELAPSED: %f s\n\n", end_time - start_time);
 
-    return 0;
 }
