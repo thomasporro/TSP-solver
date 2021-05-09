@@ -34,16 +34,23 @@ int main(int argc, char **argv) {
 
     //Calculate the solution of the problem
     printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
-    //TSPopt(&inst);
-    greedy(&inst);
+    solve(&inst);
 
 
     //Setting the commands to pass to gnuplot to print the graph
+    int flag_gnuplot = inst.model_type == STANDARD
+            || inst.model_type == BENDERS
+            || inst.model_type == BRANCH_AND_CUT
+            || inst.model_type == DEFAULT
+            || inst.model_type == HARD_FIX_BAC
+            || inst.model_type == SOFT_FIX
+            || inst.model_type == BRANCH_AND_CUT_RLX
+            || inst.model_type == GREEDY
+            || inst.model_type == XTRA_MILEAGE;
+
     char *commandsForGnuplot[3];
     commandsForGnuplot[0] = "set title \"GRAPH\"";
-    if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT ||
-        inst.model_type == DEFAULT || inst.model_type == HARD_FIX_BAC || inst.model_type == SOFT_FIX
-        || inst.model_type == BRANCH_AND_CUT_RLX || inst.model_type == GREEDY) {
+    if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" using 1:2 with points ls 5 lc rgb \"red\", \\\n"

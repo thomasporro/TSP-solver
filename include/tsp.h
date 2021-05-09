@@ -17,7 +17,8 @@ typedef enum {
     MTZ_LAZY = 11,
     MTZ_IND = 12,
     GG = 20,
-    GREEDY = 30
+    GREEDY = 30,
+    XTRA_MILEAGE = 31
 } modeltype;
 
 /*!
@@ -61,6 +62,12 @@ typedef struct {
 
 #endif // !TSP_H_
 
+/*!
+ * Switch to solve the problem with CPLEX or heuristics
+ * @param inst is a pointer to the instance where is stored the problem
+ * @return 0 if the solution is found. Other values otherwise
+ */
+int solve(instance *inst);
 
 /*!
 * Calculate the solution of the problem built into an instance
@@ -161,6 +168,12 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam);
 
 /*!
  * Apply the greedy algorithm for the given instance
- * @param inst The instance of which
+ * @param inst The instance of which we want to compute the solution
  */
 void greedy(instance *inst);
+
+/*!
+ * Execute the extra mileage algorithm for the given instance
+ * @param inst The instance of which we want to compute the solution
+ */
+void extra_mileage(instance *inst);

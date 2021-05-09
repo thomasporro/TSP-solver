@@ -36,6 +36,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case GREEDY:
             print_heur(data, inst);
             break;
+        case XTRA_MILEAGE:
+            print_heur(data, inst);
+            break;
         default:
             print_st(data, inst);
             break;
@@ -97,7 +100,14 @@ void print_MTZ(FILE *temp, FILE *arcs, instance *inst) {
 }
 
 void print_heur(FILE *temp, instance *inst){
-    int start_node = 0;
+    int start_node;
+    for(int i= 0; i<inst->nnodes; i++){
+        if(inst->successors[i]!=-1){
+            start_node = i;
+            break;
+        }
+    }
+    //int start_node = 0;
     int current_node = inst->successors[start_node];
 
     fprintf(temp, "%lf %lf \n", inst->x_coord[start_node], inst->y_coord[start_node]);

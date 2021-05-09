@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
 #define BINARY_VARIABLE 'B'
 #define INTEGER_VARIABLE 'I'
 #define EQUAL 'E'
@@ -12,8 +11,23 @@
 #include <concorde.h>
 #include <cplex.h>
 #include <float.h>
+#include <plot.h>
 #include "tsp.h"
 #include "utils.h"
+
+int solve(instance *inst) {
+    switch (inst->model_type) {
+        case GREEDY:
+            greedy(inst);
+            return 0;
+        case XTRA_MILEAGE:
+            extra_mileage(inst);
+            return 0;
+        default:
+            return TSPopt(inst);
+
+    }
+}
 
 int TSPopt(instance *inst) {
     if (inst->model_type == GREEDY) {
@@ -815,10 +829,6 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             free(cname);
             break;
 
-        case GREEDY:
-
-            break;
-
         default:
             printf("CALCULATING THE SOLUTION...\n");
             CPXmipopt(env, lp);
@@ -1026,6 +1036,7 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam) 
     return 0;
 }
 
+
 void greedy(instance *inst) {
     //Initialization of the array to save the best solution
     for (int i = 0; i < inst->nnodes; i++) {
@@ -1033,7 +1044,7 @@ void greedy(instance *inst) {
     }
 
 
-    for(int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
+    for (int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
         //Initialization of the temporary array to save the solution
         int *tmp_solution = (int *) calloc(inst->nnodes, sizeof(int));
         for (int i = 0; i < inst->nnodes; i++) {
@@ -1080,5 +1091,71 @@ void greedy(instance *inst) {
         }
 
         free(tmp_solution);
+    }
+}
+
+
+void extra_mileage(instance *inst) {
+    //Initialization of the array to save the best solution
+    for (int i = 0; i < inst->nnodes; i++) {
+        inst->successors[i] = -1;
+    }
+
+    //Find the farest nodes in the problem
+    int node1 = -1;
+    int node2 = -1;
+    double max_distance = 0;
+    for (int i = 0; i < inst->nnodes; i++) {
+        for (int j = i + 1; j < inst->nnodes; j++) {
+            if (i == j) continue;
+            double tmp_distance = distance(i, j, inst);
+            if (tmp_distance > max_distance) {
+                max_distance = tmp_distance;
+                node1 = i;
+                node2 = j;
+            }
+        }
+    }
+
+    inst->successors[node1] = node2;
+    inst->successors[node2] = node1;
+
+    int start_node = node1;
+
+    int node_added = 2;
+
+    while (node_added < inst->nnodes) {
+
+        int current_node = start_node;
+        int candidate_node = -1;
+        int candidate_start = -1;
+        int candidate_end = -1;
+        double min_distance = DBL_MAX;
+
+        //Find the node which extra mileage is the smallest among the free nodes
+        do {
+            int next_node = inst->successors[current_node];
+
+            for (int i = 0; i < inst->nnodes; i++) {
+                if (i == current_node || i == next_node || inst->successors[i] != -1) continue;
+                double delta = distance(current_node, i, inst) +
+                               distance(i, next_node, inst) -
+                               distance(current_node, next_node, inst);
+                if (delta < min_distance) {
+                    candidate_node = i;
+                    candidate_start = current_node;
+                    candidate_end = next_node;
+                    min_distance = delta;
+                }
+            }
+
+            current_node = next_node;
+        } while (current_node != start_node);
+
+        //Update the solution
+        inst->successors[candidate_start] = candidate_node;
+        inst->successors[candidate_node] = candidate_end;
+
+        node_added++;
     }
 }
