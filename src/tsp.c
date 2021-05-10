@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
 #define BINARY_VARIABLE 'B'
 #define INTEGER_VARIABLE 'I'
 #define EQUAL 'E'
@@ -11,6 +10,8 @@
 #include <time.h>
 #include <concorde.h>
 #include <cplex.h>
+#include <float.h>
+#include <plot.h>
 #include "tsp.h"
 #include "utils.h"
 
@@ -27,13 +28,13 @@ int TSPopt(instance *inst) {
 
     CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);
 
-    if(inst->performance_profile){
+    if (inst->performance_profile) {
         printf("-----Setting parameters for performance profile-----\n");
         //Setting the saving of the node's tree on the memory
-        if(CPXsetstrparam(env, CPX_PARAM_WORKDIR, "../logfiles")){
+        if (CPXsetstrparam(env, CPX_PARAM_WORKDIR, "../logfiles")) {
             print_error("CPX_PARAM_WORKDIR not setted");
         }
-        if(CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)){
+        if (CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)) {
             print_error("CPX_PARAM_NODEFILEIND not setted");
         };
     }
@@ -58,7 +59,7 @@ int TSPopt(instance *inst) {
     double time_passed = seconds() - start_time;
     print_stats(inst, time_passed);
 
-    if(inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX){
+    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) {
         //If the problem have a solution it saves it into the instance's structure
         int status = CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1);
         if (status) {
@@ -1014,4 +1015,173 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam) 
     free(rmatval);
 
     return 0;
+}
+
+
+void greedy(instance *inst) {
+    //Initialization of the array to save the best solution
+    for (int i = 0; i < inst->nnodes; i++) {
+        inst->successors[i] = -1;
+    }
+
+
+    for (int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
+        //Initialization of the temporary array to save the solution
+        int *tmp_solution = (int *) calloc(inst->nnodes, sizeof(int));
+        for (int i = 0; i < inst->nnodes; i++) {
+            tmp_solution[i] = -1;
+        }
+
+        int stop_flag = 0;
+
+        int current_node = starting_node;
+        double cost = 0;
+
+        while (!stop_flag) {
+            double min_distance = DBL_MAX;
+            int candidate_node = -1;
+
+            for (int i = 0; i < inst->nnodes; i++) {
+                //If the node analyzed is the current ore the successors of i has been already defined
+                //skips the iteration
+                if (current_node == i || tmp_solution[i] != -1) continue;
+
+                //If the node of the cycle is nearest in respect the previous one change this values
+                if (distance(current_node, i, inst) < min_distance) {
+                    min_distance = distance(current_node, i, inst);
+                    candidate_node = i;
+                }
+            }
+
+            if (candidate_node != -1) {
+                tmp_solution[current_node] = candidate_node;
+                current_node = candidate_node;
+                cost += min_distance;
+            } else {
+                tmp_solution[current_node] = starting_node;
+                cost += distance(current_node, starting_node, inst);
+                stop_flag = 1;
+            }
+        }
+
+        if (cost < inst->best_value) {
+            inst->best_value = cost;
+            for (int i = 0; i < inst->nnodes; i++) {
+                inst->successors[i] = tmp_solution[i];
+            }
+        }
+
+        free(tmp_solution);
+    }
+}
+
+
+void extra_mileage(instance *inst) {
+    //Initialization of the array to save the best solution
+    for (int i = 0; i < inst->nnodes; i++) {
+        inst->successors[i] = -1;
+    }
+
+    //Find the farest nodes in the problem
+    int node1 = -1;
+    int node2 = -1;
+    double max_distance = 0;
+    for (int i = 0; i < inst->nnodes; i++) {
+        for (int j = i + 1; j < inst->nnodes; j++) {
+            if (i == j) continue;
+            double tmp_distance = distance(i, j, inst);
+            if (tmp_distance > max_distance) {
+                max_distance = tmp_distance;
+                node1 = i;
+                node2 = j;
+            }
+        }
+    }
+
+    inst->successors[node1] = node2;
+    inst->successors[node2] = node1;
+
+    int start_node = node1;
+
+    int node_added = 2;
+
+    while (node_added < inst->nnodes) {
+
+        int current_node = start_node;
+        int candidate_node = -1;
+        int candidate_start = -1;
+        int candidate_end = -1;
+        double min_distance = DBL_MAX;
+
+        //Find the node which extra mileage is the smallest among the free nodes
+        do {
+            int next_node = inst->successors[current_node];
+
+            for (int i = 0; i < inst->nnodes; i++) {
+                if (i == current_node || i == next_node || inst->successors[i] != -1) continue;
+                double delta = distance(current_node, i, inst) +
+                               distance(i, next_node, inst) -
+                               distance(current_node, next_node, inst);
+                if (delta < min_distance) {
+                    candidate_node = i;
+                    candidate_start = current_node;
+                    candidate_end = next_node;
+                    min_distance = delta;
+                }
+            }
+
+            current_node = next_node;
+        } while (current_node != start_node);
+
+        //Update the solution
+        inst->successors[candidate_start] = candidate_node;
+        inst->successors[candidate_node] = candidate_end;
+
+        node_added++;
+    }
+}
+
+
+void two_opt_refining(instance *inst) {
+    int flag_while = 0;
+
+    while (!flag_while) {
+        flag_while = 1;
+        for (int i = 0; i < inst->nnodes; i++) {
+            int flag_for = 0;
+            for (int j = 0; j < inst->nnodes; j++) {
+                //Skips rules
+                if (inst->successors[i] == -1
+                    || inst->successors[j] == -1
+                    || i == j
+                    || inst->successors[i] == j
+                    || inst->successors[j] == i)
+                    continue;
+
+                //Difference of the 4 edges taken into considerations
+                double delta = distance(i, inst->successors[i], inst) +
+                               distance(j, inst->successors[j], inst) -
+                               distance(i, j, inst) -
+                               distance(inst->successors[i], inst->successors[j], inst);
+
+                //Change the order of successors
+                if (delta>0) {
+                    int current = inst->successors[i];
+                    int previous = inst->successors[j];
+                    int end_node = previous;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+                    inst->successors[i] = j;
+                    flag_while = 0;
+                    flag_for = 1;
+                    break;
+                }
+            }
+            if (flag_for) break;
+        }
+    }
 }

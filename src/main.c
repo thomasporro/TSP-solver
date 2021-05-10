@@ -1,7 +1,4 @@
-﻿#define _CRT_SECURE_NO_DEPRECATE
-
-#include <stdlib.h>
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include "tsp.h"
@@ -9,8 +6,22 @@
 #include "plot.h"
 #include "utils.h"
 
-int performance_profile(instance *inst, int *models, int nmodels, double time_limit);
+/**
+ * Function that execute the performance profile with the given information. It saves the results on the
+ * performance_profile.csv
+ * @param inst A pointer to an instance of the TSP problem (it will be modified)
+ * @param models An array containing the
+ * @param nmodels The length of the array @param models
+ * @param time_limit The time limit of the single run of CPLEX
+ */
+void performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
+/*!
+ * Switch to solve the problem with CPLEX or heuristics
+ * @param inst is a pointer to the instance where is stored the problem
+ * @return 0 if the solution is found. Other values otherwise
+ */
+int solve(instance *inst);
 
 int main(int argc, char **argv) {
     //Variables
@@ -26,9 +37,10 @@ int main(int argc, char **argv) {
     printf("---------------INPUT FILE INFORMATIONS---------------\n");
     parse_command_line(argc, argv, &inst);
 
-    if(inst.performance_profile){
+    if (inst.performance_profile) {
         int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
-        return performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        return 0;
     }
 
     read_input(&inst);
@@ -36,15 +48,24 @@ int main(int argc, char **argv) {
 
     //Calculate the solution of the problem
     printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
-    TSPopt(&inst);
+    solve(&inst);
 
 
     //Setting the commands to pass to gnuplot to print the graph
+    int flag_gnuplot = inst.model_type == STANDARD
+            || inst.model_type == BENDERS
+            || inst.model_type == BRANCH_AND_CUT
+            || inst.model_type == DEFAULT
+            || inst.model_type == HARD_FIX_BAC
+            || inst.model_type == SOFT_FIX
+            || inst.model_type == BRANCH_AND_CUT_RLX
+            || inst.model_type == GREEDY
+            || inst.model_type == GREEDY_REF
+            || inst.model_type == XTRA_MILEAGE;
+
     char *commandsForGnuplot[3];
     commandsForGnuplot[0] = "set title \"GRAPH\"";
-    if (inst.model_type == STANDARD || inst.model_type == BENDERS || inst.model_type == BRANCH_AND_CUT ||
-        inst.model_type == DEFAULT || inst.model_type == HARD_FIX_BAC || inst.model_type == SOFT_FIX
-        || inst.model_type == BRANCH_AND_CUT_RLX) {
+    if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" using 1:2 with points ls 5 lc rgb \"red\", \\\n"
@@ -59,8 +80,25 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+int solve(instance *inst) {
+    switch (inst->model_type) {
+        case GREEDY:
+            greedy(inst);
+            return 0;
+        case GREEDY_REF:
+            greedy(inst);
+            two_opt_refining(inst);
+            return 0;
+        case XTRA_MILEAGE:
+            extra_mileage(inst);
+            return 0;
+        default:
+            return TSPopt(inst);
 
-int performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
+    }
+}
+
+void performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");
 
     //Setting parameters inside of inst
@@ -125,5 +163,4 @@ int performance_profile(instance *inst, int *models, int nmodels, double time_li
     double end_time = seconds();
     printf("TIME ELAPSED: %f s\n\n", end_time - start_time);
 
-    return 0;
 }

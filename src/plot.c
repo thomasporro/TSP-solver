@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
 #define EPS 1e-5
 
 #include <errno.h>
@@ -32,6 +31,15 @@ void plot(char **commands, int n_commands, instance *inst) {
             break;
         case MTZ_IND:
             print_MTZ(data, arcs, inst);
+            break;
+        case GREEDY:
+            print_heur(data, inst);
+            break;
+        case GREEDY_REF:
+            print_heur(data, inst);
+            break;
+        case XTRA_MILEAGE:
+            print_heur(data, inst);
             break;
         default:
             print_st(data, inst);
@@ -90,5 +98,29 @@ void print_MTZ(FILE *temp, FILE *arcs, instance *inst) {
                 fprintf(arcs, "%lf %lf \n", inst->x_coord[j] - inst->x_coord[i], inst->y_coord[j] - inst->y_coord[i]);
             }
         }
+    }
+}
+
+void print_heur(FILE *temp, instance *inst){
+    int start_node;
+    for(int i= 0; i<inst->nnodes; i++){
+        if(inst->successors[i]!=-1){
+            start_node = i;
+            break;
+        }
+    }
+    //int start_node = 0;
+    int current_node = inst->successors[start_node];
+
+    fprintf(temp, "%lf %lf \n", inst->x_coord[start_node], inst->y_coord[start_node]);
+    fprintf(temp, "%lf %lf \n", inst->x_coord[current_node], inst->y_coord[current_node]);
+    fprintf(temp, "\n");
+
+    while(start_node != current_node){
+        int next_node = inst->successors[current_node];
+        fprintf(temp, "%lf %lf \n", inst->x_coord[current_node], inst->y_coord[current_node]);
+        fprintf(temp, "%lf %lf \n", inst->x_coord[next_node], inst->y_coord[next_node]);
+        fprintf(temp, "\n");
+        current_node = next_node;
     }
 }
