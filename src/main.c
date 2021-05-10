@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
             || inst.model_type == SOFT_FIX
             || inst.model_type == BRANCH_AND_CUT_RLX
             || inst.model_type == GREEDY
+            || inst.model_type == GREEDY_REF
             || inst.model_type == XTRA_MILEAGE;
 
     char *commandsForGnuplot[3];

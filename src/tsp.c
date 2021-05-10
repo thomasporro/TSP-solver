@@ -20,6 +20,10 @@ int solve(instance *inst) {
         case GREEDY:
             greedy(inst);
             return 0;
+        case GREEDY_REF:
+            greedy(inst);
+            two_opt_refining(inst);
+            return 0;
         case XTRA_MILEAGE:
             extra_mileage(inst);
             return 0;
@@ -30,11 +34,6 @@ int solve(instance *inst) {
 }
 
 int TSPopt(instance *inst) {
-    if (inst->model_type == GREEDY) {
-
-    }
-
-
     //Open the CPLEX enviroment
     int error;
     CPXENVptr env = CPXopenCPLEX(&error);
@@ -1157,5 +1156,50 @@ void extra_mileage(instance *inst) {
         inst->successors[candidate_node] = candidate_end;
 
         node_added++;
+    }
+}
+
+
+void two_opt_refining(instance *inst) {
+    int flag_while = 0;
+
+    while (!flag_while) {
+        flag_while = 1;
+        for (int i = 0; i < inst->nnodes; i++) {
+            int flag_for = 0;
+            for (int j = 0; j < inst->nnodes; j++) {
+                //Skips rules
+                if (inst->successors[i] == -1
+                    || inst->successors[j] == -1
+                    || i == j
+                    || inst->successors[i] == j
+                    || inst->successors[j] == i)
+                    continue;
+
+                //Difference of the 4 edges taken into considerations
+                double delta = distance(i, inst->successors[i], inst) +
+                               distance(j, inst->successors[j], inst) -
+                               distance(i, j, inst) -
+                               distance(inst->successors[i], inst->successors[j], inst);
+
+                //Change the order of successors
+                if (delta>0) {
+                    int current = inst->successors[i];
+                    int previous = inst->successors[j];
+                    int end_node = previous;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+                    inst->successors[i] = j;
+                    flag_while = 0;
+                    flag_for = 1;
+                    break;
+                }
+            }
+            if (flag_for) break;
+        }
     }
 }

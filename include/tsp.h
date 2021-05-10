@@ -18,7 +18,8 @@ typedef enum {
     MTZ_IND = 12,
     GG = 20,
     GREEDY = 30,
-    XTRA_MILEAGE = 31
+    GREEDY_REF = 31,
+    XTRA_MILEAGE = 32
 } modeltype;
 
 /*!
@@ -177,3 +178,10 @@ void greedy(instance *inst);
  * @param inst The instance of which we want to compute the solution
  */
 void extra_mileage(instance *inst);
+
+
+/*!
+ * Given an instance apply the 2-opt refining
+ * @param inst The instance where we want to apply the 2 opt refining
+ */
+void two_opt_refining(instance *inst);

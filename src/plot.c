@@ -36,6 +36,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case GREEDY:
             print_heur(data, inst);
             break;
+        case GREEDY_REF:
+            print_heur(data, inst);
+            break;
         case XTRA_MILEAGE:
             print_heur(data, inst);
             break;
