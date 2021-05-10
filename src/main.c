@@ -6,8 +6,22 @@
 #include "plot.h"
 #include "utils.h"
 
+/**
+ * Function that execute the performance profile with the given information. It saves the results on the
+ * performance_profile.csv
+ * @param inst A pointer to an instance of the TSP problem (it will be modified)
+ * @param models An array containing the
+ * @param nmodels The length of the array @param models
+ * @param time_limit The time limit of the single run of CPLEX
+ */
 void performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
+/*!
+ * Switch to solve the problem with CPLEX or heuristics
+ * @param inst is a pointer to the instance where is stored the problem
+ * @return 0 if the solution is found. Other values otherwise
+ */
+int solve(instance *inst);
 
 int main(int argc, char **argv) {
     //Variables
@@ -66,6 +80,23 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+int solve(instance *inst) {
+    switch (inst->model_type) {
+        case GREEDY:
+            greedy(inst);
+            return 0;
+        case GREEDY_REF:
+            greedy(inst);
+            two_opt_refining(inst);
+            return 0;
+        case XTRA_MILEAGE:
+            extra_mileage(inst);
+            return 0;
+        default:
+            return TSPopt(inst);
+
+    }
+}
 
 void performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");

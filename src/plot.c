@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
 #define EPS 1e-5
 
 #include <errno.h>

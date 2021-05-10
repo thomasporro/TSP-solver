@@ -64,13 +64,6 @@ typedef struct {
 #endif // !TSP_H_
 
 /*!
- * Switch to solve the problem with CPLEX or heuristics
- * @param inst is a pointer to the instance where is stored the problem
- * @return 0 if the solution is found. Other values otherwise
- */
-int solve(instance *inst);
-
-/*!
 * Calculate the solution of the problem built into an instance
 * @param	inst is a pointer to the instance where is stored the problem
 * @return	0 if the solution is found. Other values otherwise

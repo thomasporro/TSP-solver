@@ -15,24 +15,6 @@
 #include "tsp.h"
 #include "utils.h"
 
-int solve(instance *inst) {
-    switch (inst->model_type) {
-        case GREEDY:
-            greedy(inst);
-            return 0;
-        case GREEDY_REF:
-            greedy(inst);
-            two_opt_refining(inst);
-            return 0;
-        case XTRA_MILEAGE:
-            extra_mileage(inst);
-            return 0;
-        default:
-            return TSPopt(inst);
-
-    }
-}
-
 int TSPopt(instance *inst) {
     //Open the CPLEX enviroment
     int error;
