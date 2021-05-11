@@ -19,7 +19,8 @@ typedef enum {
     GG = 20,
     GREEDY = 30,
     GREEDY_REF = 31,
-    XTRA_MILEAGE = 32
+    XTRA_MILEAGE = 32,
+    XTRA_MILEAGE_REF = 33
 } modeltype;
 
 /*!

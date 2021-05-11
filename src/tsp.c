@@ -11,7 +11,6 @@
 #include <concorde.h>
 #include <cplex.h>
 #include <float.h>
-#include <plot.h>
 #include "tsp.h"
 #include "utils.h"
 
@@ -36,7 +35,7 @@ int TSPopt(instance *inst) {
         }
         if (CPXsetintparam(env, CPX_PARAM_NODEFILEIND, 2)) {
             print_error("CPX_PARAM_NODEFILEIND not setted");
-        };
+        }
     }
 
     CPXsetlogfilename(env, logfilename(inst), "w");
@@ -739,7 +738,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
             //Variables used to manage the new constraints
             int remove_row_flag = 0;
-            int lastrow = CPXgetnumrows(env, lp);;
+            int lastrow = CPXgetnumrows(env, lp);
 
             //Cycles until the time is over
             while (inst->timelimit > seconds() - inst->start_time) {
@@ -1165,7 +1164,7 @@ void two_opt_refining(instance *inst) {
                                distance(inst->successors[i], inst->successors[j], inst);
 
                 //Change the order of successors
-                if (delta>0) {
+                if (delta > 0) {
                     int current = inst->successors[i];
                     int previous = inst->successors[j];
                     int end_node = previous;
