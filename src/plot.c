@@ -41,6 +41,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case XTRA_MILEAGE:
             print_heur(data, inst);
             break;
+        case XTRA_MILEAGE_REF:
+            print_heur(data, inst);
+            break;
         default:
             print_st(data, inst);
             break;
@@ -101,22 +104,21 @@ void print_MTZ(FILE *temp, FILE *arcs, instance *inst) {
     }
 }
 
-void print_heur(FILE *temp, instance *inst){
+void print_heur(FILE *temp, instance *inst) {
     int start_node;
-    for(int i= 0; i<inst->nnodes; i++){
-        if(inst->successors[i]!=-1){
+    for (int i = 0; i < inst->nnodes; i++) {
+        if (inst->successors[i] != -1) {
             start_node = i;
             break;
         }
     }
-    //int start_node = 0;
     int current_node = inst->successors[start_node];
 
     fprintf(temp, "%lf %lf \n", inst->x_coord[start_node], inst->y_coord[start_node]);
     fprintf(temp, "%lf %lf \n", inst->x_coord[current_node], inst->y_coord[current_node]);
     fprintf(temp, "\n");
 
-    while(start_node != current_node){
+    while (start_node != current_node) {
         int next_node = inst->successors[current_node];
         fprintf(temp, "%lf %lf \n", inst->x_coord[current_node], inst->y_coord[current_node]);
         fprintf(temp, "%lf %lf \n", inst->x_coord[next_node], inst->y_coord[next_node]);

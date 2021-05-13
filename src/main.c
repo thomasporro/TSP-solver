@@ -12,7 +12,7 @@
  * @param inst A pointer to an instance of the TSP problem (it will be modified)
  * @param models An array containing the
  * @param nmodels The length of the array @param models
- * @param time_limit The time limit of the single run of CPLEX
+ * @param time_limit The time limit of the single run of CPLEX in seconds
  */
 void performance_profile(instance *inst, int *models, int nmodels, double time_limit);
 
@@ -45,7 +45,6 @@ int main(int argc, char **argv) {
 
     read_input(&inst);
 
-
     //Calculate the solution of the problem
     printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
     solve(&inst);
@@ -53,15 +52,16 @@ int main(int argc, char **argv) {
 
     //Setting the commands to pass to gnuplot to print the graph
     int flag_gnuplot = inst.model_type == STANDARD
-            || inst.model_type == BENDERS
-            || inst.model_type == BRANCH_AND_CUT
-            || inst.model_type == DEFAULT
-            || inst.model_type == HARD_FIX_BAC
-            || inst.model_type == SOFT_FIX
-            || inst.model_type == BRANCH_AND_CUT_RLX
-            || inst.model_type == GREEDY
-            || inst.model_type == GREEDY_REF
-            || inst.model_type == XTRA_MILEAGE;
+                       || inst.model_type == BENDERS
+                       || inst.model_type == BRANCH_AND_CUT
+                       || inst.model_type == DEFAULT
+                       || inst.model_type == HARD_FIX_BAC
+                       || inst.model_type == SOFT_FIX
+                       || inst.model_type == BRANCH_AND_CUT_RLX
+                       || inst.model_type == GREEDY
+                       || inst.model_type == GREEDY_REF
+                       || inst.model_type == XTRA_MILEAGE
+                       || inst.model_type == XTRA_MILEAGE_REF;
 
     char *commandsForGnuplot[3];
     commandsForGnuplot[0] = "set title \"GRAPH\"";
@@ -76,21 +76,38 @@ int main(int argc, char **argv) {
     printf("\n----------------------PLOTTING------------------------\n");
     plot(commandsForGnuplot, 2, &inst);
 
-    free_instance(&inst);
+    int flag_free_solution = inst.model_type == GREEDY
+                             || inst.model_type == GREEDY_REF
+                             || inst.model_type == XTRA_MILEAGE
+                             || inst.model_type == XTRA_MILEAGE_REF;
+    free_instance(&inst, !flag_free_solution);
     return 0;
 }
 
 int solve(instance *inst) {
     switch (inst->model_type) {
         case GREEDY:
+            printf("Model type chosen: undirected complete graph solved with greedy method\n");
             greedy(inst);
             return 0;
         case GREEDY_REF:
+            printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
             greedy(inst);
+            printf("Greedy cost: %f\n", inst->best_value);
             two_opt_refining(inst);
+            printf("Two-opt cost cost: %f\n", inst->best_value);
             return 0;
         case XTRA_MILEAGE:
+            printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
             extra_mileage(inst);
+            return 0;
+        case XTRA_MILEAGE_REF:
+            printf("Model type chosen: undirected complete graph solved with extra mileage method + "
+                   "2-opt refining\n");
+            extra_mileage(inst);
+            printf("Extra mileage cost: %f\n", inst->best_value);
+            two_opt_refining(inst);
+            printf("Two-opt cost cost: %f\n", inst->best_value);
             return 0;
         default:
             return TSPopt(inst);
@@ -102,7 +119,6 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     printf("------------START PERFORMANCE PROFILE MODE-----------\n");
 
     //Setting parameters inside of inst
-    inst->performance_profile = 1;
     inst->timelimit = time_limit;
     printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
     double start_time = seconds();

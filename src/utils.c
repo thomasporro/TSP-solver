@@ -110,12 +110,12 @@ char *logfilename(instance *inst) {
     return filename;
 }
 
-void free_instance(instance *inst) {
+void free_instance(instance *inst, int free_solution) {
     free(inst->latitude);
     free(inst->longitude);
     free(inst->x_coord);
     free(inst->y_coord);
-    free(inst->solution);
     free(inst->component);
     free(inst->successors);
+    if(free_solution) free(inst->solution);
 }
