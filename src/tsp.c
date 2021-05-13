@@ -1018,7 +1018,7 @@ int create_cut_relaxation(double cutval, int cutcount, int *cut, void *inParam) 
 
 
 void greedy(instance *inst) {
-    //Initialization of the array to save the best solution
+    //Initialization of the array to save the best solution. The memory allocation is done in read_input.c
     for (int i = 0; i < inst->nnodes; i++) {
         inst->successors[i] = -1;
     }
@@ -1026,9 +1026,9 @@ void greedy(instance *inst) {
 
     for (int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
         //Initialization of the temporary array to save the solution
-        int *tmp_solution = (int *) calloc(inst->nnodes, sizeof(int));
+        int *tmp_successors = (int *) calloc(inst->nnodes, sizeof(int));
         for (int i = 0; i < inst->nnodes; i++) {
-            tmp_solution[i] = -1;
+            tmp_successors[i] = -1;
         }
 
         int stop_flag = 0;
@@ -1043,7 +1043,7 @@ void greedy(instance *inst) {
             for (int i = 0; i < inst->nnodes; i++) {
                 //If the node analyzed is the current ore the successors of i has been already defined
                 //skips the iteration
-                if (current_node == i || tmp_solution[i] != -1) continue;
+                if (current_node == i || tmp_successors[i] != -1) continue;
 
                 //If the node of the cycle is nearest in respect the previous one change this values
                 if (distance(current_node, i, inst) < min_distance) {
@@ -1053,11 +1053,11 @@ void greedy(instance *inst) {
             }
 
             if (candidate_node != -1) {
-                tmp_solution[current_node] = candidate_node;
+                tmp_successors[current_node] = candidate_node;
                 current_node = candidate_node;
                 cost += min_distance;
             } else {
-                tmp_solution[current_node] = starting_node;
+                tmp_successors[current_node] = starting_node;
                 cost += distance(current_node, starting_node, inst);
                 stop_flag = 1;
             }
@@ -1066,22 +1066,22 @@ void greedy(instance *inst) {
         if (cost < inst->best_value) {
             inst->best_value = cost;
             for (int i = 0; i < inst->nnodes; i++) {
-                inst->successors[i] = tmp_solution[i];
+                inst->successors[i] = tmp_successors[i];
             }
         }
 
-        free(tmp_solution);
+        free(tmp_successors);
     }
 }
 
 
 void extra_mileage(instance *inst) {
-    //Initialization of the array to save the best solution
+    //Initialization of the array to save the best solution. The memory allocation is done in read_input.c
     for (int i = 0; i < inst->nnodes; i++) {
         inst->successors[i] = -1;
     }
 
-    //Find the farest nodes in the problem
+    //Find the furthest nodes in the problem
     int node1 = -1;
     int node2 = -1;
     double max_distance = 0;
@@ -1099,6 +1099,7 @@ void extra_mileage(instance *inst) {
 
     inst->successors[node1] = node2;
     inst->successors[node2] = node1;
+    inst->best_value = 2 * max_distance;
 
     int start_node = node1;
 
@@ -1135,6 +1136,11 @@ void extra_mileage(instance *inst) {
         //Update the solution
         inst->successors[candidate_start] = candidate_node;
         inst->successors[candidate_node] = candidate_end;
+        inst->best_value = inst->best_value -
+                           distance(candidate_start, candidate_end, inst) +
+                           distance(candidate_start, candidate_node, inst) +
+                           distance(candidate_node, candidate_end, inst);
+
 
         node_added++;
     }
@@ -1146,8 +1152,10 @@ void two_opt_refining(instance *inst) {
 
     while (!flag_while) {
         flag_while = 1;
+        int candidate_i = -1;
+        int candidate_j = -1;
+        double max_delta = 0;
         for (int i = 0; i < inst->nnodes; i++) {
-            int flag_for = 0;
             for (int j = 0; j < inst->nnodes; j++) {
                 //Skips rules
                 if (inst->successors[i] == -1
@@ -1163,24 +1171,29 @@ void two_opt_refining(instance *inst) {
                                distance(i, j, inst) -
                                distance(inst->successors[i], inst->successors[j], inst);
 
-                //Change the order of successors
-                if (delta > 0) {
-                    int current = inst->successors[i];
-                    int previous = inst->successors[j];
-                    int end_node = previous;
-                    while (current != end_node) {
-                        int next = inst->successors[current];
-                        inst->successors[current] = previous;
-                        previous = current;
-                        current = next;
-                    }
-                    inst->successors[i] = j;
+                //If there is an improvement I save the values of the nodes to be changed
+                if (delta > max_delta) {
+                    candidate_i = i;
+                    candidate_j = j;
+                    max_delta = delta;
                     flag_while = 0;
-                    flag_for = 1;
-                    break;
                 }
             }
-            if (flag_for) break;
+        }
+
+        //Change the order of successors
+        if(max_delta > 0){
+            inst->best_value -= max_delta;
+            int current = inst->successors[candidate_i];
+            int previous = inst->successors[candidate_j];
+            int end_node = previous;
+            while (current != end_node) {
+                int next = inst->successors[current];
+                inst->successors[current] = previous;
+                previous = current;
+                current = next;
+            }
+            inst->successors[candidate_i] = candidate_j;
         }
     }
 }

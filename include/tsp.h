@@ -173,7 +173,6 @@ void greedy(instance *inst);
  */
 void extra_mileage(instance *inst);
 
-
 /*!
  * Given an instance apply the 2-opt refining
  * @param inst The instance where we want to apply the 2 opt refining

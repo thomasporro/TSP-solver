@@ -76,7 +76,11 @@ int main(int argc, char **argv) {
     printf("\n----------------------PLOTTING------------------------\n");
     plot(commandsForGnuplot, 2, &inst);
 
-    free_instance(&inst);
+    int flag_free_solution = inst.model_type == GREEDY
+                             || inst.model_type == GREEDY_REF
+                             || inst.model_type == XTRA_MILEAGE
+                             || inst.model_type == XTRA_MILEAGE_REF;
+    free_instance(&inst, !flag_free_solution);
     return 0;
 }
 
@@ -89,7 +93,9 @@ int solve(instance *inst) {
         case GREEDY_REF:
             printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
             greedy(inst);
+            printf("Greedy cost: %f\n", inst->best_value);
             two_opt_refining(inst);
+            printf("Two-opt cost cost: %f\n", inst->best_value);
             return 0;
         case XTRA_MILEAGE:
             printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
@@ -99,7 +105,9 @@ int solve(instance *inst) {
             printf("Model type chosen: undirected complete graph solved with extra mileage method + "
                    "2-opt refining\n");
             extra_mileage(inst);
+            printf("Extra mileage cost: %f\n", inst->best_value);
             two_opt_refining(inst);
+            printf("Two-opt cost cost: %f\n", inst->best_value);
             return 0;
         default:
             return TSPopt(inst);

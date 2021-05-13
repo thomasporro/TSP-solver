@@ -112,7 +112,6 @@ void print_heur(FILE *temp, instance *inst) {
             break;
         }
     }
-    //int start_node = 0;
     int current_node = inst->successors[start_node];
 
     fprintf(temp, "%lf %lf \n", inst->x_coord[start_node], inst->y_coord[start_node]);
