@@ -85,34 +85,43 @@ int main(int argc, char **argv) {
 }
 
 int solve(instance *inst) {
+    double start_time = seconds();
     switch (inst->model_type) {
         case GREEDY:
             printf("Model type chosen: undirected complete graph solved with greedy method\n");
             greedy(inst);
-            return 0;
+            break;
         case GREEDY_REF:
             printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
             greedy(inst);
             printf("Greedy cost: %f\n", inst->best_value);
+            three_opt_refining(inst);
             two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
-            return 0;
+            break;
         case XTRA_MILEAGE:
             printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
             extra_mileage(inst);
-            return 0;
+            break;
         case XTRA_MILEAGE_REF:
             printf("Model type chosen: undirected complete graph solved with extra mileage method + "
                    "2-opt refining\n");
             extra_mileage(inst);
             printf("Extra mileage cost: %f\n", inst->best_value);
-            two_opt_refining(inst);
+            //two_opt_refining(inst);
+            three_opt_refining(inst);
+            printf("Three-opt cost cost: %f\n", inst->best_value);
+            //two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
-            return 0;
+            break;
         default:
-            return TSPopt(inst);
+            TSPopt(inst);
+            break;
 
     }
+    double end_time = seconds();
+    printf("Time elapsed: %f", end_time - start_time);
+    return 0;
 }
 
 void performance_profile(instance *inst, int *models, int nmodels, double time_limit) {

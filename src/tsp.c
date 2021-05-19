@@ -1148,6 +1148,7 @@ void extra_mileage(instance *inst) {
 
 
 void two_opt_refining(instance *inst) {
+    //TODO local data for refining? For multithread purpose. It is up to me
     int flag_while = 0;
 
     while (!flag_while) {
@@ -1157,7 +1158,7 @@ void two_opt_refining(instance *inst) {
         double max_delta = 0;
         for (int i = 0; i < inst->nnodes; i++) {
             for (int j = 0; j < inst->nnodes; j++) {
-                //Skips rules
+                //Skip rules
                 if (inst->successors[i] == -1
                     || inst->successors[j] == -1
                     || i == j
@@ -1182,7 +1183,7 @@ void two_opt_refining(instance *inst) {
         }
 
         //Change the order of successors
-        if(max_delta > 0){
+        if (max_delta > 0) {
             inst->best_value -= max_delta;
             int current = inst->successors[candidate_i];
             int previous = inst->successors[candidate_j];
@@ -1194,6 +1195,181 @@ void two_opt_refining(instance *inst) {
                 current = next;
             }
             inst->successors[candidate_i] = candidate_j;
+        }
+    }
+}
+
+
+void three_opt_refining(instance *inst) {
+
+    int flag_while = 0;
+
+    while (!flag_while) {
+        flag_while = 1;
+        int flag_comb = 0;
+        int candidate_i = -1;
+        int candidate_j = -1;
+        int candidate_k = -1;
+        double max_delta = 0;
+
+        for (int i = 0; i < inst->nnodes; i++) {
+            int j = inst->successors[i];
+
+            while (inst->successors[j] != i
+                   && j != i) {
+
+                //Skips the first assignement of the cycle
+                if (j == inst->successors[i]) {
+                    j = inst->successors[j];
+                }
+
+                int k = inst->successors[j];
+                while (inst->successors[k] != i
+                       && k != i) {
+
+                    //Skips the first assignment of the cycle
+                    if (k == inst->successors[j]) {
+                        k = inst->successors[k];
+                    }
+
+                    //Previous value for the edges connected
+                    double prev_value = distance(i, inst->successors[i], inst) +
+                                        distance(j, inst->successors[j], inst) +
+                                        distance(k, inst->successors[k], inst);
+
+                    //All the combination of the new edges
+                    double combs[4] = {
+                            distance(i, j, inst) +
+                            distance(inst->successors[i], k, inst) +
+                            distance(inst->successors[j], inst->successors[k], inst),
+
+                            distance(i, inst->successors[j], inst) +
+                            distance(k, inst->successors[i], inst) +
+                            distance(j, inst->successors[k], inst),
+
+                            distance(i, inst->successors[j], inst) +
+                            distance(k, j, inst) +
+                            distance(inst->successors[i], inst->successors[k], inst),
+
+                            distance(i, k, inst) +
+                            distance(inst->successors[j], inst->successors[i], inst) +
+                            distance(j, inst->successors[k], inst)
+                    };
+
+                    //Checks for new values of delta
+                    for (int combo = 0; combo < 4; combo++) {
+                        double delta = prev_value - combs[combo];
+                        if (delta > max_delta) {
+                            candidate_i = i;
+                            candidate_j = j;
+                            candidate_k = k;
+                            max_delta = delta;
+                            flag_comb = combo + 1;
+                            flag_while = 0;
+                        }
+                    }
+
+                    //Update k
+                    k = inst->successors[k];
+                }
+
+                //Update j
+                j = inst->successors[j];
+            }
+
+        }
+
+        if (max_delta > 0) {
+            inst->best_value -= max_delta;
+            //Changes the order of the nodes following the best case
+            switch (flag_comb) {
+                case 1: {
+                    inst->best_value -= max_delta;
+                    int succ_j = inst->successors[candidate_j];
+                    int succ_i = inst->successors[candidate_i];
+                    int succ_k = inst->successors[candidate_k];
+
+                    int current = succ_i;
+                    int previous = candidate_k;
+                    int end_node = succ_j;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+                    inst->successors[candidate_i] = candidate_j;
+
+                    current = succ_j;
+                    previous = inst->successors[candidate_k];
+                    end_node = succ_k;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+
+                    break;
+                }
+
+                case 2: {
+                    inst->best_value -= max_delta;
+                    int succ_j = inst->successors[candidate_j];
+                    int succ_i = inst->successors[candidate_i];
+                    int succ_k = inst->successors[candidate_k];
+
+                    inst->successors[candidate_i] = succ_j;
+                    inst->successors[candidate_k] = succ_i;
+                    inst->successors[candidate_j] = succ_k;
+                    break;
+                }
+
+                case 3: {
+                    inst->best_value -= max_delta;
+                    int succ_j = inst->successors[candidate_j];
+                    int succ_i = inst->successors[candidate_i];
+                    int succ_k = inst->successors[candidate_k];
+
+
+                    int current = succ_i;
+                    int previous = succ_k;
+                    int end_node = succ_j;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+                    inst->successors[candidate_i] = succ_j;
+                    inst->successors[candidate_k] = candidate_j;
+                    break;
+                }
+
+                case 4: {
+                    inst->best_value -= max_delta;
+                    int succ_j = inst->successors[candidate_j];
+                    int succ_i = inst->successors[candidate_i];
+                    int succ_k = inst->successors[candidate_k];
+
+
+                    int current = succ_j;
+                    int previous = succ_i;
+                    int end_node = succ_k;
+                    while (current != end_node) {
+                        int next = inst->successors[current];
+                        inst->successors[current] = previous;
+                        previous = current;
+                        current = next;
+                    }
+                    inst->successors[candidate_j] = succ_k;
+                    inst->successors[candidate_i] = candidate_k;
+                    break;
+                }
+
+                default:
+                    break;
+            }
         }
     }
 }

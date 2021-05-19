@@ -178,3 +178,15 @@ void extra_mileage(instance *inst);
  * @param inst The instance where we want to apply the 2 opt refining
  */
 void two_opt_refining(instance *inst);
+
+/*!
+ * Given an instance apply the 3-opt refining
+ * @param inst The instance where we want to apply the 3 opt refining
+ */
+void three_opt_refining(instance *inst);
+
+/*!
+ * Apply the Variable Neighborhood search to the given instance. The first solution must have been already found
+ * @param inst The instance in which we want to apply the VNS
+ */
+void vns(instance *inst);
