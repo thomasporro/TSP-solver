@@ -1,0 +1,39 @@
+\documentclass{article}
+
+%%%%%%% PACKAGES %%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{blindtext}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{notoccite} %citation number ordering
+\usepackage{lscape} %landscape table
+\usepackage{caption} %add a newline in the table caption
+
+\title{\huge{\textbf{Progress Report}} \\
+\LARGE{Operational Reseach 2}}
+\author{Thomas Porro}
+\date{August 2021}
+
+\begin{document}
+	\pagenumbering{roman} % Start roman numbering
+	\clearpage\maketitle
+	\thispagestyle{empty}
+	\begin{center}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=10cm]{images/unipd}
+			%\caption{Your caption here}
+			\label{fig:logo}
+		\end{figure}
+		\large{School of Computer Engineering}
+	\end{center}
+	\newpage
+	\setcounter{page}{1}
+	\tableofcontents
+	
+	\newpage
+	\pagenumbering{arabic} % Start roman numbering
+	
+	\input{sections/introduction}
+\end{document}

@@ -108,7 +108,6 @@ int solve(instance *inst) {
                    "2-opt refining\n");
             extra_mileage(inst);
             printf("Extra mileage cost: %f\n", inst->best_value);
-            //two_opt_refining(inst);
             three_opt_refining(inst);
             printf("Three-opt cost cost: %f\n", inst->best_value);
             //two_opt_refining(inst);
@@ -120,7 +119,7 @@ int solve(instance *inst) {
 
     }
     double end_time = seconds();
-    printf("Time elapsed: %f", end_time - start_time);
+    printf("Time elapsed: %f\n", end_time - start_time);
     return 0;
 }
 
@@ -172,7 +171,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
             printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
             inst->model_type = models[i];
             double start_time_for = seconds();
-            TSPopt(inst);
+            solve(inst);
             double end_time_for = seconds();
 
             //Print

@@ -274,3 +274,8 @@ arrows.dat
 stats.txt
 data.dat
 model.lp
+
+latex_report/*.aux
+latex_report/*.log
+latex_report/*.toc
+latex_report/*.gz

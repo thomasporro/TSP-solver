@@ -1141,7 +1141,6 @@ void extra_mileage(instance *inst) {
                            distance(candidate_start, candidate_node, inst) +
                            distance(candidate_node, candidate_end, inst);
 
-
         node_added++;
     }
 }
@@ -1371,5 +1370,49 @@ void three_opt_refining(instance *inst) {
                     break;
             }
         }
+    }
+}
+
+
+void vns(instance *inst, int max_neighborhood) {
+    int neighborhood = 2;
+    while (neighborhood < max_neighborhood) {
+        int *selected_node = (int *) calloc(neighborhood, sizeof(int));
+        for (int i = 0; i < neighborhood; i++) {
+            selected_node[i] = -1;
+        }
+
+        int start_node = 0;
+        int added_node = 0;
+        int current_node = start_node;
+
+        //Add the edges to change during the shake
+        do {
+            current_node = inst->successors[current_node];
+
+            //TODO checks if this node is already in the array of the selected
+            for (int i = 0; i < added_node; i++) {
+                if (inst->successors[selected_node[i]] == current_node
+                    || selected_node[i] == current_node) {
+                    current_node = inst->successors[current_node];
+                }
+            }
+
+            if (rand() % 100 < 15) {
+                selected_node[added_node] = current_node;
+                added_node++;
+            }
+
+        } while (added_node < neighborhood && start_node != current_node);
+
+        int *successors = (int *) calloc(added_node, sizeof(int));
+        for(int i = 0;i<added_node;i++){
+            successors[i] = inst->successors[selected_node[i]];
+        }
+
+
+
+        free(successors);
+        free(selected_node);
     }
 }

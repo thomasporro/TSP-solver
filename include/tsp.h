@@ -188,5 +188,6 @@ void three_opt_refining(instance *inst);
 /*!
  * Apply the Variable Neighborhood search to the given instance. The first solution must have been already found
  * @param inst The instance in which we want to apply the VNS
+ * @param max_neighborhood The maximum value of the neighborhood explored
  */
-void vns(instance *inst);
+void vns(instance *inst,  int max_neighborhood);
