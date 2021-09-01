@@ -1,0 +1,10 @@
+\section{Code setup}
+In order to implement the models to be solved we decided to use the common and powerful tool IBM CPLEX. Usually this software isn't free but due the academic usage it was made available for all the students that needed it. \textbf{Allegare sito di cplex}\\
+CPLEX allow its user to decide which programming language to use between Python and C; in this project we used C.
+
+To visualize the nodes and the paths found by our program we used a Gnuplot \textbf{Allegare sito di gnuplot} which is a command-line driven utility. Its code is protected byt copyright but the download is completely free. The sofware needs to be installed on the machine where the code is executed because Gnuplot is executed as a pipe: in particular before the plotting all the data is wrote to a file (according to the documentation) and than Gnuplot read and create the plot from that file.
+
+To build the performance profiles in this report we used a python program written by D. Salvagnin (2019).
+
+
+The first thing we did was build a parser capable of interpreting the TSP problems provided by the TSPLIB.\textbf{Allegare sito di cplex} All the useful data are saved in a struct inside the program.

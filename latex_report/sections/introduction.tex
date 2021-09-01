@@ -1,1 +1,48 @@
-\section*{\centering Introduction}
+\section{\centering The Problem}
+
+In this report we are going to describe, analyze and implement solutions for the Travelling Salesman Problem (from now on it will be called TSP).\\
+Essentially the problem have this type of formulation is the following: "Given a list of cities and the distances between eachother, find the shortest path that connect all the cities".
+This could be "translated" to find the shortest (or the one with the lowest cost) hamiltonian circuit given an oriented graph $G=(V, A)$, where $V$ are the cities of the problem and $A$ are the paths that connect each city to the other ones.
+
+Matematically the problem is the following.  We start numbering all the cities that we have, from now on they will be called nodes, then we introduce a decisional variable $x_{ij}$
+
+\begin{equation}
+	x_{ij}=
+	\begin{cases}
+		1 & \text{if the arc $(i, j) \in A$ is chosen in the optimal solution}\\
+		0 & \text{otherwise}
+	\end{cases}
+\end{equation}
+
+Now we can describe the entire problem:
+
+\begin{equation}
+	\label{eqn:cost}
+	min\sum_{(i,j)\in A}c_{ij}x_{ij}
+	\stepcounter{equation}\tag{{\theequation}a}
+\end{equation}
+
+\begin{equation}
+	\label{eqn:in}
+	\sum_{(i,j)\delta^-(j)}x_{ij}=1, \quad j\in V
+	\tag{{\theequation}b}
+\end{equation}
+
+\begin{equation}
+	\label{eqn:out}
+	\sum_{(i,j)\delta^+(j)}x_{ij}=1, \quad i\in V
+	\tag{{\theequation}c}
+\end{equation}
+
+\begin{equation}
+	\label{eqn:ragg}
+	\sum_{(i,j)\delta^+(S)}x_{ij}\ge 1, \quad S \subset V\quad:\quad 1\in S
+	\tag{{\theequation}d}
+\end{equation}
+
+\begin{equation}
+	x_{ij}\ge 0 \; \text{intero} , \quad (i, j) \in A
+	\tag{{\theequation}e}
+\end{equation}
+
+In these equations we use the value $c_{ij}$ as the cost of the path from the node $i$ to the node $j$. The equations \ref{eqn:in} and \ref{eqn:out} lead to the fact that each node must have only one arc incoming and one arc outgoing. The formula \ref{eqn:ragg} is needed to avoid solutions not connected and force each node to be reachable from the first node.
