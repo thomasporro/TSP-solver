@@ -1,10 +1,18 @@
 \section{Code setup}
-In order to implement the models to be solved we decided to use the common and powerful tool IBM CPLEX. Usually this software isn't free but due the academic usage it was made available for all the students that needed it. \textbf{Allegare sito di cplex}\\
+In order to implement the models to be solved we decided to use the common and powerful tool \href{https://www.ibm.com/products/ilog-cplex-optimization-studio}{IBM CPLEX}. Usually this software isn't free but due the academic usage it was made available for all the students that needed it.\\
 CPLEX allow its user to decide which programming language to use between Python and C; in this project we used C.
 
-To visualize the nodes and the paths found by our program we used a Gnuplot \textbf{Allegare sito di gnuplot} which is a command-line driven utility. Its code is protected byt copyright but the download is completely free. The sofware needs to be installed on the machine where the code is executed because Gnuplot is executed as a pipe: in particular before the plotting all the data is wrote to a file (according to the documentation) and than Gnuplot read and create the plot from that file.
+To visualize the nodes and the paths found by our program we used a \href{https://www.gnuplot.info}{Gnuplot} which is a command-line driven utility. Its code is protected byt copyright but the download is completely free. The sofware needs to be installed on the machine where the code is executed because Gnuplot is executed as a pipe: in particular before the plotting all the data is wrote to a file (according to the documentation) and than Gnuplot read and create the plot from that file.
 
 To build the performance profiles in this report we used a python program written by D. Salvagnin (2019).
 
 
-The first thing we did was build a parser capable of interpreting the TSP problems provided by the TSPLIB.\textbf{Allegare sito di cplex} All the useful data are saved in a struct inside the program.
+The first thing we did was build a parser capable of interpreting the TSP problems provided by the \href{http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/}{TSPLIB}. The main data to save was the number of nodes, the coordinates of the nodes (they will be or relative coordinates that describe the position of the nodes or real world coordinates), the type of distance function to use (for example when are used real world coordinates the distance function need to consider the sphericity of the world). For each tsp problem we assume that the datafile contains a complete graph, so each node is directly connected with all the others nodes.
+
+In my particular case all the project was developed on a linux machine with Ubuntu 20.04.
+
+\subsection{CPLEX environment}
+In order to work properly CPLEX needs to build his internal data structure to hold all the information needed to solve the problem. So the first thing to do is to create a pointer to the environment of Cplex through the \lstinline|CPXopenCPLEX(&error)|: this function will return a pointer to the CPLEX environment that will be needed to use his entire library.\\
+Once the environment is build CPLEX needs an additional data structure to hold the constraints of the optimization problem we want to solve, in order to use it we build an empty object using the funtcion \lstinline|PXcreateprob(env, &error, "TSP")|: this will return a pointer to the problem where we will write all the constraints that we need.
+
+\subsubsection{Variable creation}
