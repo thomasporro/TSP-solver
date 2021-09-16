@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
                        || inst.model_type == XTRA_MILEAGE_REF;
 
     char *commandsForGnuplot[3];
-    commandsForGnuplot[0] = "set title \"GRAPH\"";
+    commandsForGnuplot[0] = "set title \"Symmetric TSP with no sub-tours\"";
     if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {

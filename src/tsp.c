@@ -58,7 +58,7 @@ int TSPopt(instance *inst) {
     double time_passed = seconds() - start_time;
     print_stats(inst, time_passed);
 
-    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) {
+    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) { //TODO always true
         //If the problem have a solution it saves it into the instance's structure
         int status = CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1);
         if (status) {

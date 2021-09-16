@@ -1,10 +1,11 @@
 \section{\centering The Problem}
+\label{sec:intro}
 
 In this report we are going to describe, analyze and implement solutions for the Travelling Salesman Problem (from now on it will be called TSP).\\
 Essentially the problem have this type of formulation is the following: "Given a list of cities and the distances between eachother, find the shortest path that connect all the cities".
 This could be "translated" to find the shortest (or the one with the lowest cost) hamiltonian circuit given an oriented graph $G=(V, A)$, where $V$ are the cities of the problem and $A$ are the paths that connect each city to the other ones.
 
-Matematically the problem is the following.  We start numbering all the cities that we have, from now on they will be called nodes, then we introduce a decisional variable $x_{ij}$
+Matematically the problem is the following.  We start numbering all the cities that we have, from now on they will be called nodes. Each couples of nodes can be connected with an edge that is essentially the corresponding of the "street" in the problem, so we introduce a decisional variable $x_{ij}$ where if the direct path from the node $i$ to the node $j$ is chosen its value is setted to $1$, $0$ otherwise
 
 \begin{equation}
 	x_{ij}=
