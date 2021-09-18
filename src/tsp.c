@@ -350,7 +350,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 linind[1] = final_position + j;
                 if (CPXaddindconstr(env, lp, xxpos(i, j, inst), complemented, nzcnt, rhs, sense, linind, linval,
                                     cname[0])) {
-                    print_error("wrong indicator contraint");
+                    print_error("wrong indicator constraint");
                 }
             }
         }

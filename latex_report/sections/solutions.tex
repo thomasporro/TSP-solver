@@ -1,4 +1,5 @@
 \section{Problem resolution}
+\label{sec:problem-resolution}
 The first we have done in this project was testing that our program will actually work. As our first coding task we implemented the problem formulation that we described in the section \ref{sec:intro}, the problem reported has only the minimization function and it ensures that each node has only one edge incoming and only one edge outcoming. In this first part of this report, we will consider only the symmetric TSP so the resulting graph will be undirected. Until otherwise specified the following methods are testes with the file \href{http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp/}{att48.tsp.}
 
 \begin{figure}[h]
@@ -7,7 +8,16 @@ The first we have done in this project was testing that our program will actuall
 	\caption{The image represent att48.tsp solved with the problem formulation showed in section \ref{sec:intro}}
 \end{figure}
 
-As we can see the solution that CPLEX found doesn't contain a single tour but a lot of sub-tours. The TSP problem requires that all the nodes must be connected with only one cycle, to do that we implemented different solutions that we will see in this report, the following subsection will explore the basic formulation of the loop method (also known as benders) and some compact models (MTZ and GG).
+As we can see the solution that CPLEX found doesn't contain a single tour but a lot of sub-tours. The TSP problem requires that all the nodes must be connected with only one cycle, to do that we implemented different solutions that we will see in this report, the following subsection will explore the basic formulation of the loop method (also known as benders) and some compact models (MTZ and GG).\\
+Before the introduction of this methods we need to introduce the most known formulation to the loops problem inside the TSP. Dantzig, Fulkerson and Johnson \cite{dantzig} introduced what it can be said to be one of the most efficient approach:
+
+\begin{equation}
+	\sum_{i\in S}\sum_{j \in S}x_{ij}\le |S|-1; \quad \forall S \subset\{2, \dots, n\}, \; |S|\ge 2
+\end{equation}
+
+Where $S$ is the set of nodes that are in the solution. This equation implies that the number of edges in the solution cannot be greater that $|S|-1$.
+
+The main problem with this formula is that it produces a great number of constraint ($O(2^n)$) and it makes it unfeasable even for relatevely small amount of nodes.
 
 \subsection{Loop method}
 \label{sec:loop}
@@ -48,3 +58,41 @@ In the particular case of the simmetric TSP the path from $i$ to $j$ and $j$ to 
 	\caption{The image represent the matrix method we used to reference the variable inside CPLEX in the case of the simmetric TSP. In this case half of the matrix is not used since the values that were in the gray cells are the same of its "corrisponding white cell" since $x_{ij}$ have the same value than $x_{ji}$. In fact the value $x_{72}$ in the figure \ref{img:full_matrix} is transposed into $x_{27}$.}
 	\label{img:full_matrix_simm}
 \end{figure}
+
+\subsection{Miller-Ticker-Zemlin model}
+As said in section \ref{sec:problem-resolution} the Miller-Ticker-Zemlin model is a compact model for the resolution of the TSP problem but, instead of the symmetric problem we have faced so far, it can be applied only to the asymmetric one. In fact in this case we will consider $x_{ij}$ and $x_{ji}$ two completely different paths with different lenghts (in our particular case the two path will have the same lenght). This model can delete all the sub-tours in a given problem: the current formulation of the constraints need the construction of an additional variable $u_i$ which is used to denote the position of node $i$ in the tour, here it is its formulation as described in (CITATION):
+
+\begin{equation}
+\label{eqn:big-m}
+	u_i-u_j+nx_{ij}\le n-1; \quad i,j\in \{2, \dots, n\}, i \not= j
+\end{equation}
+\begin{equation}
+	\label{eqn:u-bound}
+	u_i \in \Re; \: i \in V:i>1
+\end{equation}
+
+Where $V$ is the set of nodes. In the original paper the variables $u_i$ were unrestricted but they can be restricted without compromising the solution of the asymmetric TSP, so we can rewrite \ref{eqn:u-bound} as:
+
+\begin{equation}
+	u_1=1
+\end{equation}
+\begin{equation}
+	2\le u_i \le n; \: i\in V:\:i>1
+\end{equation}
+
+\subsubsection{Implementation of the model}
+Essentially the model implies that the nodes in the tour must be numbered in increasing order, from number $1$, that is the start node, to $n$. In fact the formula \ref{eqn:big-m} is simply a Big-M constraint that force the node $j$ to have an $u$ greater than node $j$ if the arc $x_{ij}$ is selected. Now that we explained what the \ref{eqn:big-m} means we can rewrite it as a Big-M constraint in order to see the reference better:
+
+\begin{equation}
+	u_j\ge u_i+1-M(1-x_{ij})
+\end{equation}
+
+And than setting $M$ to $n$ and doing some basic algebra we can see the relation between them.
+
+Now that we have explained the formula we can start explaining the three implementation of the the MTZ model:
+
+\begin{itemize}
+	\item standard constraints: in this case all the constraints wrote in \ref{eqn:big-m} are directely saved into the problem and than the problem is solved by CPLEX;
+	\item lazy constraints: here the constraints are not always applied to the problem, as the name can suggest they are applied lazily, so CPLEX use them only when necessary or not before needed;
+	\item indicator constraints: in the first two cases the Big-M trick is used to trigger a constraint when a particular variable assumes a predermined value, but this method (Big-M) is not always preferable since can behave in unstable ways. Thats why a good implementation of \ref{eqn:big-m} is the usage of the indicator constraints: CPLEx automatically activate the constraint $u_j\le u_i-1$ when the $x_ij$ assume the user passed value.
+\end{itemize}
