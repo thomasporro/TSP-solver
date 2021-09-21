@@ -3,7 +3,8 @@
 \BOOKMARK [2][-]{subsection.2.1}{CPLEX environment}{section.2}% 3
 \BOOKMARK [3][-]{subsubsection.2.1.1}{Variable and constraint creation}{subsection.2.1}% 4
 \BOOKMARK [1][-]{section.3}{Problem resolution}{}% 5
-\BOOKMARK [2][-]{subsection.3.1}{Loop method}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Loop model}{section.3}% 6
 \BOOKMARK [3][-]{subsubsection.3.1.1}{Particularity of the variable creation in the symmetric TSP}{subsection.3.1}% 7
 \BOOKMARK [2][-]{subsection.3.2}{Miller-Ticker-Zemlin model}{section.3}% 8
 \BOOKMARK [3][-]{subsubsection.3.2.1}{Implementation of the model}{subsection.3.2}% 9
+\BOOKMARK [2][-]{subsection.3.3}{Gavish and Gaves model}{section.3}% 10

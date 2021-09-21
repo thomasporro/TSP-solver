@@ -19,7 +19,7 @@ Where $S$ is the set of nodes that are in the solution. This equation implies th
 
 The main problem with this formula is that it produces a great number of constraint ($O(2^n)$) and it makes it unfeasable even for relatevely small amount of nodes.
 
-\subsection{Loop method}
+\subsection{Loop model}
 \label{sec:loop}
 This method is easier to implement and also easier to understand. This process that we are going to describe is also known as benders decomposition and it is based on the principle of the divide-and-conquer.
 
@@ -60,6 +60,7 @@ In the particular case of the simmetric TSP the path from $i$ to $j$ and $j$ to 
 \end{figure}
 
 \subsection{Miller-Ticker-Zemlin model}
+\label{sec:mtz}
 As said in section \ref{sec:problem-resolution} the Miller-Ticker-Zemlin model is a compact model for the resolution of the TSP problem but, instead of the symmetric problem we have faced so far, it can be applied only to the asymmetric one. In fact in this case we will consider $x_{ij}$ and $x_{ji}$ two completely different paths with different lenghts (in our particular case the two path will have the same lenght). This model can delete all the sub-tours in a given problem: the current formulation of the constraints need the construction of an additional variable $u_i$ which is used to denote the position of node $i$ in the tour, here it is its formulation as described in (CITATION):
 
 \begin{equation}
@@ -80,6 +81,8 @@ Where $V$ is the set of nodes. In the original paper the variables $u_i$ were un
 	2\le u_i \le n; \: i\in V:\:i>1
 \end{equation}
 
+This formulation compared with \cite{dantzig} has a better complexity since the number of constraints used are $O(n^2)$ that is a lot better compered to $O(2^n)$ of the previous model.
+
 \subsubsection{Implementation of the model}
 Essentially the model implies that the nodes in the tour must be numbered in increasing order, from number $1$, that is the start node, to $n$. In fact the formula \ref{eqn:big-m} is simply a Big-M constraint that force the node $j$ to have an $u$ greater than node $j$ if the arc $x_{ij}$ is selected. Now that we explained what the \ref{eqn:big-m} means we can rewrite it as a Big-M constraint in order to see the reference better:
 
@@ -96,3 +99,29 @@ Now that we have explained the formula we can start explaining the three impleme
 	\item lazy constraints: here the constraints are not always applied to the problem, as the name can suggest they are applied lazily, so CPLEX use them only when necessary or not before needed;
 	\item indicator constraints: in the first two cases the Big-M trick is used to trigger a constraint when a particular variable assumes a predermined value, but this method (Big-M) is not always preferable since can behave in unstable ways. Thats why a good implementation of \ref{eqn:big-m} is the usage of the indicator constraints: CPLEx automatically activate the constraint $u_j\le u_i-1$ when the $x_ij$ assume the user passed value.
 \end{itemize}
+
+
+\subsection{Gavish and Gaves model}
+The second compact model we have implemented in our project is the one proposed by Gavish and Gaves (this model will be called from now on GG) and it is based on the single commodity flow: the arcs in fact will be considered as pipes. As the MTZ model also this one can only be applied to asymmetric problem instead of the symmetric one.\\
+Based on [Put here gavish and gaves model] the additional constraints to put in the model are the following:
+
+\begin{equation}
+	\label{eqn:linking}
+	y_{ij}\le (n-1)x_{ij}
+\end{equation}
+
+\begin{equation}
+	\label{eqn:flow_first}
+	\sum_{j;j\not=1}y_{1j}=n-1
+\end{equation}
+
+\begin{equation}
+	\label{eqn:flows}
+	\sum_{i;i\not=j}y_{ij}-\sum_{k;i\not=k}y_{jk}=1
+\end{equation}
+
+Where the variable $y_{ij}$ is a variable created to represent the flow of the arc. The equations \ref{eqn:flow_first} and \ref{eqn:flows} say that from the first node starts a flow of $n-1$ and than for each node of the path find the flow needs to lower its value by 1. The first constraint we introduced (\ref{eqn:linking}) is the one that allows the flow to take place only if the arc is selected.
+
+As in section \ref{sec:mtz} we used the Big-M method to create the constraint \ref{eqn:linking}, so its implementation is the same as before.
+
+\subsection{Performance Analysis}

@@ -32,6 +32,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case MTZ_IND:
             print_MTZ(data, arcs, inst);
             break;
+        case GG:
+            print_MTZ(data, arcs, inst);
+            break;
         case GREEDY:
             print_heur(data, inst);
             break;
