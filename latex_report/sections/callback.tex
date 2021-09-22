@@ -1,0 +1,29 @@
+\section{Resolution with the callback method}
+In sectio\ref{sec:problem-resolution} we introduce the fastest resolution method we've seen so far, but its implementation is a little bit tricky, and most of all not really "easthetic" CAMBIARE.\\
+In this section we are going to explore the same loop method (so we will reject the solutions with some sub-tours) but this time we will implement its better version, also known as branch and cut.
+
+\subsection{The callbacks}
+Let's dive in in the main argument of this section: the callbacks.
+
+As the name can suggest this type of function are not the classical one we have seen in section \ref{sec:setup} and \ref{sec:problem-resolution}, in fact every method of the callable library we have used is applied or before or after the optimization computed by CPLEX. The callback functions give to the user significant additional capabilities because they allow to intervene during the optimization, this upgraded abilities permit the user to work with the internal data structure of CPLEX so the developer must be aware of what he is doing.
+
+CPLEX has three different types of callbacks: informational callbacks, query/diagnostic callbacks, and control callbacks. The first ones gives the user additional information on the current optimization without affection the performance or interfering with the solution search space. The second ones access to more detailed informations respect to the informational callbacks but can affect the overall performance of the problem resolution; the query/diagnostic callbacks are also incompatible with the dynamic search and deterministic parallel functions. The last ones are the one we are going to use and they allow the user to alter and customize how CPLEX perform the optimization.
+
+In order to use them we need to declare their usage before calling the optimization function, we can do this through the function of the callable library:
+
+\begin{lstlisting}
+	CPXcallbacksetfunc(env, lp, CPX_CALLBACKCONTEXT_CANDIDATE, sec_callback, inst)
+\end{lstlisting}
+
+In this piece of code we can see the variables \verb|env| and \verb|lp| are the well known environment and problem of CPLEX. The third argument (\verb|CPX_CALLBACKCONTEXT_CANDIDATE|) is what the API documentation call contextmask, usually this value must be one of the constants described the callable library; the value passed in the function tells CPLEX to call the callback function (the fourth argument, \verb|sec_callback|) everytime it finds an integer solution of the problem. The last argument is the user data that are passed to the callback function.
+
+
+\subsection{Callback with an integer solution}
+The first callback we analyze are the one that will be called when CPLEX finds an integer solution. Once the function is called we can perform some operations with the informations we can retrieve from the problem. The operations we perform are similar to the ones descripted in section \ref{sec:sol_management}.
+
+First we retrieve the solution found by CPLEX with the function \verb|CPXcallbackgetcandidatepoint|, than we perform the same operations we have done when we described the \verb|build_solution| function, so we find all the components of the solution. When there are more than one componentes, so some sub-tours are present, we add to the problem the reason why the solution is infeasable for us through the function \verb|CPXcallbackrejectcandidate|. The meaning of the function is that the current solution found during the optimization is not feasable since it violetes the costraints that we pass as arguments (in fact are similar to the one used when we used the lazy constraints in the MTZ model).
+
+\subsection{Callback with a fractional solution}
+The management of this solutions are really more complex than the one previously analyzed since as all the values in the solution are not integer so we can't handle as we have done before (with the method of the components). Because the operations to perform (for the hours oif our course) in order to compute if the solution is composed by sub-tours we decided to use an external static library called \href{https://www.math.uwaterloo.ca/tsp/concorde.html}{Concorde}.
+
+%Spiegare il funzionamento 

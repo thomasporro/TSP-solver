@@ -125,3 +125,9 @@ Where the variable $y_{ij}$ is a variable created to represent the flow of the a
 As in section \ref{sec:mtz} we used the Big-M method to create the constraint \ref{eqn:linking}, so its implementation is the same as before.
 
 \subsection{Performance Analysis}
+In this section we will analyze the performance of the models presented in the pages above. The test were run over 30 random generated datasets with the models: loop, MTZ, MTZ with lazy constraints, MTZ with indicator constraints and GG. We also imposed a timelimit of 1 hour, if some method does not provide the solution before the time expires it will be considere as a fail.
+
+QUESTO POSSO METTERLO DOPO AVER MESSO IL PRIMO GRAFO DOVE LOOP STRAVINCE
+
+
+From the first tests we observed that comparing the loop method with the other ones it is unuseful because the computation of the solution is quite instantaneous, so in the following graphs the loop method is removed.

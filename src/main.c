@@ -38,8 +38,8 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
-        performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        int model_type[] = {BENDERS, MTZ, MTZ_LAZY, MTZ_IND, GG};
+        performance_profile(&inst, (int *) &model_type, 5, 3600.0);
         return 0;
     }
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
                              || inst.model_type == GREEDY_REF
                              || inst.model_type == XTRA_MILEAGE
                              || inst.model_type == XTRA_MILEAGE_REF;
-    free_instance(&inst, !flag_free_solution);
+    //free_instance(&inst, !flag_free_solution);
     return 0;
 }
 
@@ -138,7 +138,9 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     fprintf(csv, "%d, ", nmodels);
 
     //Print the first line of the csv file
+    printf("Models selected:\n");
     for (int i = 0; i < nmodels; i++) {
+        printf("%d\n", models[i]);
         fprintf(csv, "%d", models[i]);
         if (i != nmodels - 1)
             fprintf(csv, ", ");
