@@ -72,4 +72,29 @@ Now that we have introduced the code setup and how the models are built we can s
 
 \subsection{Solution and data management}
 \label{sec:sol_management}
-QUA SCRIVO DI COME HO GESTITO LE COMP E I VALORI DELLE SOLUZIONI
+In this section we will explain how we managed the data from the .tsp file and how we handled the solution obtained with CPLEX.
+
+The first thing we build was a new struct that contains all useful data read from the .tsp file provided by the TSPLIB. Theese files in fact contains different infromations:
+
+\begin{itemize}
+	\item NAME: the name of the file;
+	\item COMMENT: some comment on the data;
+	\item TYPE: the type of the problem;
+	\item DIMENSION: the number of nodes that are in the file;
+	\item EDGE\_WEIGHT\_TYPE: the typology of the distance between the nodes;
+	\item NODE\_COORD\_SECTION: section, usally it goes to the end of the file, in which are described the nodes coordinates.
+\end{itemize}
+
+We decided to save only the fundamentals informations, in our case only the number of nodes, the node coordinates and the type of the distance functions between the nodes. All these data are saved into the struct during the parsing operation of the .tsp file.
+
+After the solution is computed by CPLEX we can access it by using the method \verb|CPXgetx|. This function will return the full array of variables, than by checking their values (1 if is true) we can see if some edge has been selected and if it is valid we save it to an array inside our struct.
+
+Now we have our solution saved its time to check if it is a single tour or if there are sub-tours. To do that we use a simple trick, since the edges are connected with two nodes, we start from the first edge extracted and we go to one of the nodes, now we are there we check at what node this one is connected. If we already visited the next node we end our cycle and we continue the algorithm by checking all the unvisited nodes, if there is any.\\
+To save each subtour we use and additional array that will contain the tour number at which each node belong, see figure \ref{img:comp} for a graphical representation.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/components}
+	\caption{Structure of the solution. Each variable extracted from the solution provided by CPLEX is associated with a number that specify in which tour the variable belongs. In case of a solution with one tour all the array component will be filled with 1's.}
+	\label{img:comp}
+\end{figure} 
