@@ -24,6 +24,14 @@ The first callback we analyze are the one that will be called when CPLEX finds a
 First we retrieve the solution found by CPLEX with the function \verb|CPXcallbackgetcandidatepoint|, than we perform the same operations we have done when we described the \verb|build_solution| function, so we find all the components of the solution. When there are more than one componentes, so some sub-tours are present, we add to the problem the reason why the solution is infeasable for us through the function \verb|CPXcallbackrejectcandidate|. The meaning of the function is that the current solution found during the optimization is not feasable since it violetes the costraints that we pass as arguments (in fact are similar to the one used when we used the lazy constraints in the MTZ model).
 
 \subsection{Callback with a fractional solution}
-The management of this solutions are really more complex than the one previously analyzed since as all the values in the solution are not integer so we can't handle as we have done before (with the method of the components). Because the operations to perform (for the hours oif our course) in order to compute if the solution is composed by sub-tours we decided to use an external static library called \href{https://www.math.uwaterloo.ca/tsp/concorde.html}{Concorde}.
+The management of this solutions are really more complex than the one previously analyzed since as all the values in the solution are not integer so we can't handle as we have done before (with the method of the components). Because the operations to perform in order to compute if the solution is composed by sub-tours we decided to use an external static library called \href{https://www.math.uwaterloo.ca/tsp/concorde.html}{Concorde}.
+This library is one of the most powerful available in the market, it has even its own iOS application that allow to solve pretty complex instance of the problem.
+
+The problem with this kind of solution its that can contains some nodes where the number of incidence edges is greater that 2 but their values are weighted in such way to respect anyway the degree costraint.
+
+The methods appleid by Concorde to solve the fractional problem require that the graph is connected (using the function \verb|CCcut_connect_components|), if its true we can call another function that allow us to implement the addition of a cut to the problem (performed by \verb|CPXcallbackaddusercuts|).
+
+\subsection{Performance Analysis}
+SCIRVERE QUI LE PERFEORMANCE
 
 %Spiegare il funzionamento 
