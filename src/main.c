@@ -60,11 +60,11 @@ int main(int argc, char **argv) {
                        || inst.model_type == BRANCH_AND_CUT_RLX
                        || inst.model_type == GREEDY
                        || inst.model_type == GREEDY_REF
-                       || inst.model_type == XTRA_MILEAGE   
+                       || inst.model_type == XTRA_MILEAGE
                        || inst.model_type == XTRA_MILEAGE_REF;
 
     char *commandsForGnuplot[3];
-    commandsForGnuplot[0] = "set title \"Eil101 performed with the extra-mileage algorithm\"";
+    commandsForGnuplot[0] = ""; //"set title \"Eil101 performed with the extra-mileage algorithm\"";
     if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
@@ -96,7 +96,7 @@ int solve(instance *inst) {
             greedy(inst);
             printf("Greedy cost: %f\n", inst->best_value);
             three_opt_refining(inst);
-            two_opt_refining(inst);
+            //two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
             break;
         case XTRA_MILEAGE:
