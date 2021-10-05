@@ -77,6 +77,13 @@ We can see the result of the algorithm in figure \ref{img:extra_sol}. Respect to
 This section is not about an algorithm to solve the TSP problem but is about to refine (so improve) a solution that is already been found.\\
 The process is based on the triangle inequality, in fact we are going to remove all the edges that cross each other. We can see an example of this operation in the image \ref{img:k_opt_example}, where the two edges that cross each other are sostitute by other to edges.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/k_opt}
+	\caption{Example of a k-opt operation, in this case is a 2-opt.}
+	\label{img:k_opt_example}
+\end{figure}
+
 From a theoretical point of view the k-opt operation is a local search on the current solution, is not guaranteed to reach an optimal solution, but the objective value of the solution is going to always improve (if possible), in the worst case the solution will not change.
 
 In our case we implemented two k-opt algorithms, the 2-opt and the 3-opt. We have decided to do that since as the $k$ grows the complexity grows with it. Just the implementation of the 3-opt algorithm is quite expensive from a computational point of view.
@@ -112,7 +119,8 @@ This section will explore the application of two heuristrics in the branch and c
 
 
 \subsubsection{Hard-fixing}
-The method of the hard-fixing expect to block the value of some variables in the problem in order to get the search space reduce in order to compute more easily a solution for it. The choice of which variable to block is due the user, but eventually can be completely random. 
+\label{sec:hard_fix}
+The method of the hard-fixing expect to block the value of some variables in the problem in order to get the search space reduce in order to compute more easily a solution for it. The choice of which variable to block is due the user, but eventually can be completely random. In this case we block the edges manually by changing the lower bound to the selected variables from $0$ to $1$ in order to force to that variables to be chosen.
 
 The most important setting for this method is the starting solution, in fact since we are blocking the varibles so if the satarting solution is completely wrong the process of improving it will be more difficult. The process to retrieve a final solution is pretty easy: we start from that solution, we apply the branch and cut method for a predermined amount of time (or until it finds the optimal solution in the seach subspace), at the end of it we check if the new solution found is actually better than the previous one, if not we reduce the number of blocked variables and repeat the process. 
 
@@ -120,3 +128,23 @@ In our implementation we decided to put a percentage on the number of blocked va
 
 
 \subsubsection{Soft-fixing}
+As in section \ref{sec:hard_fix} also in this method we fix some variables but instead of having fixed manually we add a new constraint that limits the subproblem to solve.
+
+The starting point is the same as the previous method, so we performe the optimization for a limited amount of time and get the solution retrieved. After that we add a new constraint that limit the Hamming distance between the new solution and the old one.\\
+The Hamming distance can be explained as the number of edges that are different between the two solutions, so the new formula can be written as:
+
+\begin{equation}
+	\Delta(x, \tilde{x}) \le k
+\end{equation}
+
+This means that the optimizer can search the solution inside a radius from the actual solution in which CPLEX tries to find a better result. From the branching tree point of view this technique is a jump into a subtreeof the branch and cut, so this method is also called diving.
+
+As the previous method we start with a lower value of k, from 2, and than each time the solution is not improved we increase its value by 1. We can state that if we use a small value the calculation of the solution is pretty fast but as we increase the value the computing time get bigger until it become comparable to the global search for an optimal value.
+
+\subsection{Variable Neighborhood Search}
+While using the Heuristics is pretty common to be stuck in a local optima that don't allow the solution to be improved by appling for example the k-\textit{opt} method.
+
+This method is the solution to this problem, in fact when we found that a solution is no longer be improved.\\ 
+The Variable Neighborhood Search sets, as the name can suggest, a neighborhood in which we can modify the solution found in order to exit to the local optima. This can be permormed by changing a random number of edges of the solution (the neighborhood).
+
+So a pseudo-algorithm of this process can be this: find local optima, perform a shake of the solution (changing randomly the edges), search again the local optima, if its the same as before we increase the readius of the shake and reapeat the whole process.
