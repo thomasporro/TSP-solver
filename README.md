@@ -45,5 +45,5 @@ This pass to the program the model you want to use during the optimization. Here
 - greedy with 2-opt refining = 31;
 - extra mileage = 32.
 
-## Report (in continuos update)
+## Report (in continuous update)
 You can download the report with this [link](https://github.com/thomasporro/TSP-solver/raw/greedy/latex_report/report_operational_research.pdf).
