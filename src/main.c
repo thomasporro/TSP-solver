@@ -61,7 +61,8 @@ int main(int argc, char **argv) {
                        || inst.model_type == GREEDY
                        || inst.model_type == GREEDY_REF
                        || inst.model_type == XTRA_MILEAGE
-                       || inst.model_type == XTRA_MILEAGE_REF;
+                       || inst.model_type == XTRA_MILEAGE_REF
+                       || inst.model_type == VNS;
 
     char *commandsForGnuplot[3];
     commandsForGnuplot[0] = ""; //"set title \"Eil101 performed with the extra-mileage algorithm\"";
@@ -89,10 +90,12 @@ int solve(instance *inst) {
     switch (inst->model_type) {
         case GREEDY:
             printf("Model type chosen: undirected complete graph solved with greedy method\n");
+            inst->start_time = seconds();
             greedy(inst);
             break;
         case GREEDY_REF:
             printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
+            inst->start_time = seconds();
             greedy(inst);
             printf("Greedy cost: %f\n", inst->best_value);
             three_opt_refining(inst);
@@ -101,17 +104,25 @@ int solve(instance *inst) {
             break;
         case XTRA_MILEAGE:
             printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
+            inst->start_time = seconds();
             extra_mileage(inst);
             break;
         case XTRA_MILEAGE_REF:
             printf("Model type chosen: undirected complete graph solved with extra mileage method + "
                    "2-opt refining\n");
+            inst->start_time = seconds();
             extra_mileage(inst);
             printf("Extra mileage cost: %f\n", inst->best_value);
             three_opt_refining(inst);
             printf("Three-opt cost cost: %f\n", inst->best_value);
             //two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
+            break;
+        case VNS:
+            inst->start_time = seconds();
+            greedy(inst);
+            printf("Started vns\n");
+            vns(inst);
             break;
         default:
             TSPopt(inst);

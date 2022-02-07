@@ -117,5 +117,24 @@ void free_instance(instance *inst, int free_solution) {
     free(inst->y_coord);
     free(inst->component);
     free(inst->successors);
-    if(free_solution) free(inst->solution);
+    if (free_solution) free(inst->solution);
+}
+
+void compute_solution_from_successors(instance *inst, double *x, int *successors) {
+    for (int i = 0; i < inst->nvariables; i++) {
+        x[i] = 0.0;
+    }
+
+    for (int i = 0; i < inst->nnodes; i++) {
+        x[xxpos(i, successors[i], inst)] = 1.0;
+    }
+
+}
+
+double compute_solution_cost(instance *inst, int *successors){
+    double cost = 0.0;
+    for (int i = 0; i < inst->nnodes; i++) {
+        cost += distance(i, successors[i], inst);
+    }
+    return cost;
 }

@@ -276,20 +276,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
             }
         }
         // TODO: funziona anche se non � qui mi sa (CORRETTO!)
-        /*
-        for (int i = 1; i < inst->nnodes; i++) {
-            for (int j = i + 1; j < inst->nnodes; j++) {
-                if (i == j) continue;
-                int lastrow = CPXgetnumrows(env, lp);
-                double rhs = 1.0;
-                char sense = LESS_EQUAL;
 
-                sprintf(cname[0], ("MTZ_constraint_for_xij_xji_1(%d,%d)"), i + 1, j + 1);
-                if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
-                if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
-                if (CPXchgcoef(env, lp, lastrow, xxpos(j, i, inst), 1.0)) print_error("wrong CPXchgcoef [xij+xji<=1]");
-            }
-        }*/
     } else if (inst->model_type == MTZ_LAZY) {//Lazy constraints
         printf("Lazy constraints chosen correctly\n");
         int izero = 0;
@@ -315,23 +302,6 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
             }
         }
 
-        // add lazy constraints 1.0 * x_ij + 1.0 * x_ji <= 1, for each arc (i,j) with i < j
-        /*
-        rhs = 1.0;
-        sense = LESS_EQUAL;
-        nnz = 2;
-        for (int i = 0; i < inst->nnodes; i++)
-        {
-            for (int j = i + 1; j < inst->nnodes; j++)
-            {
-                sprintf(cname[0], "SEC on node pair (%d,%d)", i + 1, j + 1);
-                index[0] = xxpos(i, j, inst);
-                value[0] = 1.0;
-                index[1] = xxpos(j, i, inst);
-                value[1] = 1.0;
-                if (CPXaddlazyconstraints(env, lp, 1, nnz, &rhs, &sense, &izero, index, value, cname)) print_error("wrong CPXlazyconstraints on 2-node SECs");
-            }
-        }*/
     } else if (inst->model_type == MTZ_IND) { //Model solved with the indicators constraint
         printf("Indicator constraints chosen correctly\n");
         int rhs = 1;
@@ -1023,7 +993,7 @@ void greedy(instance *inst) {
         inst->successors[i] = -1;
     }
 
-
+    //Modify the way in which the solution is saved
     for (int starting_node = 0; starting_node < inst->nnodes; starting_node++) {
         //Initialization of the temporary array to save the solution
         int *tmp_successors = (int *) calloc(inst->nnodes, sizeof(int));
@@ -1374,45 +1344,192 @@ void three_opt_refining(instance *inst) {
 }
 
 
-void vns(instance *inst, int max_neighborhood) {
-    int neighborhood = 2;
-    while (neighborhood < max_neighborhood) {
-        int *selected_node = (int *) calloc(neighborhood, sizeof(int));
-        for (int i = 0; i < neighborhood; i++) {
-            selected_node[i] = -1;
-        }
-
-        int start_node = 0;
-        int added_node = 0;
-        int current_node = start_node;
-
-        //Add the edges to change during the shake
-        do {
-            current_node = inst->successors[current_node];
-
-            //TODO checks if this node is already in the array of the selected
-            for (int i = 0; i < added_node; i++) {
-                if (inst->successors[selected_node[i]] == current_node
-                    || selected_node[i] == current_node) {
-                    current_node = inst->successors[current_node];
-                }
-            }
-
-            if (rand() % 100 < 15) {
-                selected_node[added_node] = current_node;
-                added_node++;
-            }
-
-        } while (added_node < neighborhood && start_node != current_node);
-
-        int *successors = (int *) calloc(added_node, sizeof(int));
-        for(int i = 0;i<added_node;i++){
-            successors[i] = inst->successors[selected_node[i]];
-        }
-
-
-
-        free(successors);
-        free(selected_node);
+void vns(instance *inst) {
+    double current_best = inst->best_value;
+    int *best_successors = (int *) calloc(inst->nnodes, sizeof(int));
+    for (int i = 0; i < inst->nnodes; i++) {
+        best_successors[i] = inst->successors[i];
     }
+
+    int flag = 0;
+    while (!flag) {
+        int cycles = 0;
+
+        two_opt_refining(inst);
+        // Updates the best solution
+        if (inst->best_value < current_best) {
+            current_best = inst->best_value;
+            for (int i = 0; i < inst->nnodes; i++) {
+                best_successors[i] = inst->successors[i];
+            }
+        } else {
+            cycles++;
+        }
+
+        // Save the best solution in the instance and exit the node
+        if(seconds() - inst->start_time > inst->timelimit){
+            inst->best_value = current_best;
+            for (int i = 0; i < inst->nnodes; i++) {
+                inst->successors[i] = best_successors[i];
+            }
+            flag = 1;
+            continue;
+        }
+
+        if(cycles < 5){
+            three_kick_vns(inst);
+        } else if (cycles >= 5 && cycles < 10){
+            five_kick_vns(inst);
+        } else {
+            seven_kick_vns(inst);
+        }
+    }
+}
+
+void three_kick_vns(instance *inst) {
+    int first_node = -1;
+    int second_node = -1;
+    int third_node = -1;
+    first_node = rand() % inst->nnodes;
+    while (second_node == first_node || third_node == first_node ||
+           second_node == third_node) {
+        second_node = rand() % inst->nnodes;
+        third_node = rand() % inst->nnodes;
+    }
+
+    // Order the elements
+    int start_node = first_node;
+    int curr = inst->successors[first_node];
+    int nodes[3];
+    int number = 1;
+    nodes[0] = first_node;
+    while (curr != start_node) {
+        if (curr == second_node) {
+            nodes[number++] = second_node;
+        } else if (curr == third_node) {
+            nodes[number++] = third_node;
+        }
+        if (number == 3) break;
+        curr = inst->successors[curr];
+    }
+
+    int tmp_1 = inst->successors[nodes[0]];
+    int tmp_2 = inst->successors[nodes[1]];
+    int tmp_3 = inst->successors[nodes[2]];
+    inst->successors[nodes[0]] = inst->successors[nodes[1]];
+    inst->successors[nodes[1]] = tmp_3;
+    inst->successors[nodes[2]] = tmp_1;
+
+    inst->best_value = compute_solution_cost(inst, inst->successors);
+}
+
+void five_kick_vns(instance *inst) {
+    int first_node = -1;
+    int second_node = -1;
+    int third_node = -1;
+    int fourth_node = -1;
+    int fifth_node = -1;
+    first_node = rand() % inst->nnodes;
+    while ((second_node = rand() % inst->nnodes) == first_node);
+    while ((third_node = rand() % inst->nnodes) == first_node || third_node == second_node);
+    while ((fourth_node = rand() % inst->nnodes) == first_node || fourth_node == second_node ||
+           fourth_node == third_node);
+    while ((fifth_node = rand() % inst->nnodes) == first_node || fifth_node == second_node ||
+           fifth_node == third_node || fifth_node == fourth_node);
+
+    // Order the elements
+    int start_node = first_node;
+    int curr = inst->successors[first_node];
+    int nodes[5];
+    int number = 1;
+    nodes[0] = first_node;
+    while (curr != start_node) {
+        if (curr == second_node) {
+            nodes[number++] = second_node;
+        } else if (curr == third_node) {
+            nodes[number++] = third_node;
+        } else if (curr == fourth_node) {
+            nodes[number++] = fourth_node;
+        } else if (curr == fifth_node) {
+            nodes[number++] = fifth_node;
+        }
+        if (number == 5) break;
+        curr = inst->successors[curr];
+    }
+
+    int tmp_1 = inst->successors[nodes[0]];
+    int tmp_2 = inst->successors[nodes[1]];
+    int tmp_3 = inst->successors[nodes[2]];
+    int tmp_4 = inst->successors[nodes[3]];
+    int tmp_5 = inst->successors[nodes[4]];
+    inst->successors[nodes[0]] = tmp_3;
+    inst->successors[nodes[1]] = tmp_4;
+    inst->successors[nodes[2]] = tmp_5;
+    inst->successors[nodes[3]] = tmp_1;
+    inst->successors[nodes[4]] = tmp_2;
+
+    inst->best_value = compute_solution_cost(inst, inst->successors);
+}
+
+void seven_kick_vns(instance *inst) {
+    int first_node = -1;
+    int second_node = -1;
+    int third_node = -1;
+    int fourth_node = -1;
+    int fifth_node = -1;
+    int sixth_node = -1;
+    int seventh_node = -1;
+    first_node = rand() % inst->nnodes;
+    while ((second_node = rand() % inst->nnodes) == first_node);
+    while ((third_node = rand() % inst->nnodes) == first_node || third_node == second_node);
+    while ((fourth_node = rand() % inst->nnodes) == first_node || fourth_node == second_node ||
+           fourth_node == third_node);
+    while ((fifth_node = rand() % inst->nnodes) == first_node || fifth_node == second_node ||
+           fifth_node == third_node || fifth_node == fourth_node);
+    while ((sixth_node = rand() % inst->nnodes) == first_node || sixth_node == second_node ||
+           sixth_node == third_node || sixth_node == fourth_node || sixth_node == fifth_node);
+    while ((seventh_node = rand() % inst->nnodes) == first_node || seventh_node == second_node ||
+           seventh_node == third_node || seventh_node == fourth_node || seventh_node == fifth_node ||
+           seventh_node == sixth_node);
+
+    // Order the elements
+    int start_node = first_node;
+    int curr = inst->successors[first_node];
+    int nodes[7];
+    int number = 1;
+    nodes[0] = first_node;
+    while (curr != start_node) {
+        if (curr == second_node) {
+            nodes[number++] = second_node;
+        } else if (curr == third_node) {
+            nodes[number++] = third_node;
+        } else if (curr == fourth_node) {
+            nodes[number++] = fourth_node;
+        } else if (curr == fifth_node) {
+            nodes[number++] = fifth_node;
+        } else if (curr == sixth_node) {
+            nodes[number++] = sixth_node;
+        } else if (curr == seventh_node) {
+            nodes[number++] = seventh_node;
+        }
+        if (number == 7) break;
+        curr = inst->successors[curr];
+    }
+
+    int tmp_1 = inst->successors[nodes[0]];
+    int tmp_2 = inst->successors[nodes[1]];
+    int tmp_3 = inst->successors[nodes[2]];
+    int tmp_4 = inst->successors[nodes[3]];
+    int tmp_5 = inst->successors[nodes[4]];
+    int tmp_6 = inst->successors[nodes[5]];
+    int tmp_7 = inst->successors[nodes[6]];
+    inst->successors[nodes[0]] = tmp_4;
+    inst->successors[nodes[1]] = tmp_5;
+    inst->successors[nodes[2]] = tmp_6;
+    inst->successors[nodes[3]] = tmp_1;
+    inst->successors[nodes[4]] = tmp_2;
+    inst->successors[nodes[5]] = tmp_7;
+    inst->successors[nodes[6]] = tmp_3;
+
+    inst->best_value = compute_solution_cost(inst, inst->successors);
 }

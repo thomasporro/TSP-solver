@@ -47,6 +47,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case XTRA_MILEAGE_REF:
             print_heur(data, inst);
             break;
+        case VNS:
+            print_heur(data, inst);
+            break;
         default:
             print_st(data, inst);
             break;
