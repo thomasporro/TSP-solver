@@ -43,7 +43,8 @@ This pass to the program the model you want to use during the optimization. Here
 - gg = 20;
 - greedy = 30;
 - greedy with 2-opt refining = 31;
-- extra mileage = 32.
+- extra mileage = 32;
+- vns = 40.
 
 ## Report (in continuous update)
-You can download the report with this [link](https://github.com/thomasporro/TSP-solver/raw/greedy/latex_report/report_operational_research.pdf).
+You can download the report with this [link](https://github.com/thomasporro/TSP-solver/blob/greedy/latex_report/ro2.pdf).
