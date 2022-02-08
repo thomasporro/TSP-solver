@@ -167,10 +167,10 @@ void compute_bigger_cut(instance *inst, int *first_node, int *second_node, doubl
     }
 }
 
-void perfrom_cut(instance *inst, const int *first_node, const int *second_node, const double *improvement){
-    inst->best_value -= *improvement;
-    int current = inst->successors[*first_node];
-    int previous = inst->successors[*second_node];
+void perform_cut(instance *inst, int first_node, int second_node, double improvement){
+    inst->best_value -= improvement;
+    int current = inst->successors[first_node];
+    int previous = inst->successors[second_node];
     int end_node = previous;
     while (current != end_node) {
         int next = inst->successors[current];
@@ -178,5 +178,5 @@ void perfrom_cut(instance *inst, const int *first_node, const int *second_node, 
         previous = current;
         current = next;
     }
-    inst->successors[*first_node] = *second_node;
+    inst->successors[first_node] = second_node;
 }

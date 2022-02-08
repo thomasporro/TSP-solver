@@ -15,14 +15,18 @@ In this report, the adjustment of the neighborhood is performed by a perturbatio
 	\begin{algorithmic}[1]
 		\Require $G=(V,E)$,$ c:E\rightarrow \Re^+, k, global\_timelimit$
 		\Ensure $z\text{ hopefully good solution}$
-		\State $best\_cost$ $\gets$ $+\infty$
 		\State $z_{curr}$ $\gets$ $z$ $\gets$ *built solution using an heuristc*
+		\State $best\_cost$ $\gets$ cost($z$)
+		\State cycles $\gets$ $0$
 		\While{$time\_elapsed<global\_timelimit$}
-			\State $z_{new}$ $\gets$ \textsc{2-opt($z_{curr}$)}
+			\State $z_{curr}$ $\gets$ \textsc{2-opt($z_{curr}$)}
 			\If{cost($z_{curr}$) $< best\_cost$}
 				\State z $\gets$ $z_{curr}$
 				\State $best\_cost$ $\gets$ cost($z_{curr}$)
 			\EndIf
+		\State *Bigger the value of cycles bigger the kick*
+		\State $z_{curr}$ $\gets$ \textsc{k-kick($cycles$)}
+		\State cycles $\gets$ cycles$+1$
 		\EndWhile
 		\State \Return $z$
 	\end{algorithmic}
@@ -36,3 +40,41 @@ The tabu search is the second metaheuristic presented in this report. It is a me
 In this implementation of the tabu search the refining phase is performed by a 2-opt move as it happened in section \ref{sec:VNS}, then the method to escape from this minimum is to perform a kick like as the previous section. The main difference is that during the VNS is possible to fall again and again in the previous solution, using the tabu search is not possible. 
 
 The worsening move is performed by swapping two non-consecutive edges, then they are declared as tabu: they cannot be swapped for a while. This process precludes the possibility of falling into a cycle of deterioration-recover, where to final solution is always the same. This algorithm will continuously worsen the solution until a non-tabu move is performed.
+
+The way in which this method is implemented is the following: each time a worsening action is performed the nodes selected are declared as tabu and the edges connected with them cannot be changed by any improving moves. If each time this action has been performed the list of tabu nodes becomes so large that no more moves are allowed. To avoid this case it is introduced a new variable called $tenure$, its main idea is to limit how many times a tabu is valid.
+
+To do that we declare a node tabu (for example $i$) by inserting into an array the iteration number $h$, so $tabu\_nodes[i] = h$. This constraint will last for a $tenure$ number of times, following this rule:
+
+\begin{equation}
+	iteration\_number - tabu[i] \le tenure
+\end{equation}
+
+A good choice of $tenure$ is crucial to allow the algorithm to perform adequately. The best decision is to make it variable regarding the number of iterations already completed. In algorithm \ref{algo:tabu-search} can be seen the proceeding of this method.
+
+\begin{algorithm}
+	\caption{Tabu search}\label{algo:tabu-search}
+	\begin{algorithmic}[1]
+		\Require $G=(V,E)$,$ c:E\rightarrow \Re^+, k, global\_timelimit$
+		\Ensure $z\text{ hopefully good solution}$
+		\State $z_{curr}$ $\gets$ $z$ $\gets$ *built solution using an heuristc*
+		\State $best\_cost$ $\gets$ cost($z$)
+		\State $iteration\_counter \gets 1$
+		\While{$time\_elapsed<global\_timelimit$}
+			\State *Performs a 2-opt refining applying the constaraint described in section \ref{sec:tabu-search}. The iteration counter is increased each time a move is performed. If no moves are allowed this method does nothing*
+			\State $z_{new}$ $\gets$ \textsc{tabu-2-opt($z_{curr}, tabu, tenure, iteration\_counter$)}
+			\If{cost($z_{curr}$) $< best\_cost$}
+				\State z $\gets$ $z_{curr}$
+				\State $best\_cost$ $\gets$ cost($z_{curr}$)
+			\EndIf
+			\State $first\_node \gets RANDOM(|V|)$
+			\State $second\_node \gets RANDOM(|V|)$
+			\State $tabu[first\_node] \gets iteration\_counter$
+			\State $tabu[second\_node] \gets iteration\_counter$
+			\State $z_{curr} \gets $ \textsc{2-kick($first\_node, second\_node$)}
+			\State $iteration\_counter \gets iteration\_counter+1$
+		\EndWhile
+		\State \Return $z$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Genetic algorithms}
