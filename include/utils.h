@@ -148,4 +148,5 @@ void compute_bigger_cut(instance *inst, int *first_node, int *second_node, doubl
  * @param second_node The second node of the cut
  * @param improvement The total improvement applied to the solution
  */
-void perfrom_cut(instance *inst, const int *first_node, const int *second_node, const double *improvement);
+void perform_cut(instance *inst, int first_node, int second_node, double improvement);
+

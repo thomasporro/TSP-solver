@@ -1573,7 +1573,7 @@ void tabu_search(instance *inst) {
             double improvement;
             compute_bigger_cut(inst, &first_node, &second_node, &improvement);
 
-            if ((tabu_nodes[first_node] != -1 && iteration_counter - tabu_nodes[first_node] <= tenure) ||
+            if ( (tabu_nodes[first_node] != -1 && iteration_counter - tabu_nodes[first_node] <= tenure) ||
                 (tabu_nodes[second_node] != -1 && iteration_counter - tabu_nodes[second_node] <= tenure)){
                 if (inst->best_value < current_best) {
                     current_best = inst->best_value;
@@ -1595,8 +1595,7 @@ void tabu_search(instance *inst) {
                 tabu_search = 1;
                 continue;
             }
-
-            perfrom_cut(inst, &first_node, &second_node, &improvement);
+            perform_cut(inst, first_node, second_node, improvement);
             iteration_counter++;
         }
 
@@ -1604,11 +1603,11 @@ void tabu_search(instance *inst) {
         int first_node = rand() % inst->nnodes;
         int second_node;
         while ((second_node = rand() % inst->nnodes) == first_node || second_node == inst->successors[first_node]);
-        double improvement = -(distance(first_node, inst->successors[first_node], inst) +
+        double improvement = distance(first_node, inst->successors[first_node], inst) +
                                distance(second_node, inst->successors[second_node], inst) -
                                distance(first_node, second_node, inst) -
-                               distance(inst->successors[first_node], inst->successors[second_node], inst));
-        perfrom_cut(inst, &first_node, &second_node, &improvement);
+                               distance(inst->successors[first_node], inst->successors[second_node], inst);
+        perform_cut(inst, first_node, second_node, improvement);
 
         //Adding the nodes to the tabu list
         tabu_nodes[first_node] = iteration_counter;
@@ -1616,4 +1615,5 @@ void tabu_search(instance *inst) {
 
         iteration_counter++;
     }
+    printf("Number of iterations: %d\n", iteration_counter);
 }
