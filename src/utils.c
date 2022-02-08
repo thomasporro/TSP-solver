@@ -131,10 +131,52 @@ void compute_solution_from_successors(instance *inst, double *x, int *successors
 
 }
 
-double compute_solution_cost(instance *inst, int *successors){
+double compute_solution_cost(instance *inst, int *successors) {
     double cost = 0.0;
     for (int i = 0; i < inst->nnodes; i++) {
         cost += distance(i, successors[i], inst);
     }
     return cost;
+}
+
+void compute_bigger_cut(instance *inst, int *first_node, int *second_node, double *improvement) {
+    *improvement = 0;
+    for (int i = 0; i < inst->nnodes; i++) {
+        for (int j = 0; j < inst->nnodes; j++) {
+            //Skip rules
+            if (inst->successors[i] == -1
+                || inst->successors[j] == -1
+                || i == j
+                || inst->successors[i] == j
+                || inst->successors[j] == i)
+                continue;
+
+            //Difference of the 4 edges taken into considerations
+            double delta = distance(i, inst->successors[i], inst) +
+                           distance(j, inst->successors[j], inst) -
+                           distance(i, j, inst) -
+                           distance(inst->successors[i], inst->successors[j], inst);
+
+            //If there is an improvement I save the values of the nodes to be changed
+            if (delta > *improvement) {
+                *first_node = i;
+                *second_node = j;
+                *improvement = delta;
+            }
+        }
+    }
+}
+
+void perfrom_cut(instance *inst, const int *first_node, const int *second_node, const double *improvement){
+    inst->best_value -= *improvement;
+    int current = inst->successors[*first_node];
+    int previous = inst->successors[*second_node];
+    int end_node = previous;
+    while (current != end_node) {
+        int next = inst->successors[current];
+        inst->successors[current] = previous;
+        previous = current;
+        current = next;
+    }
+    inst->successors[*first_node] = *second_node;
 }

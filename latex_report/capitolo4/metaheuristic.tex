@@ -27,3 +27,12 @@ In this report, the adjustment of the neighborhood is performed by a perturbatio
 		\State \Return $z$
 	\end{algorithmic}
 \end{algorithm}
+
+
+\subsection{Tabu search}
+\label{sec:tabu-search}
+The tabu search is the second metaheuristic presented in this report. It is a method to improve the local search and avoid falling back in a previous local minimum. To do that the concept of tabu is introduced: a set of banned solutions prevents the algorithm to return an already visited result.
+
+In this implementation of the tabu search the refining phase is performed by a 2-opt move as it happened in section \ref{sec:VNS}, then the method to escape from this minimum is to perform a kick like as the previous section. The main difference is that during the VNS is possible to fall again and again in the previous solution, using the tabu search is not possible. 
+
+The worsening move is performed by swapping two non-consecutive edges, then they are declared as tabu: they cannot be swapped for a while. This process precludes the possibility of falling into a cycle of deterioration-recover, where to final solution is always the same. This algorithm will continuously worsen the solution until a non-tabu move is performed.

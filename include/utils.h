@@ -131,3 +131,21 @@ void compute_solution_from_successors(instance *inst, double *x, int *successors
  * @return The cost of the solution
  */
 double compute_solution_cost(instance *inst, int *successors);
+
+/*!
+ * Compute the best 2-cut to perform over a solution
+ * @param inst The instace where the solution is saved
+ * @param first_node The first node found
+ * @param second_node The second node found
+ * @param improvement The improvement of the solution
+ */
+void compute_bigger_cut(instance *inst, int *first_node, int *second_node, double *improvement);
+
+/*!
+ * Performs the 2-opt refining move
+ * @param inst The instance containing the solution
+ * @param first_node The first node of the cut
+ * @param second_node The second node of the cut
+ * @param improvement The total improvement applied to the solution
+ */
+void perfrom_cut(instance *inst, const int *first_node, const int *second_node, const double *improvement);

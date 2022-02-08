@@ -62,7 +62,8 @@ int main(int argc, char **argv) {
                        || inst.model_type == GREEDY_REF
                        || inst.model_type == XTRA_MILEAGE
                        || inst.model_type == XTRA_MILEAGE_REF
-                       || inst.model_type == VNS;
+                       || inst.model_type == VNS
+                       || inst.model_type == TABU_SEARCH;
 
     char *commandsForGnuplot[3];
     commandsForGnuplot[0] = ""; //"set title \"Eil101 performed with the extra-mileage algorithm\"";
@@ -123,6 +124,12 @@ int solve(instance *inst) {
             greedy(inst);
             printf("Started vns\n");
             vns(inst);
+            break;
+        case TABU_SEARCH:
+            inst->start_time = seconds();
+            greedy(inst);
+            printf("Started tabu search\n");
+            tabu_search(inst);
             break;
         default:
             TSPopt(inst);
