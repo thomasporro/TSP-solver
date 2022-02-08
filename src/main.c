@@ -38,8 +38,8 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {BENDERS, BRANCH_AND_CUT, BRANCH_AND_CUT_RLX};
-        performance_profile(&inst, (int *) &model_type, 3, 3600.0);
+        int model_type[] = {BENDERS, MTZ, MTZ_LAZY, MTZ_IND, GG};
+        performance_profile(&inst, (int *) &model_type, 5, 3600.0);
         return 0;
     }
 
@@ -61,10 +61,11 @@ int main(int argc, char **argv) {
                        || inst.model_type == GREEDY
                        || inst.model_type == GREEDY_REF
                        || inst.model_type == XTRA_MILEAGE
-                       || inst.model_type == XTRA_MILEAGE_REF;
+                       || inst.model_type == XTRA_MILEAGE_REF
+                       || inst.model_type == VNS;
 
     char *commandsForGnuplot[3];
-    commandsForGnuplot[0] = "set title \"GRAPH\"";
+    commandsForGnuplot[0] = ""; //"set title \"Eil101 performed with the extra-mileage algorithm\"";
     if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
@@ -80,39 +81,57 @@ int main(int argc, char **argv) {
                              || inst.model_type == GREEDY_REF
                              || inst.model_type == XTRA_MILEAGE
                              || inst.model_type == XTRA_MILEAGE_REF;
-    free_instance(&inst, !flag_free_solution);
+    //free_instance(&inst, !flag_free_solution);
     return 0;
 }
 
 int solve(instance *inst) {
+    double start_time = seconds();
     switch (inst->model_type) {
         case GREEDY:
             printf("Model type chosen: undirected complete graph solved with greedy method\n");
+            inst->start_time = seconds();
             greedy(inst);
-            return 0;
+            break;
         case GREEDY_REF:
             printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
+            inst->start_time = seconds();
             greedy(inst);
             printf("Greedy cost: %f\n", inst->best_value);
-            two_opt_refining(inst);
+            three_opt_refining(inst);
+            //two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
-            return 0;
+            break;
         case XTRA_MILEAGE:
             printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
+            inst->start_time = seconds();
             extra_mileage(inst);
-            return 0;
+            break;
         case XTRA_MILEAGE_REF:
             printf("Model type chosen: undirected complete graph solved with extra mileage method + "
                    "2-opt refining\n");
+            inst->start_time = seconds();
             extra_mileage(inst);
             printf("Extra mileage cost: %f\n", inst->best_value);
-            two_opt_refining(inst);
+            three_opt_refining(inst);
+            printf("Three-opt cost cost: %f\n", inst->best_value);
+            //two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
-            return 0;
+            break;
+        case VNS:
+            inst->start_time = seconds();
+            greedy(inst);
+            printf("Started vns\n");
+            vns(inst);
+            break;
         default:
-            return TSPopt(inst);
+            TSPopt(inst);
+            break;
 
     }
+    double end_time = seconds();
+    printf("Time elapsed: %f\n", end_time - start_time);
+    return 0;
 }
 
 void performance_profile(instance *inst, int *models, int nmodels, double time_limit) {
@@ -130,7 +149,9 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     fprintf(csv, "%d, ", nmodels);
 
     //Print the first line of the csv file
+    printf("Models selected:\n");
     for (int i = 0; i < nmodels; i++) {
+        printf("%d\n", models[i]);
         fprintf(csv, "%d", models[i]);
         if (i != nmodels - 1)
             fprintf(csv, ", ");
@@ -163,7 +184,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
             printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
             inst->model_type = models[i];
             double start_time_for = seconds();
-            TSPopt(inst);
+            solve(inst);
             double end_time_for = seconds();
 
             //Print

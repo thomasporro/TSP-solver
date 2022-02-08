@@ -1,0 +1,29 @@
+While the heuristic approach seen before was strictly specific to the TSP problem, the concept of metaheuristic is quite different. Their procedure is problem-independent and does not take advantage of any specificity of the problem. Generally, these techniques are not greedy and can accept a temporary deterioration of the solution in order to have a bigger search space in which to find a better solution.
+
+In this section, some of them will be used such as the variable neighborhood search and the tabu search.
+
+\subsection{Variable Neighborhood Search}
+\label{sec:VNS}
+The variable neighborhood search (VNS) is the first metaheuristic approach presented. Its main purpose is to try to escape from a local optimal of the solution aiming to find the optimal solution of the problem. 
+
+The instance of the problem can be seen as a function with its local minima, local maxima, and so on. During the utilization of some heuristic techniques, it is possible that the process remains stuck in a sub-optimal area. The way in which it tries to escape from this region is done by changing the \textit{neighborhood} of the solution: some data are modified and then a new minimum is searched.
+
+In this report, the adjustment of the neighborhood is performed by a perturbation phase in which is applied a $k$-opt kick. This change is performed by selecting randomly a $k$ set of edges and then replacing them with others in order to obtain a poor solution. In particular, the procedure done is the following: a $2$-opt refining is applied to a reference solution, once the minimum is reached a kick is given to the solution to worsening the solution. Then the $2$-opt refining approach is used again to find a new minimum. In my implementation are implemented three perturbations: 3, 5, and 7.
+
+\begin{algorithm}
+	\caption{VNS}\label{algo:vns}
+	\begin{algorithmic}[1]
+		\Require $G=(V,E)$,$ c:E\rightarrow \Re^+, k, global\_timelimit$
+		\Ensure $z\text{ hopefully good solution}$
+		\State $best\_cost$ $\gets$ $+\infty$
+		\State $z_{curr}$ $\gets$ $z$ $\gets$ *built solution using an heuristc*
+		\While{$time\_elapsed<global\_timelimit$}
+			\State $z_{new}$ $\gets$ \textsc{2-opt($z_{curr}$)}
+			\If{cost($z_{curr}$) $< best\_cost$}
+				\State z $\gets$ $z_{curr}$
+				\State $best\_cost$ $\gets$ cost($z_{curr}$)
+			\EndIf
+		\EndWhile
+		\State \Return $z$
+	\end{algorithmic}
+\end{algorithm}

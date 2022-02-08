@@ -22,6 +22,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+cmake-build-debug
+cmake-build-realese
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -274,3 +276,8 @@ arrows.dat
 stats.txt
 data.dat
 model.lp
+
+latex_report/*.aux
+latex_report/*.log
+latex_report/*.toc
+latex_report/*.gz

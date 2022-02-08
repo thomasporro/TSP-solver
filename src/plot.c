@@ -32,6 +32,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case MTZ_IND:
             print_MTZ(data, arcs, inst);
             break;
+        case GG:
+            print_MTZ(data, arcs, inst);
+            break;
         case GREEDY:
             print_heur(data, inst);
             break;
@@ -42,6 +45,9 @@ void plot(char **commands, int n_commands, instance *inst) {
             print_heur(data, inst);
             break;
         case XTRA_MILEAGE_REF:
+            print_heur(data, inst);
+            break;
+        case VNS:
             print_heur(data, inst);
             break;
         default:

@@ -115,3 +115,19 @@ char *logfilename(instance *inst);
  * @param free_solution 1 if we want to free the memeory occupied by the solution of cplex
  */
 void free_instance(instance *inst, int free_solution);
+
+/*!
+ * Compute the solution starting from the values of successors
+ * @param inst The instance
+ * @param x The solution to be saved
+ * @param successors The array containing the successors
+ */
+void compute_solution_from_successors(instance *inst, double *x, int *successors);
+
+/*!
+ * Compute the solution starting from the values of successors
+ * @param inst The instance
+ * @param successors The array containing the successors
+ * @return The cost of the solution
+ */
+double compute_solution_cost(instance *inst, int *successors);

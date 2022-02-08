@@ -20,7 +20,8 @@ typedef enum {
     GREEDY = 30,
     GREEDY_REF = 31,
     XTRA_MILEAGE = 32,
-    XTRA_MILEAGE_REF = 33
+    XTRA_MILEAGE_REF = 33,
+    VNS = 40
 } modeltype;
 
 /*!
@@ -178,3 +179,34 @@ void extra_mileage(instance *inst);
  * @param inst The instance where we want to apply the 2 opt refining
  */
 void two_opt_refining(instance *inst);
+
+/*!
+ * Given an instance apply the 3-opt refining
+ * @param inst The instance where we want to apply the 3 opt refining
+ */
+void three_opt_refining(instance *inst);
+
+/*!
+ * Apply the Variable Neighborhood search to the given instance. The first solution must have been already found
+ * @param inst The instance in which we want to apply the VNS
+ * @param max_neighborhood The maximum value of the neighborhood explored
+ */
+void vns(instance *inst);
+
+/*!
+ * Performs a 3 kick move randomly over the solution
+ * @param inst The instance containing the solution
+ */
+void three_kick_vns(instance *inst);
+
+/*!
+ * Performs a 3 kick move randomly over the solution
+ * @param inst The instance containing the solution
+ */
+void five_kick_vns(instance *inst);
+
+/*!
+ * Performs a 3 kick move randomly over the solution
+ * @param inst The instance containing the solution
+ */
+void seven_kick_vns(instance *inst);
