@@ -21,7 +21,8 @@ typedef enum {
     GREEDY_REF = 31,
     XTRA_MILEAGE = 32,
     XTRA_MILEAGE_REF = 33,
-    VNS = 40
+    VNS = 40,
+    TABU_SEARCH = 50
 } modeltype;
 
 /*!
@@ -210,3 +211,9 @@ void five_kick_vns(instance *inst);
  * @param inst The instance containing the solution
  */
 void seven_kick_vns(instance *inst);
+
+/*!
+ * Performs the tabu search. The first solution must be provided
+ * @param inst The instance in which we eant to apply the tabu search
+ */
+void tabu_search(instance *inst);

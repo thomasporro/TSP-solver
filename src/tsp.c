@@ -1367,7 +1367,7 @@ void vns(instance *inst) {
         }
 
         // Save the best solution in the instance and exit the node
-        if(seconds() - inst->start_time > inst->timelimit){
+        if (seconds() - inst->start_time > inst->timelimit) {
             inst->best_value = current_best;
             for (int i = 0; i < inst->nnodes; i++) {
                 inst->successors[i] = best_successors[i];
@@ -1376,15 +1376,16 @@ void vns(instance *inst) {
             continue;
         }
 
-        if(cycles < 5){
+        if (cycles < 5) {
             three_kick_vns(inst);
-        } else if (cycles >= 5 && cycles < 10){
+        } else if (cycles >= 5 && cycles < 10) {
             five_kick_vns(inst);
         } else {
             seven_kick_vns(inst);
         }
     }
 }
+
 
 void three_kick_vns(instance *inst) {
     int first_node = -1;
@@ -1422,6 +1423,7 @@ void three_kick_vns(instance *inst) {
 
     inst->best_value = compute_solution_cost(inst, inst->successors);
 }
+
 
 void five_kick_vns(instance *inst) {
     int first_node = -1;
@@ -1470,6 +1472,7 @@ void five_kick_vns(instance *inst) {
 
     inst->best_value = compute_solution_cost(inst, inst->successors);
 }
+
 
 void seven_kick_vns(instance *inst) {
     int first_node = -1;
@@ -1532,4 +1535,85 @@ void seven_kick_vns(instance *inst) {
     inst->successors[nodes[6]] = tmp_3;
 
     inst->best_value = compute_solution_cost(inst, inst->successors);
+}
+
+
+void tabu_search(instance *inst) {
+    double current_best = inst->best_value;
+    int *best_successors = (int *) calloc(inst->nnodes, sizeof(int));
+    for (int i = 0; i < inst->nnodes; i++) {
+        best_successors[i] = inst->successors[i];
+    }
+
+    int *tabu_nodes = (int *) calloc(inst->nnodes, sizeof(int));
+    for (int i = 0; i < inst->nnodes; i++) {
+        tabu_nodes[i] = -1;
+    }
+
+    int iteration_counter = 0;
+    // Should be dynamic (change over time)
+    int tenure = inst->nnodes / 10;
+    int flag = 0;
+    while (!flag) {
+        // Save the best solution in the instance and exit the node
+        if (seconds() - inst->start_time > inst->timelimit) {
+            inst->best_value = current_best;
+            for (int i = 0; i < inst->nnodes; i++) {
+                inst->successors[i] = best_successors[i];
+            }
+            flag = 1;
+            continue;
+        }
+
+
+        int tabu_search = 0;
+        while (!tabu_search) {
+            int first_node;
+            int second_node;
+            double improvement;
+            compute_bigger_cut(inst, &first_node, &second_node, &improvement);
+
+            if ((tabu_nodes[first_node] != -1 && iteration_counter - tabu_nodes[first_node] <= tenure) ||
+                (tabu_nodes[second_node] != -1 && iteration_counter - tabu_nodes[second_node] <= tenure)){
+                if (inst->best_value < current_best) {
+                    current_best = inst->best_value;
+                    for (int i = 0; i < inst->nnodes; i++) {
+                        best_successors[i] = inst->successors[i];
+                    }
+                }
+                tabu_search = 1;
+                continue;
+            }
+
+            if(improvement == 0){
+                if (inst->best_value < current_best) {
+                    current_best = inst->best_value;
+                    for (int i = 0; i < inst->nnodes; i++) {
+                        best_successors[i] = inst->successors[i];
+                    }
+                }
+                tabu_search = 1;
+                continue;
+            }
+
+            perfrom_cut(inst, &first_node, &second_node, &improvement);
+            iteration_counter++;
+        }
+
+        // 2-kick to exit the minima
+        int first_node = rand() % inst->nnodes;
+        int second_node;
+        while ((second_node = rand() % inst->nnodes) == first_node || second_node == inst->successors[first_node]);
+        double improvement = -(distance(first_node, inst->successors[first_node], inst) +
+                               distance(second_node, inst->successors[second_node], inst) -
+                               distance(first_node, second_node, inst) -
+                               distance(inst->successors[first_node], inst->successors[second_node], inst));
+        perfrom_cut(inst, &first_node, &second_node, &improvement);
+
+        //Adding the nodes to the tabu list
+        tabu_nodes[first_node] = iteration_counter;
+        tabu_nodes[second_node] = iteration_counter;
+
+        iteration_counter++;
+    }
 }
