@@ -1,0 +1,30 @@
+In the previous section, the Benders method reaches the optimal solution of the problem through multiple calls of the CPLEX optimizer adding the sub-tour elimination constraints if the solution found is composed of various tours. The purpose of this section is to introduce a different approach than the earlier one: I will exploit the branch-and-cut technique through the use of the CPLEX callbacks.\\
+The API provided by IBM's software grant the use of some callbacks during the optimization process. CPLEX provides a wide range of possibilities such as informational callbacks, query/diagnostic callbacks, and control callbacks. The first ones give the user additional information on the current optimization without affecting the performance or interfering with the solution search space. The second one access to more detailed information compared to the informational callbacks but can affect the overall performance of the problem resolution; the query/diagnostic callbacks are also incompatible with the dynamic search and deterministic parallel functions.  The last ones are the one I am going to use and they allow the user to alter and customize how CPLEX performs the optimization.\\
+
+
+During the optimization process, CPLEX will find numerous possible solutions. Suppose that during operation a candidate solution $x^*$ is found. Then if the cost of this new result is better than the anterior one the software will update the current best solution with the last found. Otherwise, the candidate is considered infeasible and is rejected by the system.\\
+The \textsc{CPXcallbacksetfunc} method will set my custom callback that will be used every time a candidate solution is found. The algorithm adopt the same method explained in section \ref{chapter:benders} (\textsc{build\_solution}). In fact inside the callback if more than one connected component is found a new SEC is added to the instance of the problem and the candidate solution is rejected (through the function \textsc{CPXcallbackrejectcandidate}).\\
+The real difference between this implementation of the branch-and-cut and the Benders method is that while the last one needs the iteration of various optimizations processes this one rejects the possible solution aforehand it is provided to the user.
+The algorithm used is the following:
+\begin{algorithm}
+	\caption{Callback method}\label{algo:callback}
+	\begin{algorithmic}[1]
+		\Require $G=(V,E), c:E\rightarrow \Re^+$
+		\Ensure $z^*\text{ optimal solution}$
+		\Procedure{Main}{$G=(V,E), c:E\rightarrow \Re^+$}
+		\State instance $\gets$ *initializing basic model*
+		\State instance $\gets$ *instance $\cup$ custom callback*
+		\State $z^*$ $\gets$ \textsc{CPXmipopt}
+		\State \Return $z^*$
+		\EndProcedure
+		
+		\Procedure{customCallback}{$z$}
+			\State ncomp $\gets$ \textsc{build\_solution}($z)$
+			\If{$ncomp > 1$}
+				\State *Add SEC and reject candidate solution*
+			\EndIf
+			\State \Return
+		\EndProcedure
+		
+	\end{algorithmic}
+\end{algorithm}
