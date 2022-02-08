@@ -47,4 +47,4 @@ This pass to the program the model you want to use during the optimization. Here
 - vns = 40.
 
 ## Report (in continuous update)
-You can download the report with this [link](https://github.com/thomasporro/TSP-solver/blob/greedy/latex_report/ro2.pdf).
+You can download the report with this [link](https://github.com/thomasporro/TSP-solver/raw/greedy/latex_report/ro2.pdf).
