@@ -53,6 +53,9 @@ void plot(char **commands, int n_commands, instance *inst) {
         case TABU_SEARCH:
             print_heur(data, inst);
             break;
+        case GENETIC:
+            print_heur(data, inst);
+            break;
         default:
             print_st(data, inst);
             break;

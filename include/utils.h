@@ -150,3 +150,25 @@ void compute_bigger_cut(instance *inst, int *first_node, int *second_node, doubl
  */
 void perform_cut(instance *inst, int first_node, int second_node, double improvement);
 
+/*!
+ * Generate a random feasible solution
+ * @param inst The instance containing basic information
+ * @param node_list A list of nodes that forms the solution. The nodes are in sequence
+ */
+void generate_random_solution(instance *inst, int *node_list);
+
+/*!
+ * From a sequence of nodes generates the successors array
+ * @param inst The instance containing basic information
+ * @param node_list The sequence of nodes
+ * @param successors Output array
+ */
+void list_to_successors(instance *inst, int *node_list, int *successors);
+
+/*!
+ * From the successors array generates a sequence of nodes
+ * @param inst he instance containing basic information
+ * @param successors The solution as successors
+ * @param node_list Output array
+ */
+void successors_to_list(instance *inst, int *successors, int *node_list);

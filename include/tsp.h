@@ -22,7 +22,8 @@ typedef enum {
     XTRA_MILEAGE = 32,
     XTRA_MILEAGE_REF = 33,
     VNS = 40,
-    TABU_SEARCH = 50
+    TABU_SEARCH = 50,
+    GENETIC = 60
 } modeltype;
 
 /*!
@@ -217,3 +218,10 @@ void seven_kick_vns(instance *inst);
  * @param inst The instance in which we eant to apply the tabu search
  */
 void tabu_search(instance *inst);
+
+/*!
+ * Performs the genetic algorithm in order to find a good solution for the TSP
+ * @param inst The instance to store the solution
+ * @param pop_size The size of the population
+ */
+void genetic(instance *inst, int population_size);

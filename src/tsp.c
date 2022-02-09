@@ -1617,3 +1617,13 @@ void tabu_search(instance *inst) {
     }
     printf("Number of iterations: %d\n", iteration_counter);
 }
+
+
+void genetic(instance *inst, int population_size){
+    int* node_list = (int*)calloc(inst->nnodes, sizeof(int));
+    int* successors = (int*)calloc(inst->nnodes, sizeof(int));
+
+    generate_random_solution(inst, node_list);
+    list_to_successors(inst, node_list, inst->successors);
+    printf("Solution cost: %f\n", inst->best_value);
+}
