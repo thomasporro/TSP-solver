@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define PI 3.141592
+#define MAX_TIME_LIMIT 3600.0
 
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +13,7 @@
 
 void parse_command_line(int argc, char **argv, instance *inst) {
     //Default values
-    inst->timelimit = CPX_INFBOUND;
+    inst->timelimit = MAX_TIME_LIMIT;
     inst->model_type = -1;
     inst->performance_profile = 0;
 

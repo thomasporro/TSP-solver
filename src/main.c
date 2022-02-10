@@ -6,6 +6,9 @@
 #include "plot.h"
 #include "utils.h"
 
+#define PERFORMANCE_PROFILE 1237030
+
+
 /**
  * Function that execute the performance profile with the given information. It saves the results on the
  * performance_profile.csv
@@ -38,8 +41,8 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {BENDERS, MTZ, MTZ_LAZY, MTZ_IND, GG};
-        performance_profile(&inst, (int *) &model_type, 5, 3600.0);
+        int model_type[] = {MTZ, MTZ_LAZY, MTZ_IND};
+        performance_profile(&inst, (int *) &model_type, 3, 1800.0);
         return 0;
     }
 
@@ -82,8 +85,11 @@ int main(int argc, char **argv) {
     int flag_free_solution = inst.model_type == GREEDY
                              || inst.model_type == GREEDY_REF
                              || inst.model_type == XTRA_MILEAGE
-                             || inst.model_type == XTRA_MILEAGE_REF;
-    //free_instance(&inst, !flag_free_solution);
+                             || inst.model_type == XTRA_MILEAGE_REF
+                             || inst.model_type == VNS
+                             || inst.model_type == TABU_SEARCH
+                             || inst.model_type == GENETIC;
+    free_instance(&inst, inst.model_type); // !flag_free_solution
     return 0;
 }
 
@@ -205,10 +211,10 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
             else
                 fprintf(csv, "\n");
             printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+            free_instance(inst, PERFORMANCE_PROFILE);
         }
     }
 
     double end_time = seconds();
     printf("TIME ELAPSED: %f s\n\n", end_time - start_time);
-
 }

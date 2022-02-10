@@ -65,7 +65,6 @@ void complete_merging(instance *inst, int *node_list, int size) {
     int start_node = node_list[0];
     int *successors = (int *) calloc(inst->nnodes, sizeof(int));
     list_to_successors(inst, node_list, successors, &size);
-    int nnz=0;
 
     while (node_added < inst->nnodes) {
 

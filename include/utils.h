@@ -112,9 +112,9 @@ char *logfilename(instance *inst);
 /*!
  * Frees the memory of the instance passed as argument
  * @param inst The instance that we want to kill
- * @param free_solution 1 if we want to free the memeory occupied by the solution of cplex
+ * @param model_type 1 if we want to free the memory occupied by the solution of cplex
  */
-void free_instance(instance *inst, int free_solution);
+void free_instance(instance *inst, int model_type);
 
 /*!
  * Compute the solution starting from the values of successors

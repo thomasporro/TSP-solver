@@ -6,6 +6,8 @@
 #include <errno.h>
 #include "utils.h"
 
+#define PERFORMANCE_PROFILE 1237030
+
 void print_error(const char *err) {
     printf("\n\nERROR: %s \n\n", err);
     fflush(NULL);
@@ -110,14 +112,33 @@ char *logfilename(instance *inst) {
     return filename;
 }
 
-void free_instance(instance *inst, int free_solution) {
+void free_instance(instance *inst, int model_type) {
+
+    if(model_type == PERFORMANCE_PROFILE){
+        free(inst->component);
+        free(inst->successors);
+        if (inst->model_type == STANDARD || inst->model_type == BENDERS || inst->model_type == BRANCH_AND_CUT
+            || inst->model_type == DEFAULT || inst->model_type == HARD_FIX_BAC || inst->model_type == SOFT_FIX
+            || inst->model_type == BRANCH_AND_CUT_RLX){
+            printf("solution free\n");
+            free(inst->solution);
+        }
+        inst->successors = (int *) calloc(inst->nnodes, sizeof(int));
+        inst->component = (int *) calloc(inst->nnodes, sizeof(int));
+        return;
+    }
+
     free(inst->latitude);
     free(inst->longitude);
     free(inst->x_coord);
     free(inst->y_coord);
     free(inst->component);
     free(inst->successors);
-    if (free_solution) free(inst->solution);
+    if (model_type == STANDARD || model_type == BENDERS || model_type == BRANCH_AND_CUT
+               || model_type == DEFAULT || model_type == HARD_FIX_BAC || model_type == SOFT_FIX
+               || model_type == BRANCH_AND_CUT_RLX){
+        free(inst->solution);
+    }
 }
 
 void compute_solution_from_successors(instance *inst, double *x, int *successors) {

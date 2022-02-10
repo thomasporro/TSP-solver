@@ -276,7 +276,6 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 if (CPXchgcoef(env, lp, lastrow, init_position_of_u + j, -1.0)) print_error("wrong CPXchgcoef [u(j)]");
             }
         }
-        // TODO: funziona anche se non � qui mi sa (CORRETTO!)
 
     } else if (inst->model_type == MTZ_LAZY) {//Lazy constraints
         printf("Lazy constraints chosen correctly\n");
@@ -426,7 +425,6 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
     sprintf(cname[0], "linking_first_node");
     rhs = 0;
     sense = LESS_EQUAL;
-
 
     //For the first node
     for (int j = 1; j < inst->nnodes; j++) {
@@ -1632,6 +1630,8 @@ void genetic(instance *inst, int population_size) {
     double *fitness = (double *) calloc(inst->nnodes, sizeof(double));
 
     double worst_fitness = -1;
+    double average_fitness = -1;
+    double initial_spread_fitness = -1;
     double best_fitness = INFINITY;
     int champion = -1;
 
@@ -1639,11 +1639,6 @@ void genetic(instance *inst, int population_size) {
     for (int i = 0; i < population_size; i++) {
         population[i] = (int *) calloc(inst->nnodes, sizeof(int));
         fitness[i] = generate_random_solution(inst, population[i]);
-
-//        list_to_successors(inst, population[i], inst->successors);
-//        two_opt_refining(inst);
-//        successors_to_list(inst, inst->successors, population[i]);
-//        fitness[i] = inst->best_value
 
         if (fitness[i] > worst_fitness) {
             worst_fitness = fitness[i];
@@ -1658,10 +1653,13 @@ void genetic(instance *inst, int population_size) {
 //    return;
 
     int end_epochs = 0;
+    int n_epochs = 0;
     while (!end_epochs) {
+
         //Generate new sons
         int number_of_children = population_size / 10;
         int **children = (int **) calloc(number_of_children, sizeof(int *));
+        //Children generation
         for (int n_child = 0; n_child < number_of_children; n_child++) {
             int parent_1 = -1;
             int parent_2 = -1;
@@ -1670,7 +1668,7 @@ void genetic(instance *inst, int population_size) {
                 int index = rand() % population_size;
                 double normalized_fitness = (fitness[index] - best_fitness) / (worst_fitness - best_fitness);
                 // Select from the top 50%
-                if (normalized_fitness < 0.5) {
+                if (normalized_fitness < 0.9) {
                     parent_1 = index;
                 }
             }
@@ -1678,12 +1676,10 @@ void genetic(instance *inst, int population_size) {
             while (parent_2 == -1 || parent_2 == parent_1) {
                 int index = rand() % population_size;
                 double normalized_fitness = (fitness[index] - best_fitness) / (worst_fitness - best_fitness);
-                if (normalized_fitness < 0.5) {
+                if (normalized_fitness < 0.9) {
                     parent_2 = index;
                 }
             }
-
-//            printf("parent_1: %d        parent_2: %d\n", parent_1, parent_2);
 
             children[n_child] = (int *) calloc(inst->nnodes, sizeof(int));
             int cutting_point = inst->nnodes / 2;
@@ -1712,8 +1708,96 @@ void genetic(instance *inst, int population_size) {
             complete_merging(inst, children[n_child], next_node);
 
             //Quando lo metto dentro alla population computo la fitness
-            printf("child: %d\n", n_child);
         }
-        break;
+
+        //Population killing and substituting with the children
+        for (int n_child = 0; n_child < number_of_children; n_child++) {
+            int killed = -1;
+
+            while (killed == -1) {
+                int index = rand() % population_size;
+                double normalized_fitness = (fitness[index] - best_fitness) / (worst_fitness - best_fitness);
+                // Select from the bottom 50%
+                if (normalized_fitness > 0.2) {
+                    killed = index;
+                }
+            }
+
+            double initial1 = distance(children[n_child][0], children[n_child][inst->nnodes - 1], inst);
+            for (int j = 0; j < inst->nnodes - 1; j++) {
+                initial1 += distance(children[n_child][j], children[n_child][j + 1], inst);
+            }
+
+            fitness[killed] = distance(children[n_child][0], children[n_child][inst->nnodes - 1], inst);
+            population[killed][inst->nnodes - 1] = children[n_child][inst->nnodes - 1];
+            for (int i = 0; i < inst->nnodes - 1; i++) {
+                population[killed][i] = children[n_child][i];
+                fitness[killed] += distance(children[n_child][i], children[n_child][i + 1], inst);
+            }
+
+            free(children[n_child]);
+        }
+        free(children);
+
+        // Updating fitness values
+        double sum = 0.0;
+        worst_fitness = -1;
+        for (int i = 0; i < population_size; i++) {
+            sum += fitness[i];
+            if (fitness[i] < best_fitness) {
+                best_fitness = fitness[i];
+                champion = i;
+            }
+            if (fitness[i] > worst_fitness) {
+                worst_fitness = fitness[i];
+            }
+        }
+        average_fitness = sum / (double) population_size;
+
+        if (n_epochs == 0) {
+            initial_spread_fitness = worst_fitness - best_fitness;
+        }
+
+        // Perform mutations
+        if ((worst_fitness - best_fitness) / initial_spread_fitness < 0.15) {
+            int mutations = rand() % (inst->nnodes / 2);
+            for (int i = 0; i < mutations; i++) {
+                int index = -1;
+
+                while (index == -1) {
+                    int temp = rand() % population_size;
+                    if (temp != champion) {
+                        index = temp;
+                    }
+                }
+
+                int first_node, second_node = -1;
+                first_node = rand() % inst->nnodes;
+                while ((second_node = rand() % inst->nnodes) == first_node);
+
+                //Removing old edges from the fitness
+                fitness[index] -= distance(population[index][first_node], population[index][first_node - 1], inst);
+                fitness[index] -= distance(population[index][first_node], population[index][first_node + 1], inst);
+                fitness[index] -= distance(population[index][second_node], population[index][second_node - 1], inst);
+                fitness[index] -= distance(population[index][second_node], population[index][second_node + 1], inst);
+
+                int temp = population[index][first_node];
+                population[index][first_node] = population[index][second_node];
+                population[index][second_node] = temp;
+
+                //Adding the new edges to the fitness
+                fitness[index] += distance(population[index][first_node], population[index][first_node - 1], inst);
+                fitness[index] += distance(population[index][first_node], population[index][first_node + 1], inst);
+                fitness[index] += distance(population[index][second_node], population[index][second_node - 1], inst);
+                fitness[index] += distance(population[index][second_node], population[index][second_node + 1], inst);
+
+                break;
+            }
+        }
+//        printf("Champion cost epoch %d (%d): %f\n", n_epochs, champion, fitness[champion]);
+//        printf("Avg cost epoch %d: %f\n\n", n_epochs, average_fitness);
+        n_epochs++;
+//        if(n_epochs==50) break;
+//        break;
     }
 }
