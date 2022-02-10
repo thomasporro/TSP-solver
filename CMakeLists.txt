@@ -6,7 +6,7 @@
          src/tsp.c
          src/utils.c
          src/read_input.c
-         src/plot.c)
+         src/plot.c src/genetic_utils.c)
 
  add_executable(${PROJECT_NAME} ${SRC})
 

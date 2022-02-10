@@ -13,6 +13,7 @@
 #include <float.h>
 #include "tsp.h"
 #include "utils.h"
+#include "genetic_utils.h"
 
 int TSPopt(instance *inst) {
     //Open the CPLEX enviroment
@@ -1573,8 +1574,8 @@ void tabu_search(instance *inst) {
             double improvement;
             compute_bigger_cut(inst, &first_node, &second_node, &improvement);
 
-            if ( (tabu_nodes[first_node] != -1 && iteration_counter - tabu_nodes[first_node] <= tenure) ||
-                (tabu_nodes[second_node] != -1 && iteration_counter - tabu_nodes[second_node] <= tenure)){
+            if ((tabu_nodes[first_node] != -1 && iteration_counter - tabu_nodes[first_node] <= tenure) ||
+                (tabu_nodes[second_node] != -1 && iteration_counter - tabu_nodes[second_node] <= tenure)) {
                 if (inst->best_value < current_best) {
                     current_best = inst->best_value;
                     for (int i = 0; i < inst->nnodes; i++) {
@@ -1585,7 +1586,7 @@ void tabu_search(instance *inst) {
                 continue;
             }
 
-            if(improvement == 0){
+            if (improvement == 0) {
                 if (inst->best_value < current_best) {
                     current_best = inst->best_value;
                     for (int i = 0; i < inst->nnodes; i++) {
@@ -1604,9 +1605,9 @@ void tabu_search(instance *inst) {
         int second_node;
         while ((second_node = rand() % inst->nnodes) == first_node || second_node == inst->successors[first_node]);
         double improvement = distance(first_node, inst->successors[first_node], inst) +
-                               distance(second_node, inst->successors[second_node], inst) -
-                               distance(first_node, second_node, inst) -
-                               distance(inst->successors[first_node], inst->successors[second_node], inst);
+                             distance(second_node, inst->successors[second_node], inst) -
+                             distance(first_node, second_node, inst) -
+                             distance(inst->successors[first_node], inst->successors[second_node], inst);
         perform_cut(inst, first_node, second_node, improvement);
 
         //Adding the nodes to the tabu list
@@ -1619,11 +1620,100 @@ void tabu_search(instance *inst) {
 }
 
 
-void genetic(instance *inst, int population_size){
-    int* node_list = (int*)calloc(inst->nnodes, sizeof(int));
-    int* successors = (int*)calloc(inst->nnodes, sizeof(int));
+void genetic(instance *inst, int population_size) {
+//    int* node_list = (int*)calloc(inst->nnodes, sizeof(int));
+//    int* successors = (int*)calloc(inst->nnodes, sizeof(int));
+//
+//    generate_random_solution(inst, node_list);
+//    list_to_successors(inst, node_list, inst->successors);
+//    printf("Solution cost: %f\n", inst->best_value);
 
-    generate_random_solution(inst, node_list);
-    list_to_successors(inst, node_list, inst->successors);
-    printf("Solution cost: %f\n", inst->best_value);
+    int **population = (int **) calloc(inst->nnodes, sizeof(int *));
+    double *fitness = (double *) calloc(inst->nnodes, sizeof(double));
+
+    double worst_fitness = -1;
+    double best_fitness = INFINITY;
+    int champion = -1;
+
+    // Population generation
+    for (int i = 0; i < population_size; i++) {
+        population[i] = (int *) calloc(inst->nnodes, sizeof(int));
+        fitness[i] = generate_random_solution(inst, population[i]);
+
+//        list_to_successors(inst, population[i], inst->successors);
+//        two_opt_refining(inst);
+//        successors_to_list(inst, inst->successors, population[i]);
+//        fitness[i] = inst->best_value
+
+        if (fitness[i] > worst_fitness) {
+            worst_fitness = fitness[i];
+        }
+        if (fitness[i] < best_fitness) {
+            best_fitness = fitness[i];
+            champion = i;
+        }
+    }
+//    list_to_successors(inst, population[46], inst->successors, NULL);
+//    printf("Solution cost: %f\n", fitness[46]);
+//    return;
+
+    int end_epochs = 0;
+    while (!end_epochs) {
+        //Generate new sons
+        int number_of_children = population_size / 10;
+        int **children = (int **) calloc(number_of_children, sizeof(int *));
+        for (int n_child = 0; n_child < number_of_children; n_child++) {
+            int parent_1 = -1;
+            int parent_2 = -1;
+
+            while (parent_1 == -1) {
+                int index = rand() % population_size;
+                double normalized_fitness = (fitness[index] - best_fitness) / (worst_fitness - best_fitness);
+                // Select from the top 50%
+                if (normalized_fitness < 0.5) {
+                    parent_1 = index;
+                }
+            }
+
+            while (parent_2 == -1 || parent_2 == parent_1) {
+                int index = rand() % population_size;
+                double normalized_fitness = (fitness[index] - best_fitness) / (worst_fitness - best_fitness);
+                if (normalized_fitness < 0.5) {
+                    parent_2 = index;
+                }
+            }
+
+//            printf("parent_1: %d        parent_2: %d\n", parent_1, parent_2);
+
+            children[n_child] = (int *) calloc(inst->nnodes, sizeof(int));
+            int cutting_point = inst->nnodes / 2;
+            // First half chromosome
+            for (int i = 0; i < cutting_point; i++) {
+                children[n_child][i] = population[parent_1][i];
+            }
+            // Second half
+            int next_node = cutting_point;
+            int add_node = 1;
+            for (int i = cutting_point; i < inst->nnodes; i++) {
+                for (int j = 0; j < cutting_point; j++) {
+                    if (population[parent_2][i] == children[n_child][j]) {
+                        add_node = 0;
+                        break;
+                    }
+                }
+                if (add_node) {
+                    children[n_child][next_node] = population[parent_2][i];
+                    next_node++;
+                } else {
+                    add_node = 1;
+                }
+            }
+            //Merging
+            complete_merging(inst, children[n_child], next_node);
+
+            //Quando lo metto dentro alla population computo la fitness
+            printf("child: %d\n", n_child);
+        }
+        break;
+    }
 }

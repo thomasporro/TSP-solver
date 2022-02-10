@@ -132,7 +132,6 @@ void read_input(instance *inst) {
                 inst->longitude[nodes_number] = PI * (deg + 5.0 * min / 3.0) / 180.0;
             }
 
-
             continue;
         }
     }
