@@ -221,8 +221,8 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
     }
 
     //Add u(i) variable for MTZ
-    int start_position_u_i = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
-    for (int i = 0; i < inst->nnodes; i++) {
+    int start_position_u_i = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst);
+    for (int i = 1; i < inst->nnodes; i++) {
         sprintf(cname[0], "u(%d)", i + 1);
         char integer = INTEGER_VARIABLE;
         double lb = 0.0;
@@ -267,7 +267,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 char sense = LESS_EQUAL;
 
                 //Compute the position of the first variable ui, that is right after the binary ones
-                int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst) + 1;
+                int init_position_of_u = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst);
                 sprintf(cname[0], ("MTZ_constraint_for_x(%d,%d)"), i + 1, j + 1);
                 if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [MTZ Constraint]");
                 if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), inst->nnodes - 1.0))
@@ -286,7 +286,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
         double rhs = big_m - 1.0;
         char sense = LESS_EQUAL;
         int nnz = 3;
-        int final_position = inst->nnodes * inst->nnodes;
+        int final_position = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst);
         for (int i = 1; i < inst->nnodes; i++) {
             for (int j = 1; j < inst->nnodes; j++) {
                 if (i == j) continue;
@@ -311,7 +311,7 @@ void build_model_MTZ(instance *inst, CPXENVptr env, CPXLPptr lp) {
         int linind[2];
         double linval[] = {-1.0, 1.0};
         //Point the last position of the x_ij variables
-        int final_position = inst->nnodes * inst->nnodes;
+        int final_position = xxpos(inst->nnodes - 1, inst->nnodes - 1, inst);
         for (int i = 1; i < inst->nnodes; i++) {
             for (int j = 1; j < inst->nnodes; j++) {
                 if (i == j) continue;
@@ -359,7 +359,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
             sprintf(cname[0], "y(%d,%d)", i + 1, j + 1);
             char integer = INTEGER_VARIABLE;
             double lb = 0.0;
-            double ub = (i == j) ? 0.0 : INFINITY;
+            double ub = (i == j) ? 0.0 : inst->nnodes - 1;
             if (CPXnewcols(env, lp, 1, NULL, &lb, &ub, &integer, cname)) print_error("wrong CPXnewcols on y(i, j)");
             if (CPXgetnumcols(env, lp) - 1 != ypos(i, j, inst)) print_error("wrong position for y(i, j)");
         }
@@ -397,7 +397,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
     //Add costraint of flow of the first node
     sprintf(cname[0], "flow_out_from_1");
     lastrow = CPXgetnumrows(env, lp);
-    rhs = inst->nnodes - 1;
+    rhs = inst->nnodes - 1.0;
     sense = EQUAL;
     if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [flow_out_from_1]");
     for (int j = 1; j < inst->nnodes; j++) {
@@ -426,24 +426,19 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
     rhs = 0;
     sense = LESS_EQUAL;
 
-    //For the first node
-    for (int j = 1; j < inst->nnodes; j++) {
-        lastrow = CPXgetnumrows(env, lp);
-        if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_first_node]");
-        if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong CPXchgcoef [linking_first_node]");
-        if (CPXchgcoef(env, lp, lastrow, xxpos(0, j, inst), -(inst->nnodes - 1)))
-            print_error("wrong CPXchgcoef [linking_first_node]");
-    }
 
-    //For the other nodes
-    for (int i = 1; i < inst->nnodes; i++) {
+    //Tightened linking constraints
+    double coef_x = -(inst->nnodes - 2.0);
+    for (int i = 0; i < inst->nnodes; i++) {
         for (int j = 0; j < inst->nnodes; j++) {
             if (i == j) continue;
+            if (i == 0 || j == 0) { coef_x = -(inst->nnodes - 1.0); }
+            else { coef_x = -(inst->nnodes - 2.0); }
             sprintf(cname[0], "linking_arc_x(%d,%d)", i + 1, j + 1);
             lastrow = CPXgetnumrows(env, lp);
             if (CPXnewrows(env, lp, 1, &rhs, &sense, NULL, cname)) print_error("wrong CPXnewrows [linking_arc_x]");
             if (CPXchgcoef(env, lp, lastrow, ypos(i, j, inst), 1.0)) print_error("wrong chgcoef [linking_arc_x]");
-            if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), -(inst->nnodes - 2)))
+            if (CPXchgcoef(env, lp, lastrow, xxpos(i, j, inst), coef_x))
                 print_error("wrong chgcoef [linking_arc_x]");
         }
     }
@@ -635,8 +630,8 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     }
                     inst->best_value = objval;
                 } else {
-                    if (percentage - 20 >= 0) {
-                        percentage -= 20;
+                    if (percentage - 10 >= 0) {
+                        percentage -= 10;
                     } else {
                         percentage = 0;
                     }

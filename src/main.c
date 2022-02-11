@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {MTZ, MTZ_LAZY, MTZ_IND};
+        int model_type[] = {MTZ, MTZ_LAZY, GG};
         performance_profile(&inst, (int *) &model_type, 3, 1800.0);
         return 0;
     }
