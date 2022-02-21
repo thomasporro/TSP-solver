@@ -1,4 +1,4 @@
-This method is the simplest one presented in this chapter. The basic idea is the insertion of the SECs only when sub-tours are found. This way is quite different from the implementation of the lazy constraints of MTZ seen before: the constraints are not activated when one of them is violated, but they are manually added into the instance.\\
+This method is the simplest one presented in this chapter. The basic idea is the insertion of the SECs only when sub-tours are found. This is quite different from the implementation of the lazy constraints of MTZ seen before: the constraints are not activated when one of them is violated, but they are manually added into the instance.\\
 This method uses the basic model described in \ref{chapter:basic_model} and follows this algorithm:
 
 \begin{algorithm}
@@ -22,8 +22,7 @@ This method uses the basic model described in \ref{chapter:basic_model} and foll
 	\end{algorithmic}
 \end{algorithm}
 
-This algorithm shows the simplicity of the Benders method. The first thing to do is building the basic model inside the instance of the CPLEX environment, afterwards the arrays that will contain the successors and the components are initialized. These two arrays are big enough to hold all the nodes, so they are $n$ long. The most important function in this algorithm, excluded the optimization (\textsc{CPXmipopt}), is absolutely the function \textsc{build\_solution}, it fills the arrays successors and components following this idea: searches all the connected components inside the solution, then each $successors[i]$ will contain the next node inside the connected component, and $component[i]$ will enclose the index of the component of the node $i$.\\
-Then the algorithm will check the number of the connected components, saved into ncomp, and if are present more than one loops it inserts into the instance a new constraint, for each component, following this formula:
+This algorithm shows the simplicity of the Benders method. The first thing to do is building the basic model inside the instance of the CPLEX environment, and afterwards the arrays that will contain the successors and the components are initialized. These two arrays are $n$ long, so they are big enough to hold all the nodes. The most important function in this algorithm - excluded the optimization (\textsc{CPXmipopt}) - is the function \textsc{build\_solution}. It fills the arrays successors and components following this idea: search all the connected components inside the solution, then each $successors[i]$ will contain the next node inside the connected component, and $component[i]$ will enclose the index of the component of the node $i$. Then the algorithm checks the number of the connected components saved into ncomp. If more than one loop is present, the algorithm inserts a new constraint into the instance for each component, following this formula:
 %\begin{comment}
 \begin{equation}
 \sum_{e(S)}x_{e}\le |S|-1; \quad \forall S \subset\{2, \dots, n\}, \; |S|\ge 2

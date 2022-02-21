@@ -25,6 +25,10 @@
 \BOOKMARK [2][-]{subsection.5.3.1}{Variable Neighborhood Search}{section.5.3}% 25
 \BOOKMARK [2][-]{subsection.5.3.2}{Tabu search}{section.5.3}% 26
 \BOOKMARK [2][-]{subsection.5.3.3}{Genetic algorithms}{section.5.3}% 27
-\BOOKMARK [0][-]{chapter.6}{Experimental results}{}% 28
+\BOOKMARK [0][-]{chapter.6}{Experimental results and conclusions}{}% 28
 \BOOKMARK [1][-]{section.6.1}{Compact models}{chapter.6}% 29
-\BOOKMARK [0][-]{chapter*.8}{Bibliografia}{}% 30
+\BOOKMARK [1][-]{section.6.2}{SEC methods}{chapter.6}% 30
+\BOOKMARK [1][-]{section.6.3}{Matheuristics}{chapter.6}% 31
+\BOOKMARK [1][-]{section.6.4}{Metaheuristics}{chapter.6}% 32
+\BOOKMARK [1][-]{section.6.5}{Conclusions}{chapter.6}% 33
+\BOOKMARK [0][-]{chapter*.15}{References}{}% 34

@@ -1,5 +1,5 @@
-The second compact model implemented is the one proposed by Gavish and Graves (this model will be called GG from now on), based on the single commodity flow:  the arcs are considered as pipes.\\
-Like in the MTZ model, here too a new variable is introduced in the problem. It is called "Flow of the arc" and it is represented with the symbol $y_{ij}$. Compared with the model in section \ref{chapter:mtz}, the starting value of $y_{ij}$ is $n-1$ and decrease by 1 at each following node in the optimal solution. 
+The second compact model implemented is the one proposed by Gavish and Graves, based on the single commodity flow:  the arcs are considered as pipes.\\
+Like in the MTZ model, a new variable is introduced in the problem. It is called "Flow of the arc" and it is represented with the symbol $y_{ij}$. Compared with the model in section \ref{chapter:mtz}, the starting value of $y_{ij}$ is $n-1$ and decrease by 1 at each following node in the optimal solution. 
 To implement this proposition the following constraints are added to the instance:
 %\begin{comment}
 \begin{equation}
@@ -19,4 +19,4 @@ y_{ij}\le (n-1)x_{ij}
 %\end{comment}
 
 
-This formula finds an optimal solution without sub-tours. (vedere se aggiungere qualcos'altro ma non credo)
+This formula finds an optimal solution without sub-tours.

@@ -54,9 +54,10 @@ void print_stats(instance *inst, double time_passed) {
         print_error_code("Error openining stats files", ENOENT);
     }
 
-    fprintf(stats, "Problem-> %-40s", inst->input_file);
+    fprintf(stats, "Problem-> %-50s", inst->input_file);
     fprintf(stats, "Model-> %-10d", inst->model_type);
-    fprintf(stats, "Time passed-> %-10f\n", time_passed);
+    fprintf(stats, "Time passed-> %-15f", time_passed);
+    fprintf(stats, "Cost-> %-10f\n", inst->best_value);
 
     fclose(stats);
 }

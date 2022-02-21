@@ -1,30 +1,30 @@
-Section \ref{chapter:primo_capitolo} described the problem and stated that is NP-hard. The computational effort to obtain an optimal solution to this problem is high. Due to this fact, the implementation will be done using the programming language C which will provide really good efficiency and better memory management than other languages.
+Section \ref{chapter:primo_capitolo} described the problem and stated that it is NP-hard. The computational effort to obtain an optimal solution to this problem is high. Due to this fact, the implementation will be done using the programming language C which will provide really good efficiency and better memory management than other languages.
 
 All the results obtained in this report were executed on a Linux machine with Ubuntu 20.04 as operative system. The system runs an Intel Core i7 8550u @1.80Ghz with 16Gb of RAM.
 
-To produce this code a lot of software was used. The main IDE used in this project is CLion by IntelliJ, CMake is the build software used to compile the code. The most important software used is IBM ILOG CPLEX which is an optimization software package, its integration in the code is done through the use of the Callable Library (API). This software isn’t usually free but it was made available free of charge for students that needed it for academic purposes.
+To produce this code, lots of software were used. The main IDE in this project is CLion by IntelliJ and CMake is the build software adopted to compile the code. The most important software used is IBM ILOG CPLEX, which is an optimization software package integrated in the code through its Callable Library (API). This software isn’t usually free but it was made available free of charge for students that needed it for academic purposes.
 
-During this report the TSP problem may have some fractional solution, to deal with them the external library Concorde has been used. (Non ricordo se l'ho già spiegata nella sezione)
+During this project, the TSP problem could present some fractional solution, and to deal with them the external library Concorde has been used (furter explaination in section \ref{chapter:callback-fractional}).
 
-To visualize the solution found the Gnuplot library has been used, which is a command-line driven utility. The main usage was to check the effect of the code written to the TSP instances. The graphs of this report are generated exploiting the command line and using Gnuplot through a pipe.
+The Gnuplot library, which is a command-line driven utility, was adopted to visualize the solution found. The main usage was to check the effect of the code written to the TSP instances. The graphs of this report are generated exploiting the command line and using Gnuplot through a pipe.
 
-To analyze the efficiency of the algorithms presented a performance profile tool has been used. This tool is written by Salvagnin (2019) and it is for internal use only.
+For analyzing the efficiency of the algorithms presented, a performance profile tool has been used. This tool is written by Salvagnin (2019) and it is for internal use only.
 
 \section{Solution and data management}
 \label{sec:solution-data-management}
-To evaluate the method implemented a reference library has been adopted. TSPLIB \cite{tsp-lib} is a library of sample instances for the TSP (and related problems) from various sources and of various types. This allowed having a starting point on the information needed to solve the problem. Among all the sections contained in the $.tsp$ files only, the most important ones are stored into the instance which are:
+A reference library has been adopted in order to evaluate the method implemented. TSPLIB \cite{tsp-lib} is a library of sample instances for the TSP (and related problems) from various sources and of various types. This allowed having a starting point on the information needed to solve the problem. Among all the sections contained in the $.tsp$ files only, the most important ones are stored into the instance which are:
 \begin{itemize}
 	\item DIMENSION: the number of nodes that are in the file;
-	\item EDGE WEIGHT TYPE: the typology of the distance between the nodes;
-	\item NODE COORD SECTION: section, usually it goes at the end of the file, where the coordinates of the nodes are described.
+	\item EDGE WEIGHT TYPE: the typology of the distance between nodes;
+	\item NODE COORD SECTION: where the coordinates of the nodes are described, usually at the end of the file.
 \end{itemize}
 
-To store the solution in a convenient and useful way the notion of a successor is introduced. Indeed the solution of the TSP problem is a cycle, so each node has a successor. Considering an array big as the number of nodes in the problem, the index of the array is node number and its content is the number of the next node in the solution. In this way each node points to its successor and going through it is possible to generate the solution.
+To store the solution in a convenient and useful way, the notion of a successor is introduced. Indeed the solution of the TSP problem is a cycle, so each node has a successor. Considering an array big as the number of nodes in the problem, the index of the array is the nodes number and its content is the number of the next node in the solution. In this way, each node points to its successor and generates the solution.
 
 \section{CPLEX's variables and constraints}
-Understanding how CPLEX build and manage constraint is important to have full control over the system. 
+Understanding how CPLEX build and manage constraint is important for a full control over the system. 
 
-The whole software works with the concept of rows and columns, which are respectively the constraints and the variables of the problem. To understand better I will give you an example with a simple minimisation problem, where $x_i$ is an integer value:
+The whole software works with the concept of rows and columns, which are respectively the constraints and the variables of the problem. Using a simple minimisation problem, where $x_i$ is an integer value, it is:
 
 \begin{equation}
 \label{eqn:cplex-example}
@@ -35,9 +35,9 @@ The whole software works with the concept of rows and columns, which are respect
 \end{array}\\
 \end{equation}
 
-This problem can be seen as a matrix composed of rows and columns, each column corresponding to a variable, each row corresponding to a constraint that the problem has to satisfy. Whenever it is necessary to add a new variable, $x_4$ for example, it is possible to do so just by calling the API and adding a new column to the problem. The same can be done with a constraint, it can be added by inserting a new row using the callable library.
+This problem can be seen as a matrix composed of rows and columns, each column corresponding to a variable and each row corresponding to a constraint that the problem has to satisfy. Whenever it is necessary to add a new variable, for example $x_4$, it is possible to do so by calling the API and by adding a new column to the problem. The same can be done with a constraint: it can be added by inserting a new row using the callable library.
 
-When a new constraint is added it contains only the right-hand side of the equation/inequation, all the coefficients of the variables are setted to 0. The constraint will appear as following:
+When a new constraint is added it contains only the right-hand side of the equation/inequation, and all the coefficients of the variables are setted to 0. The constraint will appear as following:
 
 \begin{equation}
 \label{eqn:constraint}
@@ -45,7 +45,7 @@ When a new constraint is added it contains only the right-hand side of the equat
 \end{equation}
 
 Inequation \ref{eqn:constraint} is the first row of the model described in \ref{eqn:cplex-example}.
-To change the value of the coefficients to be consistent with the model of this section it is possible to use the API of CPLEX. So it is possible to set the value of the variable $x_1$ to $2$ and $x_3$ to $-1$. Resulting as following: 
+For having the coefficients consistent with the model of this section, it is possible to use the API of CPLEX. In this way it is possible to set the value of the variable $x_1$ to $2$ and $x_3$ to $-1$, and to obtain: 
 
 \begin{equation}
 \label{eqn:full-constraint}

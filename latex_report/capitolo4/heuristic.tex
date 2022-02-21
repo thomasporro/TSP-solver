@@ -1,12 +1,12 @@
-In this section the concept of heuristic is explored in some of algorithms used to solve the TSP problem. In particular a set of methods will be presented such as greedy algorithm, extra mileage, and 2-opt optimization.
+In this section the concept of heuristic is explored in some of algorithms used to solve the TSP problem. In particular, a set of methods will be presented namely greedy algorithm, extra mileage, and 2-opt optimization.
 
 \subsection{Greedy algorithm}
 \label{sec:greedy}
-This type of method is the easiest to understand and implement. This heuristic has its base on the concept to construct the shortest path by connecting the nearest nodes.
+This type of method is the easiest to understand and implement. This heuristic has its roots on the concept  of constructing the shortest path by connecting the nearest nodes.
 
-This algorithm starts from an arbitrary node and chooses its following node by selecting the nearest one from the ones that are not already in the path. This greedy approach is also called Nearest Neighbor.
+This algorithm starts from an arbitrary node and chooses its following node by selecting the nearest one from the ones that are not already in the path. For this reason, it is also called Nearest Neighbor.
 
-The main side effect it has is that the shortest path is easily missed since the last nodes - apart from special cases - are far from each other. In this way, the optimal solution is surely not selected. The algorithm is the following: 
+The main side effect is that the shortest path is easily missed since the last nodes - apart from special cases - are far from each othe and in this way the optimal solution is not selected. The algorithm is the following: 
 
 \begin{algorithm}
 	\caption{Greedy}\label{algo:greedy}
@@ -36,14 +36,14 @@ The main side effect it has is that the shortest path is easily missed since the
 	\end{algorithmic}
 \end{algorithm}
 
-This algorithm describes exactly the behavior of the greedy algorithm. In my implementation, each node is tested as starting node to obtain the best nearest neighbor solution. The classic implementation has a complexity of $O(n^2)$ since each node has to search the nearest node all over the graph. In particular \ref{algo:greedy} has a complexity of $O(n^3)$ because of the aforementioned method to select the best starting node.\\
-This complexity is quite low but with some instances with a great number of nodes can be slower than expected.
+The classic implementation has a complexity of $O(n^2)$ since each node has to search the nearest node all over the graph. To obtain the best solution possible, in my implementation each node is tested as starting node. In particular, \ref{algo:greedy} has a complexity of $O(n^3)$ because of the aforementioned method to select the best starting node.\\
+This complexity is quite low but it can be slower than expected with some instances over a great number of nodes.
 
 \subsection{Extra mileage approach}
 \label{sec:extra-mileage}
-This approach is more complex than the previous one but in favor of a better solution. The main idea behind this algorithm is very simple and it starts from an empty solution and provides a good solution.
+This approach is more complex than the previous one but in favor of a better solution. The main idea behind this algorithm is very simple and it sets up from an empty solution.
 
-It starts with connecting with a cycle the farthest nodes in the instance, this will be the beginning of the solution. Then the closest node among the active edges is selected and is added to the solution. This action is performed by replacing the edge with two more that allow the new node to enter the solution.
+It starts by connecting the farthest nodes in the instance with a cycle, and this path will be the beginning of the solution. Then, the closest node among the active edges is selected and added to the solution by replacing it with two more edges that allow the new node to enter the solution. This process can be seen in figure \ref{fig:extra}, where it is performed with a five nodes.
 
 \begin{figure}
 	\centering
@@ -77,15 +77,13 @@ It starts with connecting with a cycle the farthest nodes in the instance, this 
 	\label{fig:extra}
 \end{figure}
 
-The process can be seen in figure \ref{fig:extra} where it is performed with a bunch of nodes.
-
-The method with the next node to be inserted is chosen is the triangle inequality. Actually, with the replacing phase, some cost is added to the solution. Imagine taking into consideration three nodes $(x, y, z)$, where $x$ and $y$ are already in the solution and $z$ wants to join them. The mathematical operation to use is the following:
+For inserting the next node, the method used is the triangle inequality, which states that the sum of the lengths of any two sides must be greater than or equal to the length of the remaining side. In doing so with the replacing phase, some cost is added to the solution. Imagine taking into consideration three nodes $x$, $y$ and $z$, where $x$ and $y$ are already in the solution and $z$ wants to join them. The mathematical operation to apply is the following:
 
 \begin{equation}
 	\Delta(x, y, w) = c_{xw} + c_{yw} - c_{xy}
 \end{equation}
 
-This value will always be positive thanks to the aforementioned triangle inequality which states that the sum of the lengths of any two sides must be greater than or equal to the length of the remaining side.
+This value will always be positive thanks to the aforementioned triangle inequality.
 
 The algorithm used is the following:
 \begin{algorithm}
@@ -105,19 +103,19 @@ The algorithm used is the following:
 \end{algorithm}
 
 \subsection{2-opt refining}
-This section will analyze one refining technique. The target of this approach is to take an existing solution $x$ and try to take it closer to the optimum one.\\
-A method to do so is represented by the $k$-opt refining that consists on rearrange $k$ edges in order to obtain a new solution with a lower cost. In particular, this section it is describes the $2$-opt refining.
+This section analyzes a refining technique where the goal is to take an existing solution $x$ and to put it closer to the optimum one.\\
+The $k$-opt refining consists on rearrange $k$ edges in order to obtain a new solution with a lower cost. In particular, this section describes the $2$-opt refining.
 
-To apply this approach effectively it is applied starting from a solution obtained with a heuristic approach such as the ones described in section \ref{sec:greedy} and \ref{sec:extra-mileage}. The idea of this algorithm is to remove all the crossing edges and insert new edges that will decrease the cost of the final solution.
+To handle this approach effectively, it is applied starting from a solution obtained with a heuristic approach - such as the ones described in section \ref{sec:greedy} and \ref{sec:extra-mileage}. The idea of this algorithm is to remove all the crossing edges and to insert new edges that will decrease the cost of the final solution.
 
-To do so it is used the triangle inequality, is used to find the couple of edges that allow the best improvement of the solution. In this implementation the operation is done across four nodes: $i$, $succ[i]$, $j$, and $succ[j]$. Since the tour is asymmetric it has a direction, $succ[i]$ and $succ[j]$ are respectively the following nodes in the path of the nodes $i$ and $j$. 
+Here too the triangle inequality is used to find the couple of edges that allow the best improvement. In this implementation, the operation is done across four nodes: $i$, $succ[i]$, $j$, and $succ[j]$. Since the tour is asymmetric, it has a direction: $succ[i]$ and $succ[j]$ are respectively the following nodes in the path of the nodes $i$ and $j$. 
 
 \begin{equation}
 	\label{eqn:2-opt}
 	\Delta (i, j) = (c_{i, succ[i]} + c_{j, succ[j]}) - (c_{i, j} + c_{succ[i], succ[j]}) \quad i, j \in V; i\not=succ[j]; j\not=succ[i]
 \end{equation}
 
-In \ref{eqn:2-opt} in is described the correct way to compute the delta of the method. Greater the value, better the improving.
+In \ref{eqn:2-opt} it is described the correct way to compute the delta of the method. Greater the value, better the improving.
 
 \begin{figure}[h]
 	\centering
@@ -126,7 +124,7 @@ In \ref{eqn:2-opt} in is described the correct way to compute the delta of the m
 	\label{fig:2-opt}
 \end{figure}
 
-In figure \ref{fig:2-opt} it is possible to notice the replacement of two arcs. A detail to give attention to is that the path from $i$ and $succ[i]$ changes direction after the substitution of the old edges, this is done to maintain the solution integrity. In particular, this optimization is performed until no more $\Delta(i, j)$ positive are found, in that case, the solution is no more improvable by the 2-opt algorithm.
+In figure \ref{fig:2-opt} it is possible to look at the replacement of two arcs. It is important to notice that the path from $i$ to $succ[i]$ changes direction after the substitution of the old edges. This is done for maintaining the solution integrity. In particular, this optimization is performed until no more positive $\Delta(i, j)$ are found. If they are not found, the solution is no more improvable by the 2-opt algorithm.
 
 \begin{algorithm}
 	\caption{$2$-opt refining}\label{algo:2-opt}

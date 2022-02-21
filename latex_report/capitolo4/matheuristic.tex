@@ -1,13 +1,13 @@
-As aforementioned in this chapter I am going to explore how big instances can be solved when the classical methods, such as MTZ and GG, would take too long to be solved to the optimal value. This section will explore the concept of matheuristic that combine mathematical programming and heuristics techniques. "The objective of a heuristic is to produce a solution in a reasonable time frame that is good enough for solving the problem at hand. This solution may not be the best of all the solutions to this problem, or it may simply approximate the exact solution. But it is still valuable because finding it does not require a prohibitively long time"\cite{heuristic}.\\
-The two techniques that I will explore are the hard-fixing and the soft-fixing.
+"The objective of a heuristic is to produce a solution in a reasonable time frame that is good enough for solving the problem at hand. This solution may not be the best of all the solutions to this problem, or it may simply approximate the exact solution. But it is still valuable because finding it does not require a prohibitively long time"\cite{heuristic}.\\
+The two techniques I am going to delve into are the hard-fixing and the soft-fixing.
 
 \subsection{Hard-fixing}
 \label{section:hard-fix}
-The main purpose of this method is to try to reduce the search space by cutting down the complexity of the optimization. For achieving this an initial feasible solution is needed, obtained by any approach described in this report.\\
-The central thought of hard-fixing is to obtain an easier problem by previously setting some variables of the solution passed to the method - and so by having fewer variables to compute. The variables that are going to be fixed are $x_{ij}$, $i, j\in V$. This task is done by settling the values to 1, so the edge will be surely part of the solution. A valid method to choose which path is chosen to be fixed is to link each edge to a probability $0<p<1$, then setting randomly - with the probability picked - the value to 1.\\
-Hereupon the problem will have presumably $p*|E|$ variables fixed and the instance can be solved with a lower effort, this will bring to a hopefully better solution. Although the choice of using a probability is a good pick, any other method can be used to block the edges.
+The main purpose of this method is to try to reduce the search space by cutting down the complexity of the optimization. For achieving this goal, an initial feasible solution is needed - obtained by any approach described in this report.\\
+The central thought of hard-fixing is to get an easier problem by setting some variables of the solution passed to the method - and so by having fewer variables to compute. The variables to be fixed are $x_{ij}$, $i, j\in V$. This task is done by settling the values to 1, so that the edge will be surely part of the solution. A valid method to choose which path is designated to be fixed is to link each edge to a probability $p$ between $0$ and $1$, then set randomly - with the probability picked - the value to 1.\\
+Hereupon, the problem will presumably have $p*|E|$ variables fixed and thus the instance can be solved with a lower effort. Hopefully, this situation will bring to a better solution. Although the choice of using a probability is a good pick, any other method can be used to block the edges.
 
-The performance of this technique is strictly related to the choice of the first feasible solution, if it is not good enough this approach will get stuck on some non-optimal solution. A good fix is to lower down $p$ whenever the solution is not improved for a predetermined amount of time.
+The performance of this technique is strictly related to the choice of the first feasible solution: if it is not good enough, this approach will get stuck on some non-optimal solution. A good fix for avoiding this is to lower down $p$ whenever the solution is not improved for a predetermined amount of time.
 
 \begin{algorithm}
 	\caption{Hard-fixing}\label{algo:hard-fix}
@@ -44,37 +44,37 @@ The performance of this technique is strictly related to the choice of the first
 	\end{algorithmic}
 \end{algorithm}
 
-In this algorithm, there are some variables never mentioned before: the global timelimit and the iteration timelimit. As aforementioned the hard-fixing is a technique that aims to obtain a good solution in a short amount of time. So the parameters described above are necessary to establish - as the name suggests - the timespan in which the optimization is solved: global\_timelimit is the total time reserved to the solver, interation\_timelimit is the duration of each optimization in which the hard-fixing is applied.
+In this algorithm, there are some variables not mentioned before: the global timelimit and the iteration timelimit. As aforementioned, the hard-fixing is a technique that aims to obtain a good solution in a short amount of time, so the parameters described above are necessary to establish - as the name suggests - the timespan in which the optimization is solved. global\_timelimit is the total time reserved to the solver, interation\_timelimit is the duration of each optimization in which the hard-fixing is applied.
 
-In the algorithm, the initial solution is provided by the solver, limited in the depth of its analysis. Then algorithm \ref{algo:hard-fix} starts to iterate the main process until the global\_timelimit is reached. During this phase the optimization is called several times, in each of which the instance is solved blocking some variables to $1$.
+The initial solution is provided by the solver, limited in the depth of its analysis. Then, algorithm \ref{algo:hard-fix} starts to iterate the main process until the global\_timelimit is reached. During this phase, the optimization is called several times, in each of which the instance is solved blocking some variables to $1$.
 
 \subsection{Soft-fixing}
-The technique described is called Local Branching. Since it is a slight modification of the hard-fixing it is also called soft-fixing.\\
-In section \ref{section:hard-fix} the value of the variables is fixed in a manual way using a probability system. In local branching this operation is performed by adding a new constraint that forces the instance itself to block a predetermined number of variables, giving a degree of freedom to the solver on which variable to fix and which not.
+The technique that will be described is called Local Branching. Since it is a slight modification of the hard-fixing it is also called soft-fixing.\\
+In section \ref{section:hard-fix} the value of the variables is fixed in a manual way using a probability system. In Local Branching, this operation is performed by adding a new constraint that forces the instance to block a predetermined number of variables, giving to the solver a degree of freedom on which variables to fix and which not.
 
-The main idea of soft-fixing is the Hamming distance: "it measures the minimum number of substitutions required to change one string into the other"\cite{hamming-distance}. This description can be applied also to vectors. So given two vectors $x$ and $\tilde{x}$ in $\{0,1\}$ the hamming distance is the number of different bits they have. It can be described in this way:
+The main idea of soft-fixing is the Hamming distance: "it measures the minimum number of substitutions required to change one string into the other"\cite{hamming-distance}. This description can be applied also to vectors. So given two vectors $x$ and $\tilde{x}$ in $\{0,1\}$, the Hamming distance is the number of different bits they have. It can be described in this way:
 
 \begin{equation}
 \label{eqn:hamming-dist}
 H(x, \tilde{x}) = \sum_{j:\tilde{x}_j=1}(1-x_j)+\sum_{j:\tilde{x}_j=0}x_j
 \end{equation}
 
-Considering that the output solution of the solver is a vector in $\{0, 1\}$ it is possible to insert into the instance a new constraint that limits the hamming distance between the old solution and the new one.
-Since the number of edges active in each solution is forced to be $n=|V|$ and therefore the Hamming distance is computed one the differences in the bits equal to 1, it is possible to reduce \ref{eqn:hamming-dist} to:
+Considering that the output solution of the solver is a vector in $\{0, 1\}$, it is possible to insert into the instance a new constraint that limits the hamming distance between the old solution and the new one.
+The number of edges active in each solution is forced to be $n=|V|$ and therefore the Hamming distance is computed on the differences in the bits equal to 1. For this reason, it is possible to reduce \ref{eqn:hamming-dist} to:
 
 \begin{equation}
 \label{eqn:hamming-dist-2}
 H(x, \tilde{x}) = \sum_{j:\tilde{x}_j=1}(1-x_j) =  n - \sum_{j:\tilde{x}_j=1}x_j
 \end{equation}
 
-I recall that the purpose of this method is to limit the diversity of two solutions it is possible to add a new variable $k$. This will be the value that will limit the Hamming distance. Through elementary math this formulation is built:
+The purpose of this method is to limit the diversity of two solutions. For doing so, it is possible to add a new variable $k$ that limits the Hamming distance. Through elementary math, this formulation is built as:
 
 \begin{equation}
 \label{eqn:hamming-dist-3}
 H(x, \tilde{x}) \le k \Rightarrow n - \sum_{j:\tilde{x}_j=1}x_j \le k \Rightarrow \sum_{j:\tilde{x}_j=1}x_j \ge n - k
 \end{equation}
 
-The effect of \ref{eqn:hamming-dist-3} is to narrow the next iteration of the optimization to a $k$-neighborhood of the previous one. As the method described in section \ref{section:hard-fix} the value of $k$ can vary if for a predetermined number of times the optimization doesn't improve the value. 
+The consequence of \ref{eqn:hamming-dist-3} is to narrow the next iteration of the optimization to a $k$-neighborhood of the previous one. As the method described in section \ref{section:hard-fix}, the value $k$ can vary if for the optimization doesn't improve the solution. 
 
 \begin{algorithm}
 	\caption{Soft-fixing}\label{algo:soft-fix}
@@ -111,4 +111,4 @@ The effect of \ref{eqn:hamming-dist-3} is to narrow the next iteration of the op
 	\end{algorithmic}
 \end{algorithm}
 
-As it is evident the algorithm \ref{algo:hard-fix} and \ref{algo:soft-fix} are almost identical. The unique change is upon the variable used and the constraint added to the instance. In this implementation, the value of $k$ is implemented by $1$ every time the solution is not improved for 10 times.
+The only changes between \ref{algo:hard-fix} and \ref{algo:soft-fix} are the variables used and the constraints added to the instance. In this implementation, $k$ is increased by $1$ every time the solution is not improved.

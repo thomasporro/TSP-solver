@@ -1,6 +1,6 @@
-In this introduction, I used a natural way to describe the problem using the notion of cities and distance travelled. But applying from a mathematical point of view, the TSP problem can be thought as graph $G=(V,E)$ where $V=\{v_1, \dots , v_n\}$ are the cities described in this introduction (from now on called nodes or vertices of the graph), and $E$ in this case represents the path that connects one node to another and it can be described as $E \subseteq (V \times V) / \{\{i, j\}	:i \in V\}\}$, is the set of edges of the graph.\\
-nother fundamental aspects to be taken in consideration are the concept of distance and its mathematical counterpart, the cost. I assign to each edge a real number that will be used to give weight (or cost) to the path chosen.\\
-Now that I have introduced the main concepts I can explain the TSP problem from a mathematical point of view:
+In this introduction, I used a natural way to describe the problem using the notion of cities and distance travelled. But from a mathematical point of view, the TSP problem can be thought as graph $G=(V,E)$ where $V=\{v_1, \dots , v_n\}$ are the cities described in this introduction (from now on called nodes or vertices of the graph), and $E$ represents the path that connects one node to another and it can be described as $E \subseteq (V \times V) / \{\{i, j\}	:i \in V\}\}$ that is the set of edges of the graph.\\
+Another fundamental aspects to be taken in consideration are the concept of distance and its mathematical counterpart, the cost. I assign to each edge a real number that will be used to give weight (or cost) to the path chosen.\\
+Now that I have introduced the main concepts, the TSP problem can be explained also from a mathematical point of view:
 \begin{displayquote}
 	\textit{Given a list of nodes and the distances between them, find the shortest hamiltonian circuit.}
 \end{displayquote}

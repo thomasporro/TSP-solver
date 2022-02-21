@@ -36,4 +36,8 @@ void successors_to_list(instance *inst, const int *successors, int *node_list);
  */
 void complete_merging(instance *inst, int *node_list, int size);
 
+double generate_greedy_solution(instance *inst, int *node_list);
+
+double generate_extra_mileage_solution(instance *inst, int *node_list);
+
 #endif //GENETIC_UTILS

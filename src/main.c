@@ -5,6 +5,7 @@
 #include "read_input.h"
 #include "plot.h"
 #include "utils.h"
+#include <signal.h>
 
 #define PERFORMANCE_PROFILE 1237030
 
@@ -41,7 +42,7 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {MTZ, MTZ_LAZY, GG};
+        int model_type[] = {VNS, TABU_SEARCH, GENETIC};
         performance_profile(&inst, (int *) &model_type, 3, 1800.0);
         return 0;
     }
@@ -80,7 +81,7 @@ int main(int argc, char **argv) {
 
     //Plot the solution with the passed commands
     printf("\n----------------------PLOTTING------------------------\n");
-    plot(commandsForGnuplot, 2, &inst);
+//    plot(commandsForGnuplot, 2, &inst);
 
     int flag_free_solution = inst.model_type == GREEDY
                              || inst.model_type == GREEDY_REF
@@ -131,15 +132,20 @@ int solve(instance *inst) {
             greedy(inst);
             printf("Started vns\n");
             vns(inst);
+            print_stats(inst, seconds()-inst->start_time);
             break;
         case TABU_SEARCH:
             inst->start_time = seconds();
             greedy(inst);
             printf("Started tabu search\n");
             tabu_search(inst);
+            print_stats(inst, seconds()-inst->start_time);
             break;
         case GENETIC:
+            inst->start_time = seconds();
             genetic(inst, 100);
+            printf("Solution cost: %f\n", inst->best_value);
+            print_stats(inst, seconds()-inst->start_time);
             break;
         default:
             TSPopt(inst);
@@ -159,7 +165,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
     double start_time = seconds();
 
-    FILE *csv = fopen("../logfiles/performance_profile.csv", "w");
+    FILE *csv = fopen("../logfiles/performance_profile_META.csv", "a");
     if (csv == NULL) {
         print_error_code("Failed to open ../logfiles/performance_profile.csv", ENOENT);
     }
@@ -175,8 +181,9 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
         else
             fprintf(csv, "\n");
     }
+    fclose(csv);
 
-    FILE *files = fopen("../testfiles/files.txt", "r");
+    FILE *files = fopen("../testfiles/files_META.txt", "r");
     if (files == NULL) {
         print_error_code("Failed to open ../testfiles/files.txt", ENOENT);
     }
@@ -190,7 +197,13 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
         file_name = strtok(line, "\n");
 
         printf("\nTESTING FILE: %s\n", file_name);
-        fprintf(csv, "%s, ", file_name);
+        csv = fopen("../logfiles/performance_profile_META.csv", "a");
+        if (csv == NULL) {
+            print_error_code("Failed to open ../logfiles/performance_profile.csv", ENOENT);
+        } else {
+            fprintf(csv, "%s, ", file_name);
+            fclose(csv);
+        }
 
         //Read and parse the file to test
         strcpy(inst->input_file, file_name);
@@ -204,17 +217,33 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
             solve(inst);
             double end_time_for = seconds();
 
+            csv = fopen("../logfiles/performance_profile_META.csv", "a");
+            if (csv == NULL) {
+                print_error_code("Failed to open ../logfiles/performance_profile.csv", ENOENT);
+            }
             //Print
-            fprintf(csv, "%f", end_time_for - start_time_for);
+            if (inst->model_type == STANDARD || inst->model_type == BENDERS || inst->model_type == BRANCH_AND_CUT
+                || inst->model_type == DEFAULT || inst->model_type == BRANCH_AND_CUT_RLX){
+                fprintf(csv, "%f", end_time_for - start_time_for);
+            } else {
+                fprintf(csv, "%f", inst->best_value);
+            }
+
             if (i != nmodels - 1)
                 fprintf(csv, ", ");
             else
                 fprintf(csv, "\n");
+            fclose(csv);
             printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
             free_instance(inst, PERFORMANCE_PROFILE);
         }
+        free(inst->latitude);
+        free(inst->longitude);
+        free(inst->x_coord);
+        free(inst->y_coord);
+        free(inst->component);
+        free(inst->successors);
     }
-
     double end_time = seconds();
     printf("TIME ELAPSED: %f s\n\n", end_time - start_time);
 }
