@@ -36,8 +36,20 @@ void successors_to_list(instance *inst, const int *successors, int *node_list);
  */
 void complete_merging(instance *inst, int *node_list, int size);
 
+/*!
+ * Generate a greedy solution
+ * @param inst The instance containing basic information
+ * @param node_list A list of nodes that forms the solution. The nodes are in sequence
+ * @return The cost of the random solution
+ */
 double generate_greedy_solution(instance *inst, int *node_list);
 
+/*!
+ * Generate an extra-mileage solution
+ * @param inst The instance containing basic information
+ * @param node_list A list of nodes that forms the solution. The nodes are in sequence
+ * @return The cost of the random solution
+ */
 double generate_extra_mileage_solution(instance *inst, int *node_list);
 
 #endif //GENETIC_UTILS

@@ -27,6 +27,7 @@ int xpos(int i, int j, instance *inst);
 */
 void print_error(const char *err);
 
+
 /*!
 * Prints an error and exits from the program
 * @param	err pointer to a char's string that will be print
@@ -44,6 +45,7 @@ void print_error_code(const char *err, int status);
 * @return	an integer indicating the position of the variable into the CPLEX problem
 */
 int xxpos(int i, int j, instance *inst);
+
 
 /*!
 * Calculates the position of the variable y(i, j) into the CPLEX problem for
@@ -74,6 +76,7 @@ void print_stats(instance *inst, double time_passed);
 * @return	double that indicates the euclidian distance
 */
 double geo_distance(int i, int j, instance *inst);
+
 
 /*!
 * Calculates the distance between two nodes using the ATT type
@@ -116,6 +119,7 @@ char *logfilename(instance *inst);
  */
 void free_instance(instance *inst, int model_type);
 
+
 /*!
  * Compute the solution starting from the values of successors
  * @param inst The instance
@@ -123,6 +127,7 @@ void free_instance(instance *inst, int model_type);
  * @param successors The array containing the successors
  */
 void compute_solution_from_successors(instance *inst, double *x, int *successors);
+
 
 /*!
  * Compute the solution starting from the values of successors
@@ -132,6 +137,7 @@ void compute_solution_from_successors(instance *inst, double *x, int *successors
  */
 double compute_solution_cost(instance *inst, int *successors);
 
+
 /*!
  * Compute the best 2-cut to perform over a solution
  * @param inst The instace where the solution is saved
@@ -140,6 +146,7 @@ double compute_solution_cost(instance *inst, int *successors);
  * @param improvement The improvement of the solution
  */
 void compute_bigger_cut(instance *inst, int *first_node, int *second_node, double *improvement);
+
 
 /*!
  * Performs the 2-opt refining move

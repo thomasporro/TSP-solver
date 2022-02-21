@@ -121,7 +121,6 @@ void free_instance(instance *inst, int model_type) {
         if (inst->model_type == STANDARD || inst->model_type == BENDERS || inst->model_type == BRANCH_AND_CUT
             || inst->model_type == DEFAULT || inst->model_type == HARD_FIX_BAC || inst->model_type == SOFT_FIX
             || inst->model_type == BRANCH_AND_CUT_RLX){
-            printf("solution free\n");
             free(inst->solution);
         }
         inst->successors = (int *) calloc(inst->nnodes, sizeof(int));

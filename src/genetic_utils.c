@@ -100,7 +100,6 @@ void complete_merging(instance *inst, int *node_list, int size) {
         successors[candidate_node] = candidate_end;
 
         node_added++;
-//        printf("node added: %d\n", node_added);
     }
 
     successors_to_list(inst, successors, node_list);

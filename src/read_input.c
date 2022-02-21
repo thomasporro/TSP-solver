@@ -41,7 +41,6 @@ void parse_command_line(int argc, char **argv, instance *inst) {
     }
 };
 
-
 void read_input(instance *inst) {
     //Declaration of local variable
     char *parameter_name;

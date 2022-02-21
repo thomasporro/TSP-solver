@@ -9,7 +9,6 @@
 
 #define PERFORMANCE_PROFILE 1237030
 
-
 /**
  * Function that execute the performance profile with the given information. It saves the results on the
  * performance_profile.csv
@@ -81,15 +80,8 @@ int main(int argc, char **argv) {
 
     //Plot the solution with the passed commands
     printf("\n----------------------PLOTTING------------------------\n");
-//    plot(commandsForGnuplot, 2, &inst);
+    plot(commandsForGnuplot, 2, &inst);
 
-    int flag_free_solution = inst.model_type == GREEDY
-                             || inst.model_type == GREEDY_REF
-                             || inst.model_type == XTRA_MILEAGE
-                             || inst.model_type == XTRA_MILEAGE_REF
-                             || inst.model_type == VNS
-                             || inst.model_type == TABU_SEARCH
-                             || inst.model_type == GENETIC;
     free_instance(&inst, inst.model_type); // !flag_free_solution
     return 0;
 }
@@ -101,20 +93,21 @@ int solve(instance *inst) {
             printf("Model type chosen: undirected complete graph solved with greedy method\n");
             inst->start_time = seconds();
             greedy(inst);
+            printf("Solution cost: %f\n", inst->best_value);
             break;
         case GREEDY_REF:
             printf("Model type chosen: undirected complete graph solved with greedy method + 2-opt refining\n");
             inst->start_time = seconds();
             greedy(inst);
             printf("Greedy cost: %f\n", inst->best_value);
-            three_opt_refining(inst);
-            //two_opt_refining(inst);
+            two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
             break;
         case XTRA_MILEAGE:
             printf("Model type chosen: undirected complete graph solved with extra mileage method\n");
             inst->start_time = seconds();
             extra_mileage(inst);
+            printf("Solution cost: %f\n", inst->best_value);
             break;
         case XTRA_MILEAGE_REF:
             printf("Model type chosen: undirected complete graph solved with extra mileage method + "
@@ -122,26 +115,27 @@ int solve(instance *inst) {
             inst->start_time = seconds();
             extra_mileage(inst);
             printf("Extra mileage cost: %f\n", inst->best_value);
-            three_opt_refining(inst);
-            printf("Three-opt cost cost: %f\n", inst->best_value);
-            //two_opt_refining(inst);
+            two_opt_refining(inst);
             printf("Two-opt cost cost: %f\n", inst->best_value);
             break;
         case VNS:
+            printf("Model type chosen: VNS\n");
             inst->start_time = seconds();
             greedy(inst);
-            printf("Started vns\n");
             vns(inst);
+            printf("Solution cost: %f\n", inst->best_value);
             print_stats(inst, seconds()-inst->start_time);
             break;
         case TABU_SEARCH:
+            printf("Model type chosen: Tabu Search\n");
             inst->start_time = seconds();
             greedy(inst);
-            printf("Started tabu search\n");
             tabu_search(inst);
+            printf("Solution cost: %f\n", inst->best_value);
             print_stats(inst, seconds()-inst->start_time);
             break;
         case GENETIC:
+            printf("Model type chosen: Genetic Algorithm\n");
             inst->start_time = seconds();
             genetic(inst, 100);
             printf("Solution cost: %f\n", inst->best_value);
@@ -165,7 +159,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     printf("TIME LIMIT SETTED TO: %6.2fs\n", inst->timelimit);
     double start_time = seconds();
 
-    FILE *csv = fopen("../logfiles/performance_profile_META.csv", "a");
+    FILE *csv = fopen("../logfiles/performance_profile.csv", "a");
     if (csv == NULL) {
         print_error_code("Failed to open ../logfiles/performance_profile.csv", ENOENT);
     }
@@ -183,7 +177,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     }
     fclose(csv);
 
-    FILE *files = fopen("../testfiles/files_META.txt", "r");
+    FILE *files = fopen("../testfiles/files.txt", "r");
     if (files == NULL) {
         print_error_code("Failed to open ../testfiles/files.txt", ENOENT);
     }
@@ -197,7 +191,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
         file_name = strtok(line, "\n");
 
         printf("\nTESTING FILE: %s\n", file_name);
-        csv = fopen("../logfiles/performance_profile_META.csv", "a");
+        csv = fopen("../logfiles/performance_profile.csv", "a");
         if (csv == NULL) {
             print_error_code("Failed to open ../logfiles/performance_profile.csv", ENOENT);
         } else {

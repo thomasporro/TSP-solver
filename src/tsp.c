@@ -510,7 +510,6 @@ void build_solution(instance *inst, double *solution, int *successors, int *comp
         }
     }
 
-    //printf("Number of loops: %d\n\n", *ncomp);
 }
 
 
@@ -587,9 +586,6 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 print_error("CPXcallbacksetfunc() error -> HARD_FIX");
             }
 
-            //TODO check this thing
-            //CPXsetintparam(env, CPXPARAM_emphasis_MIP, 5)
-
             inst->start_time = seconds();
             //Change the internal time limit of cplex
             CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit / 3);
@@ -604,12 +600,9 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
             //Percentage with which I block the edges that are set to 1
             int percentage = 90;
-            // Tests
 
             printf("First solving\n");
             CPXmipopt(env, lp);
-
-
 
             printf("Percentage of edges blocked: %d%\n", percentage);
 
@@ -628,7 +621,6 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not I reduce the percentage of blocking the edges
                 if (objval < inst->best_value) {
-                    // printf("Solution improved\n");
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
                         print_error("Failed to optimize MIP (CPXgetx() -> HARD_FIX)\n");
                     }
@@ -674,15 +666,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 }
                 //CPXwriteprob(env, lp, "modified_variables.lp", NULL);
 
-                //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
-                //change the cplex time limit to the actual time remaining
-                //if (inst->timelimit - seconds() < INTERNAL_TIME_LIMIT) {
-                //    CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
-                //}
-
-                // printf("CALCULATING THE SOLUTION...\n");
                 CPXmipopt(env, lp);
-                // printf("SOLUTION CALCULATED\n");
             }
             printf("\nSOLUTION CALCULATED\n");
             printf("\nCOST: %f\n", inst->best_value);
@@ -714,14 +698,10 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             cname[0] = (char *) calloc(100, sizeof(char));
             sprintf(cname[0], "SOFT_FIX_(K_OPT_%f)", k_opt);
 
-            //CPXsetintparama(env, CPX_APRAMNODELIM, 0)) lo esegue solo al nodo base
-            //I can solve one time with the nodedelim == 0 and then add with CPXaddmipstart adding the solution
-
             //Variables used to manage the new constraints
             int remove_row_flag = 0;
             int lastrow = CPXgetnumrows(env, lp);
 
-            // Tests
             printf("First solving\n");
             CPXmipopt(env, lp);
 
@@ -742,7 +722,6 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                 //Check if the solution just found is better than the previous one or it's value it's the same
                 //as the previous cycle. If not change the k-opt value
                 if (objval < inst->best_value) {
-                    // printf("Solution improved\n");
                     if (CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1)) {
                         print_error("Failed to optimize MIP (CPXgetx() - SOFT_FIX)\n");
                     }
@@ -782,18 +761,8 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
 
                 //Flag for check if a constraint has been added
                 remove_row_flag++;
-                //TODO posso farlo se sono in modalità debug, e si può non tenere in conto per il conteggio del tempo totale
-                //CPXwriteprob(env, lp, "logfiles/added_constraint(soft_fix).lp", NULL);
 
-                //If the time remaining is lower than the INTERNAL_TIME_LIMIT than
-                //change the cplex time limit to the actual time remaining
-                //if (inst->timelimit - seconds() < INTERNAL_TIME_LIMIT) {
-                //    CPXsetdblparam(env, CPX_PARAM_TILIM, inst->timelimit - seconds());
-                //}
-
-                //printf("CALCULATING THE SOLUTION...\n");
                 CPXmipopt(env, lp);
-                //printf("SOLUTION CALCULATED\n");
                 printf("->%d", ++cycle);
             }
             printf("\n");
@@ -895,8 +864,6 @@ int candidate_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
                 }
             }
 
-            //TODO try to improve the memory used -> placeit outside the for and give it a
-            //predefined dimension
             //Build the arguments to pass to the function
             int *rmatind = (int *) calloc((nzcnt * nzcnt), sizeof(int));
             double *rmatval = (double *) calloc((nzcnt * nzcnt), sizeof(double));
@@ -948,7 +915,6 @@ int relaxation_callback(CPXCALLBACKCONTEXTptr context, instance *inst) {
     int loader = 0;
 
     //Filling the elist array
-    //TODO we can pass only the needed edges
     for (int i = 0; i < inst->nnodes; i++) {
         for (int j = i + 1; j < inst->nnodes; j++) {
             //For each edge are reserved 2 slots over this array. Concorde
@@ -1374,7 +1340,6 @@ void three_opt_refining(instance *inst) {
 
 
 void vns(instance *inst) {
-    printf("initial cost: %f\n", inst->best_value);
     double current_best = inst->best_value;
     int *best_successors = (int *) calloc(inst->nnodes, sizeof(int));
     for (int i = 0; i < inst->nnodes; i++) {
@@ -1414,7 +1379,7 @@ void vns(instance *inst) {
             seven_kick_vns(inst);
         }
     }
-    printf("final cost: %f\n", inst->best_value);
+    printf("Final cost: %f\n", inst->best_value);
 }
 
 
@@ -1570,7 +1535,6 @@ void seven_kick_vns(instance *inst) {
 
 
 void tabu_search(instance *inst) {
-    printf("initial cost: %f\n", inst->best_value);
     double current_best = inst->best_value;
     int *best_successors = (int *) calloc(inst->nnodes, sizeof(int));
     for (int i = 0; i < inst->nnodes; i++) {
@@ -1631,7 +1595,6 @@ void tabu_search(instance *inst) {
             iteration_counter++;
         }
 
-        // printf("KICK\n");
         // 2-kick to exit the minima
         int first_node = rand() % inst->nnodes;
         int second_node;
@@ -1649,17 +1612,11 @@ void tabu_search(instance *inst) {
         iteration_counter++;
     }
     printf("Number of iterations: %d\n", iteration_counter);
-    printf("final cost: %f\n", inst->best_value);
+    printf("Final cost: %f\n", inst->best_value);
 }
 
 
 void genetic(instance *inst, int population_size) {
-//    int* node_list = (int*)calloc(inst->nnodes, sizeof(int));
-//    int* successors = (int*)calloc(inst->nnodes, sizeof(int));
-//
-//    generate_random_solution(inst, node_list);
-//    list_to_successors(inst, node_list, inst->successors);
-//    printf("Solution cost: %f\n", inst->best_value);
 
     int **population = (int **) calloc(inst->nnodes, sizeof(int *));
     double *fitness = (double *) calloc(inst->nnodes, sizeof(double));
@@ -1674,7 +1631,6 @@ void genetic(instance *inst, int population_size) {
     for (int i = 0; i < population_size; i++) {
         population[i] = (int *) calloc(inst->nnodes, sizeof(int));
         fitness[i] = generate_random_solution(inst, population[i]);
-//        printf("1 Generated\n");
         if (fitness[i] > worst_fitness) {
             worst_fitness = fitness[i];
         }
@@ -1683,10 +1639,7 @@ void genetic(instance *inst, int population_size) {
             champion = i;
         }
     }
-    printf("generated population\n");
-//    list_to_successors(inst, population[46], inst->successors, NULL);
-//    printf("Solution cost: %f\n", fitness[46]);
-//    return;
+    printf("Generated population\n");;
 
     int end_epochs = 0;
     int n_epochs = 0;
@@ -1742,9 +1695,6 @@ void genetic(instance *inst, int population_size) {
             }
             //Merging
             complete_merging(inst, children[n_child], next_node);
-//            printf("Merged\n");
-
-            //Quando lo metto dentro alla population computo la fitness
         }
 
         //Population killing and substituting with the children
@@ -1838,11 +1788,6 @@ void genetic(instance *inst, int population_size) {
                 break;
             }
         }
-//        printf("Champion cost epoch %d (%d): %f\n", n_epochs, champion, fitness[champion]);
-//        printf("Avg cost epoch %d: %f\n\n", n_epochs, average_fitness);
         n_epochs++;
-//        printf("Epoch passed");
-        if(n_epochs%50 == 0) printf("50 epochs passed\n");
-//        break;
     }
 }
