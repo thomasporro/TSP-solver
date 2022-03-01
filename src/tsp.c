@@ -59,7 +59,7 @@ int TSPopt(instance *inst) {
     double time_passed = seconds() - start_time;
     print_stats(inst, time_passed);
 
-    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) { //TODO always true
+    if (inst->model_type != HARD_FIX_BAC && inst->model_type != SOFT_FIX) {
         //If the problem have a solution it saves it into the instance's structure
         int status = CPXgetx(env, lp, inst->solution, 0, inst->nvariables - 1);
         if (status) {
@@ -1112,7 +1112,6 @@ void extra_mileage(instance *inst) {
 
 
 void two_opt_refining(instance *inst) {
-    //TODO local data for refining? For multithread purpose. It is up to me
     int flag_while = 0;
 
     while (!flag_while) {
@@ -1371,6 +1370,7 @@ void vns(instance *inst) {
             continue;
         }
 
+        // Performs kick
         if (cycles < 5) {
             three_kick_vns(inst);
         } else if (cycles >= 5 && cycles < 10) {
@@ -1563,6 +1563,7 @@ void tabu_search(instance *inst) {
 
 
         int tabu_search = 0;
+        // Performs tabu search
         while (!tabu_search) {
             int first_node;
             int second_node;

@@ -1,3 +1,5 @@
+#define PERFORMANCE_PROFILE 1237030
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -5,8 +7,6 @@
 #include <sys/resource.h>
 #include <errno.h>
 #include "utils.h"
-
-#define PERFORMANCE_PROFILE 1237030
 
 void print_error(const char *err) {
     printf("\n\nERROR: %s \n\n", err);
@@ -66,7 +66,6 @@ double geo_distance(int i, int j, instance *inst) {
     double r = 6378.388;
     double pi = 3.141592;
 
-
     double q1 = cos(inst->longitude[i] - inst->longitude[j]);
     double q2 = cos(inst->latitude[i] - inst->latitude[j]);
     double q3 = cos(inst->latitude[i] + inst->latitude[j]);
@@ -96,7 +95,6 @@ double seconds() {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (double) ts.tv_sec + 1.0e-9 * ((double) ts.tv_nsec);
-    return ((double) clock() / (double) CLOCKS_PER_SEC);
 }
 
 char *logfilename(instance *inst) {
@@ -149,7 +147,6 @@ void compute_solution_from_successors(instance *inst, double *x, int *successors
     for (int i = 0; i < inst->nnodes; i++) {
         x[xxpos(i, successors[i], inst)] = 1.0;
     }
-
 }
 
 double compute_solution_cost(instance *inst, int *successors) {

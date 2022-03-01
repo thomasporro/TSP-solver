@@ -1,0 +1,70 @@
+\input{model/Modello_Tesi}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+\includegraphics[scale=0.2]{images/logo_unipd.png} \hfill \includegraphics[scale=0.2]{images/logo_dei.png}\\
+\vspace{0.8cm}
+\textsc{\LARGE University of Padua}\\
+\vspace{0.45cm}
+\textsc{\large Information Engineering Department}\\
+\vspace{0.4cm}
+\textsc{\large Master’s Degree in Computer Engineering}\\
+\vfill
+% Title
+{ \LARGE \bfseries Solutions to the Travelling Salesman Problem
+}\\
+\vfill
+\textit{\large Professor:} \hfill \textit{\large Student:}\\
+\textsc{\large Matteo Fischetti} \hfill \textsc{Thomas Porro}\\
+\hfill \textsc{1237030}\\
+
+\vfill
+% Bottom of the page
+{\large Academic year 2021/2022}
+\end{center}
+\end{titlepage}
+
+\pagenumbering{roman} 
+\thispagestyle{empty}
+
+\tableofcontents %Indice
+
+\clearpage{\pagestyle{plain}\cleardoublepage}
+\pagenumbering{arabic}
+
+
+\chapter{Introduction}
+\label{chapter:primo_capitolo} 
+\input{intros/intro_introduction.tex}
+
+
+\chapter{Code setup}
+\label{chapter:code-setup}
+\input{intros/intro_code_setup.tex}
+
+
+\chapter{Compact models} 
+\label{chapter:compact-models} 
+\input{intros/intro_compact_models.tex} 
+
+
+\chapter{Other sub-tour elimination methods} 
+\label{chapter:other-sec} 
+\input{intros/intro_secs.tex} 
+
+
+\chapter{Heuristic solutions} 
+\label{chapter:codice} 
+\input{intros/intro_heuristic_solutions.tex}
+
+
+\chapter{Experimental results and conclusions}
+\label{chapter:results}
+\input{intros/intro_results.tex}
+
+\clearpage{\pagestyle{plain}\cleardoublepage}
+\input{references.tex}
+\end{document}

@@ -281,3 +281,5 @@ latex_report/*.aux
 latex_report/*.log
 latex_report/*.toc
 latex_report/*.gz
+latex_report/*.out
+latex_report/*.yml

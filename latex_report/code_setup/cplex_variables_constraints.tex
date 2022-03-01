@@ -1,0 +1,32 @@
+Understanding how CPLEX build and manage constraint is important for a full control over the system. 
+
+The whole software works with the concept of rows and columns, which are respectively the constraints and the variables of the problem. Using a simple minimisation problem, where $x_i$ is an integer value, it is:
+
+\begin{equation}
+\label{eqn:cplex-example}
+\begin{array}{lllllll}%
+\text{min}  &x_1 	&+ 	& 3x_2 &+ & x_3\\
+&  2x_1 &  	&   &- &x_3 &\le 60\\
+&		&	& 4x_2 & + &7x_3 &\ge 20\\
+\end{array}\\
+\end{equation}
+
+This problem can be seen as a matrix composed of rows and columns, each column corresponding to a variable and each row corresponding to a constraint that the problem has to satisfy. Whenever it is necessary to add a new variable, for example $x_4$, it is possible to do so by calling the API and by adding a new column to the problem. The same can be done with a constraint: it can be added by inserting a new row using the callable library.
+
+When a new constraint is added it contains only the right-hand side of the equation/inequation, and all the coefficients of the variables are setted to 0. The constraint will appear as following:
+
+\begin{equation}
+\label{eqn:constraint}
+\text{*empty*} \qquad \le 60
+\end{equation}
+
+Inequation \ref{eqn:constraint} is the first row of the model described in \ref{eqn:cplex-example}.
+For having the coefficients consistent with the model of this section, it is possible to use the API of CPLEX. In this way it is possible to set the value of the variable $x_1$ to $2$ and $x_3$ to $-1$, and to obtain: 
+
+\begin{equation}
+\label{eqn:full-constraint}
+2x_1-x_3 \le 60
+\end{equation}
+
+This operation is done every time a new constraint is added to the instance.
+The Callable Library has also other methods to add new constraints but this one is the one used during this project.

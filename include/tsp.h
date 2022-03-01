@@ -38,6 +38,8 @@ typedef struct {
     char input_file[1000];
     char edge_type[10];
     modeltype model_type;
+    modeltype *model_type_vector;
+    int model_type_counter;
 
     double *latitude;
     double *longitude;

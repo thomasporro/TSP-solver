@@ -1,14 +1,3 @@
-As said before, the basic model can create loops in the optimal solution.\\
-A first constraint introduced to avoid this situation was described by Dantzig, Fulkerson, and Johnson. The constraint added was:
-%\begin{comment}
-\begin{equation}
-\sum_{i\in S}\sum_{j \in S}x_{ij}\le |S|-1; \quad \forall S \subset V:\{1\}\not \in S, \; |S|\ge 2, \; i\not = j
-\end{equation}
-%\end{comment}
-
-
-This constraint limits the number of edges in the solution, so that no cycles are allowed in the result. Nonetheless, the usage of this method is infeasible even with a low number of nodes since the amount of constraints needed is exponential ($O(n^2)$).\\
-
 The model produced by Miller, Tucker, and Zemlin bypasses the exponential SECs by reducing their number to a simple polynomial.  Differently from the basic model, the graph obtained in this case is asymmetrical: $x_{ij}$ and $x_{ji}$ can have different weights.
 
 In the new formulation, a new variable called $u_i$ is assigned to each node of the solution. This number represents an increasing sequence number in the optimal tour: starting from the second one ($u_2=0$), each node will increase the value by 1 at each following node until the end of the solution ($u_n=n-2$). The first node is considered special and its value is always set to $0$.

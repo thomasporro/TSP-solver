@@ -22,13 +22,13 @@ One of the most important formulations is the following one \cite{ro1}, even if 
 	
 	\begin{equation}
 	\label{eqn:in}
-	\sum_{(i,j)\delta^-(j)}x_{ij}=1, \quad j\in V
+	\sum_{(i,j)\in\delta^-(j)}x_{ij}=1, \quad j\in V
 	\tag{{\theequation}b}
 	\end{equation}
 	
 	\begin{equation}
 	\label{eqn:out}
-	\sum_{(i,j)\delta^+(j)}x_{ij}=1, \quad i\in V
+	\sum_{(i,j)\in \delta^+(j)}x_{ij}=1, \quad i\in V
 	\tag{{\theequation}c}
 	\end{equation}
 	
@@ -39,10 +39,7 @@ One of the most important formulations is the following one \cite{ro1}, even if 
 	\end{equation}
 	
 	\begin{equation}
-	x_{ij}\ge 0 \; \text{intero} , \quad (i, j) \in A
+	x_{ij}\ge 0 \; \text{integer} , \quad (i, j) \in A
 	\tag{{\theequation}e}
 	\end{equation}
 %\end{comment}
-
-
-This model is not fully functional since it allows the presence of sub-tours in the solution. In order to avoid them, I am going to add some constraints to the model in the next sections.

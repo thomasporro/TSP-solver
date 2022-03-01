@@ -1,13 +1,12 @@
-﻿#include <stdio.h>
+﻿#define PERFORMANCE_PROFILE 1237030
+
+#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include "tsp.h"
 #include "read_input.h"
 #include "plot.h"
 #include "utils.h"
-#include <signal.h>
-
-#define PERFORMANCE_PROFILE 1237030
 
 /**
  * Function that execute the performance profile with the given information. It saves the results on the
@@ -41,8 +40,7 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &inst);
 
     if (inst.performance_profile) {
-        int model_type[] = {VNS, TABU_SEARCH, GENETIC};
-        performance_profile(&inst, (int *) &model_type, 3, 1800.0);
+        performance_profile(&inst, inst.model_type_vector, inst.model_type_counter, inst.timelimit);
         return 0;
     }
 
@@ -51,7 +49,6 @@ int main(int argc, char **argv) {
     //Calculate the solution of the problem
     printf("\n--------------OPTIMIZATION INFORMATIONS--------------\n");
     solve(&inst);
-
 
     //Setting the commands to pass to gnuplot to print the graph
     int flag_gnuplot = inst.model_type == STANDARD
@@ -70,7 +67,7 @@ int main(int argc, char **argv) {
                        || inst.model_type == GENETIC;
 
     char *commandsForGnuplot[3];
-    commandsForGnuplot[0] = ""; //"set title \"Eil101 performed with the extra-mileage algorithm\"";
+    commandsForGnuplot[0] = ""; // Change to change the title of the plot;
     if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {

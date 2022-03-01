@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define PI 3.141592
 #define MAX_TIME_LIMIT 3600.0
+#define N_ENUMS 18
 
 #include <stdio.h>
 #include <string.h>
@@ -16,27 +17,37 @@ void parse_command_line(int argc, char **argv, instance *inst) {
     inst->timelimit = MAX_TIME_LIMIT;
     inst->model_type = -1;
     inst->performance_profile = 0;
+    inst->model_type_counter = 0;
+    int flag_perf_prof = 0;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-file") == 0) {
             strcpy(inst->input_file, argv[++i]);
             printf("Input file name: %s\n", inst->input_file);
+            flag_perf_prof = 0;
             continue;
         }
         if (strcmp(argv[i], "-model_type") == 0) {
             inst->model_type = atoi(argv[++i]);
             printf("Model type selected: %d\n", inst->model_type);
+            flag_perf_prof = 0;
             continue;
         }
         if (strcmp(argv[i], "-time_limit") == 0) {
             inst->timelimit = atoi(argv[++i]);
             printf("Time limit selected: %f\n", inst->timelimit);
+            flag_perf_prof = 0;
             continue;
         }
         if (strcmp(argv[i], "-perf_prof") == 0) {
             inst->performance_profile = atoi(argv[++i]);
+            inst->model_type_vector = (int *) calloc(N_ENUMS, sizeof(int));
             printf("Performance profile: %d\n", inst->performance_profile);
+            flag_perf_prof = 1;
             continue;
+        }
+        if(flag_perf_prof){
+            inst->model_type_vector[inst->model_type_counter++] = atoi(argv[i]);
         }
     }
 };

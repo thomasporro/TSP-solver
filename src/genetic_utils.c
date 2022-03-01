@@ -4,7 +4,6 @@
 #include "genetic_utils.h"
 
 double generate_random_solution(instance *inst, int *node_list) {
-
     int *remaining_nodes = (int *) calloc(inst->nnodes, sizeof(int));
     for (int i = 0; i < inst->nnodes; i++) {
         remaining_nodes[i] = i;
