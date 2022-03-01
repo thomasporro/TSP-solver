@@ -31,20 +31,23 @@ Sets the timelimit to the program. You must pass the timelimit in seconds.
 `-model_type <modeltype>` 
 
 This pass to the program the model you want to use during the optimization. Here's a list of the supported ones:
-- standard = 0;
-- bender's method = 1;
-- branch and cut = 2;
-- branch and cut + relaxation = 3;
-- hard fixing = 4;
-- soft fixing = 5;
-- mtz = 10;
-- mtz with lazy constraints = 11;
-- mtz with indicator constraints = 12;
-- gg = 20;
-- greedy = 30;
-- greedy with 2-opt refining = 31;
-- extra mileage = 32;
-- vns = 40.
+- Basic Model = 0;
+- Bender's method = 1;
+- Branch and Vut = 2;
+- Branch and Cut + Relaxation = 3;
+- Hard-Fixing = 4;
+- Soft-Fixing = 5;
+- Miller-Tucker-Zemlin = 10;
+- Miller-Tucker-Zemlin with lazy constraints = 11;
+- Miller-Tucker-Zemlin with indicator constraints = 12;
+- Gavish and Graves = 20;
+- Greedy Algorithm = 30;
+- Greedy Algorithm with 2-opt refining = 31;
+- Extra-mileage Algorithm= 32;
+- Extra-mileage Algorithm with 2-opt refining = 33;
+- Variable Neighborhood Search = 40;
+- Tabu Search = 50;
+- Genetic Alforithm = 60.
 
-## Report (in continuous update)
-You can download the report with this [link](https://github.com/thomasporro/TSP-solver/raw/greedy/latex_report/ro2.pdf).
+## Report
+You can download the report with this [link](https://github.com/thomasporro/TSP-solver/raw/master/latex_report/ro2.pdf).
