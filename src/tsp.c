@@ -604,7 +604,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
             printf("First solving\n");
             CPXmipopt(env, lp);
 
-            printf("Percentage of edges blocked: %d%\n", percentage);
+            printf("Percentage of edges blocked: %d%%\n", percentage);
 
             //Cycles until the time is over
             while (inst->timelimit > seconds() - inst->start_time) {
@@ -631,7 +631,7 @@ void compute_solution(instance *inst, CPXENVptr env, CPXLPptr lp) {
                     } else {
                         percentage = 0;
                     }
-                    printf("->%d%", percentage);
+                    printf("->%d%%", percentage);
                 }
 
                 if (cnt != 0) {
