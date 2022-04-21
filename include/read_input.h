@@ -17,4 +17,3 @@ void parse_command_line(int argc, char **argv, instance *inst);
 * @modify	saves the value read into the file into inst
 */
 void read_input(instance *inst);
-

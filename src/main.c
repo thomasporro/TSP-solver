@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
                        || inst.model_type == GENETIC;
 
     char *commandsForGnuplot[3];
-    commandsForGnuplot[0] = ""; // Change to change the title of the plot;
+    commandsForGnuplot[0] = ""; // Change this to change the title of the plot
     if (flag_gnuplot) {
         commandsForGnuplot[1] = "plot \"../testfiles/data.dat\" with linespoints linestyle 1 lc rgb \"red\"";
     } else {
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
     printf("\n----------------------PLOTTING------------------------\n");
     plot(commandsForGnuplot, 2, &inst);
 
-    free_instance(&inst, inst.model_type); // !flag_free_solution
+    free_instance(&inst, inst.model_type);
     return 0;
 }
 
@@ -174,6 +174,7 @@ void performance_profile(instance *inst, int *models, int nmodels, double time_l
     }
     fclose(csv);
 
+    // Opens the list of files to test
     FILE *files = fopen("../testfiles/files.txt", "r");
     if (files == NULL) {
         print_error_code("Failed to open ../testfiles/files.txt", ENOENT);

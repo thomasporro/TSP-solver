@@ -394,7 +394,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
         }
     }
 
-    //Add costraint of flow of the first node
+    //Add constraint of flow of the first node
     sprintf(cname[0], "flow_out_from_1");
     lastrow = CPXgetnumrows(env, lp);
     rhs = inst->nnodes - 1.0;
@@ -404,7 +404,7 @@ void build_model_GG(instance *inst, CPXENVptr env, CPXLPptr lp) {
         if (CPXchgcoef(env, lp, lastrow, ypos(0, j, inst), 1.0)) print_error("wrong chgcoef [flow_out_from_1]");
     }
 
-    //Add costraint of flow of the other nodes
+    //Add constraint of flow of the other nodes
     for (int j = 1; j < inst->nnodes; j++) {
         sprintf(cname[0], "flow_in_and_out_from(%d)", j + 1);
         lastrow = CPXgetnumrows(env, lp);
@@ -456,7 +456,7 @@ void build_solution(instance *inst, double *solution, int *successors, int *comp
     //Verify if each node has exactly 2 edges
     int *node_degree = (int *) calloc(inst->nnodes, sizeof(int));
     //In this cycle I modify the degree of a node if the value of the edge is greater
-    //than a tollerance value defined as EPS
+    //than a tolerance value defined as EPS
     for (int i = 0; i < inst->nnodes; i++) {
         for (int j = i + 1; j < inst->nnodes; j++) {
 
@@ -790,7 +790,7 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp) {
     char **cname = (char **) calloc(1, sizeof(char *));
     cname[0] = (char *) calloc(100, sizeof(char));
 
-    //Create a new costraint for each component
+    //Create a new constraint for each component
     for (int i = 1; i <= inst->ncomp; i++) {
         int *nodes = (int *) calloc(inst->nnodes, sizeof(int));
         int number_of_nodes = 0;
@@ -823,7 +823,7 @@ void loop_method(instance *inst, CPXENVptr env, CPXLPptr lp) {
     free(cname);
 }
 
-
+// Callback switch
 static int CPXPUBLIC sec_callback(CPXCALLBACKCONTEXTptr context, CPXLONG contextid, void *userhandle) {
     instance *inst = (instance *) userhandle;
 
@@ -1046,7 +1046,7 @@ void extra_mileage(instance *inst) {
         inst->successors[i] = -1;
     }
 
-    //Find the furthest nodes in the problem
+    //Find the farthest nodes in the problem
     int node1 = -1;
     int node2 = -1;
     double max_distance = 0;
@@ -1181,7 +1181,7 @@ void three_opt_refining(instance *inst) {
             while (inst->successors[j] != i
                    && j != i) {
 
-                //Skips the first assignement of the cycle
+                //Skips the first assignment of the cycle
                 if (j == inst->successors[i]) {
                     j = inst->successors[j];
                 }

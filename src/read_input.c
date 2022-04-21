@@ -57,7 +57,7 @@ void read_input(instance *inst) {
     char *parameter_name;
     char line[180];
     char *token;
-    int active_session = 0; //This is useful when we have to read the node's coordinates
+    int active_session = 0;
 
     //Initialization of the values into inst
     inst->nnodes = -1;
@@ -125,7 +125,6 @@ void read_input(instance *inst) {
             token = strtok(NULL, " :,");
             inst->x_coord[nodes_number] = atof(token);
 
-            //REMOVE
             if (strncmp(inst->edge_type, "GEO", 3) == 0) {
                 int deg = round(inst->x_coord[nodes_number]);
                 double min = inst->x_coord[nodes_number] - deg;
@@ -136,7 +135,6 @@ void read_input(instance *inst) {
             token = strtok(NULL, " :,");
             inst->y_coord[nodes_number] = atof(token);
 
-            //REMOVE
             if (strncmp(inst->edge_type, "GEO", 3) == 0) {
                 int deg = round(inst->y_coord[nodes_number]);
                 double min = inst->y_coord[nodes_number] - deg;
