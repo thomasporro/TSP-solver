@@ -1,6 +1,0 @@
-In the previous section, the callback was called on each integer candidate solution. This sector will describe the use of the callback even on the fractional solution. 
-The aim is to save computational time by adding new SECs that are probably common in the decision tree. 
-
-The procedure defined in this phase is the same in section \ref{chapter:callback}, except that this callback is applied in the continuous relaxation of the problem.
-To implement this kind of operation, I used an external library called Concorde \cite{concorde}. This library is written in ANSI C and it is one of the most powerful tools on the market: it can solve really large instances of the TSP problem to the optimal solution.\\
-When the callback is called, I use the library mentioned above to compute which SEC I require to exclude the fractional solution from the decision tree.

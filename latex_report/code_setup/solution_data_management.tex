@@ -1,9 +1,0 @@
-\label{sec:solution-data-management}
-A reference library has been adopted in order to evaluate the method implemented. TSPLIB \cite{tsp-lib} is a library of sample instances for the TSP (and related problems) from various sources and of various types. This allowed having a starting point on the information needed to solve the problem. Among all the sections contained in the $.tsp$ files only, the most important ones are stored into the instance which are:
-\begin{itemize}
-	\item DIMENSION: the number of nodes that are in the file;
-	\item EDGE WEIGHT TYPE: the typology of the distance between nodes;
-	\item NODE COORD SECTION: where the coordinates of the nodes are described, usually at the end of the file.
-\end{itemize}
-
-To store the solution in a convenient and useful way, the notion of a successor is introduced. Indeed the solution of the TSP problem is a cycle, so each node has a successor. Considering an array big as the number of nodes in the problem, the index of the array is the nodes number and its content is the number of the next node in the solution. In this way, each node points to its successor and generates the solution.
